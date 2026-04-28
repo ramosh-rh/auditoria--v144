@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Picking Audit AI - V9 Unificação de Setores</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --neon-purple: #bc13fe; --neon-blue: #00d2ff; --neon-green: #39ff14; 
+            --neon-red: #ff3131; --neon-orange: #ff9900; --dark-bg: #0b0e14;
+            --card-bg: rgba(25, 30, 41, 0.8); --glass-border: rgba(188, 19, 254, 0.3);
+        }
+
+        * { box-sizing: border-box; }
+        body { background-color: var(--dark-bg); background-image: radial-gradient(circle at 50% 50%, #1a1f2e 0%, #0b0e14 100%); color: #e0e0e0; font-family: 'Rajdhani', sans-serif; margin: 0; min-height: 100vh; }
+        h1, h2, h3, .font-tech { font-family: 'Orbitron', sans-serif; text-transform: uppercase; letter-spacing: 2px; }
+
+        .navbar { background: rgba(0, 0, 0, 0.8); border-bottom: 1px solid var(--glass-border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .logo { color: var(--neon-blue); font-size: 1.5rem; font-weight: bold; text-shadow: 0 0 10px var(--neon-blue); }
+        .status-panel { display: flex; gap: 15px; font-size: 0.9rem; font-weight: bold;}
+
+        .tab-container { display: flex; gap: 10px; margin: 20px; justify-content: center; flex-wrap: wrap; }
+        .tab-btn { background: transparent; border: 1px solid var(--glass-border); color: #fff; padding: 10px 20px; cursor: pointer; transition: 0.3s; font-weight: 600; border-radius: 4px; }
+        .tab-btn.active { background: var(--neon-purple); box-shadow: 0 0 15px var(--neon-purple); border-color: transparent; }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .view { display: none; animation: slideUp 0.5s ease-out; }
+        .view.active { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .glass-card { background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 15px; padding: 25px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8); margin-bottom: 20px; }
+
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; color: var(--neon-blue); margin-bottom: 8px; font-size: 0.9rem; font-weight: bold;}
+        .tech-input { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid #333; padding: 15px; color: #fff; font-size: 1.2rem; border-radius: 8px; outline: none; transition: 0.3s; font-family: 'Rajdhani'; font-weight: bold; }
+        .tech-input:focus { border-color: var(--neon-purple); box-shadow: 0 0 10px rgba(188, 19, 254, 0.5); }
+
+        .btn-neon { background: transparent; border: 2px solid var(--neon-green); color: var(--neon-green); padding: 12px 30px; font-weight: bold; cursor: pointer; border-radius: 5px; transition: 0.3s; text-transform: uppercase; font-family: 'Orbitron'; }
+        .btn-neon:hover { background: var(--neon-green); color: #000; box-shadow: 0 0 20px var(--neon-green); }
+        .btn-export { border-color: var(--neon-orange); color: var(--neon-orange); width: 100%; margin-bottom: 20px;}
+        .btn-export:hover { background: var(--neon-orange); color: #000; box-shadow: 0 0 20px var(--neon-orange); }
+
+        .feedback-box { padding: 30px; border-radius: 10px; text-align: center; margin-top: 20px; display: none; }
+        .feedback-box.success { display: block; background: rgba(57, 255, 20, 0.1); border: 1px solid var(--neon-green); color: var(--neon-green); box-shadow: 0 0 20px rgba(57, 255, 20, 0.2); }
+        .feedback-box.error { display: block; background: rgba(255, 49, 49, 0.1); border: 1px solid var(--neon-red); color: var(--neon-red); box-shadow: 0 0 20px rgba(255, 49, 49, 0.2); animation: shake 0.4s; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+
+        .upload-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 768px) { .upload-grid { grid-template-columns: 1fr; } }
+        .upload-zone { border: 2px dashed var(--glass-border); padding: 40px 20px; text-align: center; border-radius: 15px; cursor: pointer; transition: 0.3s; height: 100%; }
+        .upload-zone:hover { border-color: var(--neon-blue); background: rgba(0, 210, 255, 0.05); }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th { text-align: left; color: var(--neon-blue); padding: 12px; border-bottom: 2px solid #333; }
+        td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .progress-bar { height: 8px; background: #222; border-radius: 4px; overflow: hidden; margin-top: 5px; }
+        .progress-fill { height: 100%; transition: width 1s; }
+        
+        .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .stat-box { text-align: center; padding: 20px; border-radius: 10px; background: rgba(255,255,255,0.03); }
+        .stat-val { font-size: 2.5rem; font-weight: bold; display: block; margin: 10px 0;}
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo"><i class="fas fa-boxes"></i> NEXUS PICKING v9.0</div>
+        <div class="status-panel">
+            <div id="status-picking" style="color: var(--neon-red);"><i class="fas fa-times-circle"></i> Picking: Offline</div>
+            <div id="status-barcode" style="color: #666;"><i class="fas fa-barcode"></i> EAN: Opcional</div>
+        </div>
+    </nav>
+
+    <div class="tab-container">
+        <button class="tab-btn active" onclick="showTab('import', this)"><i class="fas fa-cloud-upload-alt"></i> Bases</button>
+        <button class="tab-btn" onclick="showTab('consult', this)"><i class="fas fa-search"></i> Busca Rápida</button>
+        <button class="tab-btn" onclick="showTab('audit', this)"><i class="fas fa-qrcode"></i> Auditar</button>
+        <button class="tab-btn" onclick="showTab('dashboard', this)"><i class="fas fa-chart-line"></i> Relatórios</button>
+    </div>
+
+    <div class="container">
+        <div id="view-import" class="view active">
+            <div class="upload-grid">
+                <div class="glass-card">
+                    <h3 class="font-tech" style="color: var(--neon-blue);"><i class="fas fa-map-marker-alt"></i> 1. Estoque Picking</h3>
+                    <div class="upload-zone" onclick="document.getElementById('filePicking').click()">
+                        <i class="fas fa-boxes" style="font-size: 2.5rem; color: var(--neon-blue); margin-bottom: 10px;"></i>
+                        <p>Anexar Estoque CSV/Excel</p>
+                        <input type="file" id="filePicking" hidden accept=".xlsx, .xls, .csv">
+                    </div>
+                    <div id="info-picking" style="margin-top: 15px; color: var(--neon-red); font-weight: bold; text-align: center;">Aguardando Planilha...</div>
+                </div>
+
+                <div class="glass-card">
+                    <h3 class="font-tech" style="color: var(--neon-orange);"><i class="fas fa-barcode"></i> 2. Códigos EAN (Opcional)</h3>
+                    <div class="upload-zone" onclick="document.getElementById('fileBarcodes').click()">
+                        <i class="fas fa-barcode" style="font-size: 2.5rem; color: var(--neon-orange); margin-bottom: 10px;"></i>
+                        <p>Anexar Planilha de EANs</p>
+                        <input type="file" id="fileBarcodes" hidden accept=".xlsx, .xls, .csv">
+                    </div>
+                    <div id="info-barcodes" style="margin-top: 15px; color: #666; font-weight: bold; text-align: center;">Não carregado</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-consult" class="view">
+            <div class="glass-card" style="max-width: 700px; margin: 0 auto; border-color: var(--neon-blue);">
+                <h3 class="font-tech" style="text-align: center; color: var(--neon-blue);">Localizador de Produto</h3>
+                <div class="input-group">
+                    <label>PRODUTO (EAN OU INTERNO)</label>
+                    <input type="text" id="consult-prod" class="tech-input" placeholder="Bipe aqui..." onkeypress="handleEnter(event, 'btn-consult')">
+                </div>
+                <button id="btn-consult" class="btn-neon" style="width: 100%; border-color: var(--neon-blue); color: var(--neon-blue);" onclick="executeConsult()">
+                    Localizar Prateleira
+                </button>
+                <div id="consult-feedback" class="feedback-box"></div>
+            </div>
+        </div>
+
+        <div id="view-audit" class="view">
+            <div class="glass-card" style="max-width: 700px; margin: 0 auto;">
+                <div class="input-group">
+                    <label>NOME DO AUDITOR</label>
+                    <input type="text" id="auditor-name" class="tech-input" placeholder="Digite seu nome..." style="border-color: var(--neon-orange);">
+                </div>
+                <hr style="border: 1px solid rgba(255,255,255,0.1); margin: 30px 0;">
+                
+                <div class="input-group">
+                    <label>1. BIPAR LOCALIZADOR (Endereço)</label>
+                    <input type="text" id="scan-loc" class="tech-input" placeholder="Ex: 111801 ou V43-..." onkeypress="handleEnter(event, 'scan-prod')">
+                </div>
+                <div class="input-group">
+                    <label>2. BIPAR PRODUTO</label>
+                    <input type="text" id="scan-prod" class="tech-input" placeholder="Ex: 122421" onkeypress="handleEnter(event, 'run-audit')">
+                </div>
+
+                <button id="run-audit" class="btn-neon" style="width: 100%; font-size: 1.1rem;" onclick="executeAudit()">Validar</button>
+                <div id="audit-feedback" class="feedback-box"></div>
+            </div>
+        </div>
+
+        <div id="view-dashboard" class="view">
+            <button class="btn-neon btn-export" onclick="exportAuditData()">
+                <i class="fas fa-file-excel"></i> Exportar Dados
+            </button>
+            <div class="dash-grid">
+                <div class="glass-card stat-box" style="border-top: 4px solid var(--neon-red);">
+                    <h3 class="font-tech" style="font-size: 1rem; color: #aaa;">Pior Setor</h3>
+                    <span id="worst-sector" class="stat-val" style="color: var(--neon-red); font-size: 1.8rem;">---</span>
+                </div>
+                <div class="glass-card stat-box" style="border-top: 4px solid var(--neon-blue);">
+                    <h3 class="font-tech" style="font-size: 1rem; color: #aaa;">Endereços Visitados</h3>
+                    <span id="stat-total" class="stat-val" style="color: var(--neon-blue);">0</span>
+                </div>
+                <div class="glass-card stat-box" style="border-top: 4px solid var(--neon-green);">
+                    <h3 class="font-tech" style="font-size: 1rem; color: #aaa;">Acuracidade</h3>
+                    <span id="stat-accuracy" class="stat-val" style="color: var(--neon-green);">0%</span>
+                </div>
+            </div>
+            <div class="dash-grid">
+                <div class="glass-card">
+                    <h3 class="font-tech">Qualidade por Setor</h3>
+                    <table>
+                        <thead><tr><th>Setor</th><th>Erros</th><th>Acurácia</th></tr></thead>
+                        <tbody id="table-sectors"><tr><td colspan="3" style="text-align: center;">Sem dados</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let inventoryDB = {};
+        let productMap = {};
+        let barcodeDB = {};
+        let auditLog = []; 
+        let dashboardStats = { total: 0, correct: 0, wrong: 0, sectors: {}, auditors: {} };
+
+        document.getElementById('filePicking').addEventListener('change', e => handleExcelUpload(e, 'picking'));
+        document.getElementById('fileBarcodes').addEventListener('change', e => handleExcelUpload(e, 'barcodes'));
+
+        function parseManualCSV(text) {
+            const lines = text.split(/\r?\n/);
+            if (lines.length < 1) return [];
+            const delimiter = lines[0].includes(';') ? ';' : ',';
+            const headers = lines[0].split(delimiter).map(h => h.trim().replace(/^"|"$/g, ''));
+            const result = [];
+            for (let i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
+                const regex = new RegExp(`(${delimiter}|\\r?\\n|\\r|^)(?:"([^"]*(?:""[^"]*)*)"|([^"${delimiter}\\r\\n]*))`, 'gi');
+                let cols = []; let matches = null;
+                while (matches = regex.exec(lines[i])) {
+                    if (matches[2]) cols.push(matches[2].replace(/""/g, '"'));
+                    else cols.push(matches[3]);
+                }
+                let obj = {};
+                headers.forEach((h, idx) => { obj[h] = cols[idx] ? cols[idx].trim() : ''; });
+                result.push(obj);
+            }
+            return result;
+        }
+
+        function handleExcelUpload(e, type) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            document.getElementById(type === 'picking' ? 'info-picking' : 'info-barcodes').innerHTML = `<i class="fas fa-spinner fa-spin"></i> Processando...`;
+
+            const reader = new FileReader();
+            if (file.name.toLowerCase().endsWith('.csv')) {
+                reader.onload = function(evt) {
+                    const text = evt.target.result;
+                    if (type === 'picking') processPickingData(parseManualCSV(text));
+                    if (type === 'barcodes') processBarcodeData(parseManualCSV(text));
+                };
+                reader.readAsText(file, 'ISO-8859-1'); 
+            } else {
+                reader.onload = function(evt) {
+                    const data = new Uint8Array(evt.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet, {defval: ""});
+                    if (type === 'picking') processPickingData(jsonData);
+                    if (type === 'barcodes') processBarcodeData(jsonData);
+                };
+                reader.readAsArrayBuffer(file);
+            }
+        }
+
+        function cleanKey(str) {
+            if(!str) return '';
+            return String(str).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/[^A-Z0-9]/g, '');
+        }
+
+        function formatCode(val) {
+            if(!val) return null;
+            let str = String(val).trim();
+            if(str.endsWith('.0')) str = str.replace('.0', '');
+            return str.toUpperCase();
+        }
+
+        // ==============================================================
+        // MOTOR DE UNIFICAÇÃO (Esquece o original, mapeia para o correto)
+        // ==============================================================
+        function unificarSetor(rawSector) {
+            if (!rawSector) return 'Geral';
+            const s = String(rawSector).toUpperCase();
+            
+            // SE FOR HIGIENE OU CUIDADOS, TRANSFORMA IMEDIATAMENTE EM PERFUMARIA
+            if (s.includes('HIGIENE') || s.includes('CUIDADOS ESPECIAIS') || s.includes('CUIDADO ESPECIAL')) return 'Perfumaria';
+            
+            // DEMAIS PADRONIZAÇÕES
+            if (s.includes('PERFUMARIA')) return 'Perfumaria';
+            if (s.includes('DERMO')) return 'Dermo';
+            if (s.includes('CONTROLADO') || s.includes('PSICOTROPICO') || s.includes('C1') || s.includes('B1')) return 'Controlado';
+            if (s.includes('LATA')) return 'Lata';
+            if (s.includes('ALIMENTO') || s.includes('NUTRI')) return 'Alimento';
+            if (s.includes('VOLUMOSO')) return 'Volumoso';
+            if (s.includes('RUA')) return 'Ruas';
+            if (s.includes('MEDICAMENTO') || s.includes('OTC') || s.includes('PRESCRICAO')) return 'Medicamento';
+            
+            return 'Geral';
+        }
+
+        function processPickingData(data) {
+            inventoryDB = {}; productMap = {};
+            let count = 0;
+            
+            data.forEach(row => {
+                let loc = '', codLoc = '', prod = '', desc = '', rawSector = '';
+
+                for (let k in row) {
+                    const ck = cleanKey(k);
+                    if (ck === 'LOCALIZADOR' || ck === 'ENDERECO') loc = row[k];
+                    if (ck.includes('CODIGOLOCALIZADOR') || ck === 'CODLOC') codLoc = row[k];
+                    if (ck === 'PRODUTO') prod = row[k];
+                    if (ck.includes('DESCRICAO')) desc = row[k];
+                    if (ck === 'SECAO' || ck === 'SETOR') rawSector = row[k];
+                }
+
+                if (loc && prod) {
+                    const strLoc = formatCode(loc);
+                    const strCodLoc = formatCode(codLoc);
+                    const strProd = formatCode(prod);
+                    const mappedSector = unificarSetor(rawSector); // Aplica a regra mágica de renomear
+
+                    const item = { loc: strLoc, codLoc: strCodLoc, prod: strProd, desc: desc, sector: mappedSector };
+
+                    inventoryDB[strLoc] = item;
+                    if (strCodLoc) inventoryDB[strCodLoc] = item;
+                    
+                    if (!productMap[strProd]) productMap[strProd] = { desc: desc, locs: [], sector: mappedSector };
+                    productMap[strProd].locs.push(strLoc);
+                    count++;
+                }
+            });
+
+            if (count > 0) {
+                document.getElementById('info-picking').innerHTML = `<i class="fas fa-check"></i> ${count} ativos lidos (Setores Unificados)`;
+                document.getElementById('info-picking').style.color = 'var(--neon-green)';
+                document.getElementById('status-picking').style.color = 'var(--neon-green)';
+                document.getElementById('status-picking').innerHTML = `<i class="fas fa-check-circle"></i> Base Carregada`;
+            } else {
+                document.getElementById('info-picking').innerHTML = 'ERRO: Tabela não tem colunas reconhecidas.';
+            }
+        }
+
+        function processBarcodeData(data) {
+            barcodeDB = {};
+            data.forEach(row => {
+                let barCodeVal = null, prodCodeVal = null;
+                for (let key in row) {
+                    const ck = cleanKey(key);
+                    if (ck.includes('BARRA') || ck.includes('EAN') || ck.includes('GTIN')) barCodeVal = formatCode(row[key]);
+                    if (ck === 'PRODUTO' || ck.includes('INTERNO') || ck.includes('CODIGO')) prodCodeVal = formatCode(row[key]);
+                }
+                if (barCodeVal && prodCodeVal) barcodeDB[barCodeVal] = prodCodeVal;
+            });
+            document.getElementById('info-barcodes').innerHTML = `${Object.keys(barcodeDB).length} EANs carregados.`;
+            document.getElementById('info-barcodes').style.color = 'var(--neon-orange)';
+            document.getElementById('status-barcode').style.color = 'var(--neon-orange)';
+            document.getElementById('status-barcode').innerHTML = `<i class="fas fa-check-circle"></i> EAN OK`;
+        }
+
+        function executeConsult() {
+            if (Object.keys(inventoryDB).length === 0) { alert("Importe a base primeiro!"); return; }
+
+            const rawScan = formatCode(document.getElementById('consult-prod').value);
+            if (!rawScan) return;
+            let internalCode = barcodeDB[rawScan] ? barcodeDB[rawScan] : rawScan;
+            const productData = productMap[internalCode];
+
+            if (productData && productData.locs.length > 0) {
+                showFeedback('consult-feedback', 'success', `<i class="fas fa-map-marker-alt" style="font-size:3rem; margin-bottom:10px;"></i><br><strong>GUARDE EM:</strong><br><strong style="color:var(--neon-green); font-size:1.6rem;">${productData.locs.join(' ou ')}</strong><br><small>${productData.desc}</small><br><br><span style="color:var(--neon-blue); font-size: 0.9rem;">Setor: ${productData.sector}</span>`);
+            } else {
+                showFeedback('consult-feedback', 'error', `<i class="fas fa-times-circle" style="font-size:3rem; margin-bottom:10px;"></i><br><strong>PRODUTO NÃO ENCONTRADO</strong>`);
+            }
+            document.getElementById('consult-prod').value = ''; document.getElementById('consult-prod').focus();
+        }
+
+        function executeAudit() {
+            if (Object.keys(inventoryDB).length === 0) { alert("Importe a base de Picking primeiro!"); return; }
+
+            const auditorInput = document.getElementById('auditor-name').value.trim();
+            const locInput = formatCode(document.getElementById('scan-loc').value);
+            const rawScan = formatCode(document.getElementById('scan-prod').value);
+            
+            if (!auditorInput) { alert("Nome do auditor obrigatório!"); return; }
+            if (!locInput || !rawScan) return;
+
+            const baseItem = inventoryDB[locInput];
+
+            if (!baseItem) {
+                showFeedback('audit-feedback', 'error', `<i class="fas fa-bomb" style="font-size:2.5rem;"></i><br><strong>ENDEREÇO INEXISTENTE</strong><br>O localizador ${locInput} não existe na planilha.`);
+                document.getElementById('scan-loc').value = ''; document.getElementById('scan-loc').focus();
+                return;
+            }
+
+            let productCodeToValidate = barcodeDB[rawScan] ? barcodeDB[rawScan] : rawScan;
+            
+            let isCorrect = (baseItem.prod === productCodeToValidate);
+            if (!isCorrect && !isNaN(baseItem.prod) && !isNaN(productCodeToValidate)) {
+                if (Number(baseItem.prod) === Number(productCodeToValidate)) isCorrect = true;
+            }
+            
+            auditLog.push({
+                'data_auditoria': new Date().toLocaleString('pt-BR'), 'nome_colaborador': auditorInput, 'setor': baseItem.sector,
+                'endereco_id': baseItem.loc, 'produto_esperado': baseItem.prod, 'produto_bipado': productCodeToValidate,
+                'status': isCorrect ? 'correto' : 'problema'
+            });
+
+            dashboardStats.total++;
+            isCorrect ? dashboardStats.correct++ : dashboardStats.wrong++;
+
+            if (!dashboardStats.sectors[baseItem.sector]) dashboardStats.sectors[baseItem.sector] = { total: 0, errors: 0 };
+            dashboardStats.sectors[baseItem.sector].total++;
+            if (!isCorrect) dashboardStats.sectors[baseItem.sector].errors++;
+
+            if (isCorrect) {
+                showFeedback('audit-feedback', 'success', `<i class="fas fa-check-circle" style="font-size:3rem;"></i><br><strong>OK!</strong><br><small>${baseItem.desc}</small>`);
+            } else {
+                const correctLocs = productMap[productCodeToValidate] ? productMap[productCodeToValidate].locs.join(' / ') : "N/D";
+                showFeedback('audit-feedback', 'error', `
+                    <i class="fas fa-exclamation-triangle" style="font-size:3rem;"></i><br><strong>DIVERGÊNCIA!</strong><br>
+                    <div style="font-size: 0.9rem; text-align: left; margin-top: 10px;">
+                        Esperado: <b>${baseItem.prod}</b><br>Bipado: <b style="color:var(--neon-red)">${productCodeToValidate}</b><br>
+                        <span style="color: var(--neon-blue);">Esse produto bipado é do endereço: <b>${correctLocs}</b></span>
+                    </div>
+                `);
+            }
+
+            document.getElementById('scan-loc').value = ''; document.getElementById('scan-prod').value = '';
+            document.getElementById('scan-loc').focus();
+            updateDashboard();
+        }
+
+        function showFeedback(elementId, type, message) {
+            const el = document.getElementById(elementId);
+            el.className = 'feedback-box ' + type; el.innerHTML = message;
+        }
+
+        function updateDashboard() {
+            const acc = dashboardStats.total > 0 ? ((dashboardStats.correct / dashboardStats.total) * 100).toFixed(1) : 0;
+            document.getElementById('stat-accuracy').innerText = acc + '%';
+            document.getElementById('stat-total').innerText = dashboardStats.total;
+
+            let worstSectorName = '---', maxErrors = -1;
+            const tbodySectors = document.getElementById('table-sectors');
+            tbodySectors.innerHTML = '';
+            
+            Object.keys(dashboardStats.sectors).forEach(sector => {
+                const data = dashboardStats.sectors[sector];
+                const sAcc = (( (data.total - data.errors) / data.total) * 100).toFixed(0);
+                if(data.errors > maxErrors) { maxErrors = data.errors; worstSectorName = sector; }
+                tbodySectors.innerHTML += `<tr><td style="font-weight: bold; color: #fff;">${sector}</td><td style="color: ${data.errors > 0 ? 'var(--neon-red)' : '#fff'};">${data.errors}</td><td><div class="progress-bar"><div class="progress-fill" style="width: ${sAcc}%; background: ${sAcc > 90 ? 'var(--neon-green)' : 'var(--neon-red)'};"></div></div><small>${sAcc}%</small></td></tr>`;
+            });
+            if(maxErrors > 0) document.getElementById('worst-sector').innerText = worstSectorName;
+        }
+
+        function exportAuditData() {
+            if (auditLog.length === 0) { alert("Nenhuma auditoria realizada ainda."); return; }
+            const worksheet = XLSX.utils.json_to_sheet(auditLog);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Dados");
+            XLSX.writeFile(workbook, `Relatorio_Picking_${new Date().toISOString().slice(0,10)}.xlsx`);
+        }
+
+        function showTab(tabId, btn) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('view-' + tabId).classList.add('active');
+            btn.classList.add('active');
+            
+            if (tabId === 'audit') {
+                if(!document.getElementById('auditor-name').value) document.getElementById('auditor-name').focus();
+                else document.getElementById('scan-loc').focus();
+            } else if (tabId === 'consult') document.getElementById('consult-prod').focus();
+        }
+
+        function handleEnter(e, nextAction) {
+            if (e.key === 'Enter') {
+                if (nextAction === 'run-audit') executeAudit();
+                else if (nextAction === 'btn-consult') executeConsult();
+                else document.getElementById(nextAction).focus();
+            }
+        }
+    </script>
+</body>
+</html>
