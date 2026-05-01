@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Picking Audit AI - V9 Unificação de Setores</title>
+    <title>Vena144 - Cloud Auditing</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
@@ -14,64 +14,60 @@
             --neon-red: #ff3131; --neon-orange: #ff9900; --dark-bg: #0b0e14;
             --card-bg: rgba(25, 30, 41, 0.8); --glass-border: rgba(188, 19, 254, 0.3);
         }
-
         * { box-sizing: border-box; }
         body { background-color: var(--dark-bg); background-image: radial-gradient(circle at 50% 50%, #1a1f2e 0%, #0b0e14 100%); color: #e0e0e0; font-family: 'Rajdhani', sans-serif; margin: 0; min-height: 100vh; }
         h1, h2, h3, .font-tech { font-family: 'Orbitron', sans-serif; text-transform: uppercase; letter-spacing: 2px; }
-
         .navbar { background: rgba(0, 0, 0, 0.8); border-bottom: 1px solid var(--glass-border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-        .logo { color: var(--neon-blue); font-size: 1.5rem; font-weight: bold; text-shadow: 0 0 10px var(--neon-blue); }
+        .logo { color: var(--neon-blue); font-size: 1.5rem; font-weight: bold; text-shadow: 0 0 10px var(--neon-blue); display: flex; align-items: center; gap: 10px;}
         .status-panel { display: flex; gap: 15px; font-size: 0.9rem; font-weight: bold;}
-
         .tab-container { display: flex; gap: 10px; margin: 20px; justify-content: center; flex-wrap: wrap; }
         .tab-btn { background: transparent; border: 1px solid var(--glass-border); color: #fff; padding: 10px 20px; cursor: pointer; transition: 0.3s; font-weight: 600; border-radius: 4px; }
         .tab-btn.active { background: var(--neon-purple); box-shadow: 0 0 15px var(--neon-purple); border-color: transparent; }
-
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
         .view { display: none; animation: slideUp 0.5s ease-out; }
         .view.active { display: block; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
         .glass-card { background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 15px; padding: 25px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8); margin-bottom: 20px; }
-
         .input-group { margin-bottom: 20px; }
         .input-group label { display: block; color: var(--neon-blue); margin-bottom: 8px; font-size: 0.9rem; font-weight: bold;}
         .tech-input { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid #333; padding: 15px; color: #fff; font-size: 1.2rem; border-radius: 8px; outline: none; transition: 0.3s; font-family: 'Rajdhani'; font-weight: bold; }
         .tech-input:focus { border-color: var(--neon-purple); box-shadow: 0 0 10px rgba(188, 19, 254, 0.5); }
-
         .btn-neon { background: transparent; border: 2px solid var(--neon-green); color: var(--neon-green); padding: 12px 30px; font-weight: bold; cursor: pointer; border-radius: 5px; transition: 0.3s; text-transform: uppercase; font-family: 'Orbitron'; }
         .btn-neon:hover { background: var(--neon-green); color: #000; box-shadow: 0 0 20px var(--neon-green); }
-        .btn-export { border-color: var(--neon-orange); color: var(--neon-orange); width: 100%; margin-bottom: 20px;}
+        .btn-export { border-color: var(--neon-orange); color: var(--neon-orange); width: 100%;}
         .btn-export:hover { background: var(--neon-orange); color: #000; box-shadow: 0 0 20px var(--neon-orange); }
-
         .feedback-box { padding: 30px; border-radius: 10px; text-align: center; margin-top: 20px; display: none; }
         .feedback-box.success { display: block; background: rgba(57, 255, 20, 0.1); border: 1px solid var(--neon-green); color: var(--neon-green); box-shadow: 0 0 20px rgba(57, 255, 20, 0.2); }
         .feedback-box.error { display: block; background: rgba(255, 49, 49, 0.1); border: 1px solid var(--neon-red); color: var(--neon-red); box-shadow: 0 0 20px rgba(255, 49, 49, 0.2); animation: shake 0.4s; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
-
         .upload-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         @media (max-width: 768px) { .upload-grid { grid-template-columns: 1fr; } }
         .upload-zone { border: 2px dashed var(--glass-border); padding: 40px 20px; text-align: center; border-radius: 15px; cursor: pointer; transition: 0.3s; height: 100%; }
         .upload-zone:hover { border-color: var(--neon-blue); background: rgba(0, 210, 255, 0.05); }
-
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th { text-align: left; color: var(--neon-blue); padding: 12px; border-bottom: 2px solid #333; }
         td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .progress-bar { height: 8px; background: #222; border-radius: 4px; overflow: hidden; margin-top: 5px; }
         .progress-fill { height: 100%; transition: width 1s; }
-        
-        .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
         .stat-box { text-align: center; padding: 20px; border-radius: 10px; background: rgba(255,255,255,0.03); }
         .stat-val { font-size: 2.5rem; font-weight: bold; display: block; margin: 10px 0;}
+        .sync-badge { background: var(--neon-purple); color: #fff; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; margin-left: 10px; display: none;}
+        .sync-badge.active { display: inline-block; animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
 
     <nav class="navbar">
-        <div class="logo"><i class="fas fa-boxes"></i> NEXUS PICKING v9.0</div>
+        <div class="logo">
+            <i class="fas fa-plus" style="color: var(--neon-green); text-shadow: 0 0 5px var(--neon-green);"></i>
+            <span>Vena144</span>
+            <span id="sync-status" class="sync-badge"><i class="fas fa-sync fa-spin"></i> Nuvem...</span>
+        </div>
         <div class="status-panel">
             <div id="status-picking" style="color: var(--neon-red);"><i class="fas fa-times-circle"></i> Picking: Offline</div>
-            <div id="status-barcode" style="color: #666;"><i class="fas fa-barcode"></i> EAN: Opcional</div>
+            <div id="status-firebase" style="color: var(--neon-red);"><i class="fas fa-wifi"></i> Nuvem: Conectando...</div>
         </div>
     </nav>
 
@@ -114,9 +110,7 @@
                     <label>PRODUTO (EAN OU INTERNO)</label>
                     <input type="text" id="consult-prod" class="tech-input" placeholder="Bipe aqui..." onkeypress="handleEnter(event, 'btn-consult')">
                 </div>
-                <button id="btn-consult" class="btn-neon" style="width: 100%; border-color: var(--neon-blue); color: var(--neon-blue);" onclick="executeConsult()">
-                    Localizar Prateleira
-                </button>
+                <button id="btn-consult" class="btn-neon" style="width: 100%; border-color: var(--neon-blue); color: var(--neon-blue);" onclick="executeConsult()">Localizar Prateleira</button>
                 <div id="consult-feedback" class="feedback-box"></div>
             </div>
         </div>
@@ -125,28 +119,37 @@
             <div class="glass-card" style="max-width: 700px; margin: 0 auto;">
                 <div class="input-group">
                     <label>NOME DO AUDITOR</label>
-                    <input type="text" id="auditor-name" class="tech-input" placeholder="Digite seu nome..." style="border-color: var(--neon-orange);">
+                    <input type="text" id="auditor-name" class="tech-input" placeholder="Digite o seu nome..." style="border-color: var(--neon-orange);">
                 </div>
                 <hr style="border: 1px solid rgba(255,255,255,0.1); margin: 30px 0;">
-                
                 <div class="input-group">
-                    <label>1. BIPAR LOCALIZADOR (Endereço)</label>
+                    <label>1. BIPAR LOCALIZADOR</label>
                     <input type="text" id="scan-loc" class="tech-input" placeholder="Ex: 111801 ou V43-..." onkeypress="handleEnter(event, 'scan-prod')">
                 </div>
                 <div class="input-group">
                     <label>2. BIPAR PRODUTO</label>
                     <input type="text" id="scan-prod" class="tech-input" placeholder="Ex: 122421" onkeypress="handleEnter(event, 'run-audit')">
                 </div>
-
-                <button id="run-audit" class="btn-neon" style="width: 100%; font-size: 1.1rem;" onclick="executeAudit()">Validar</button>
+                <button id="run-audit" class="btn-neon" style="width: 100%; font-size: 1.1rem;" onclick="executeAudit()">Gravar Auditoria na Nuvem</button>
                 <div id="audit-feedback" class="feedback-box"></div>
             </div>
         </div>
 
         <div id="view-dashboard" class="view">
-            <button class="btn-neon btn-export" onclick="exportAuditData()">
-                <i class="fas fa-file-excel"></i> Exportar Dados
-            </button>
+            
+            <div class="glass-card" style="display: flex; flex-wrap: wrap; gap: 15px; align-items: center; border-color: var(--neon-blue); padding: 15px;">
+                <label style="margin:0; color: var(--neon-blue); font-weight: bold;"><i class="fas fa-calendar-alt"></i> Data do Relatório:</label>
+                <input type="date" id="filter-date" class="tech-input" style="width: auto; padding: 8px; margin: 0;">
+                
+                <button class="btn-neon" style="border-color: var(--neon-blue); color: var(--neon-blue); padding: 8px 15px;" onclick="window.carregarDadosDaNuvem()">
+                    <i class="fas fa-cloud-download-alt"></i> Buscar na Nuvem
+                </button>
+                
+                <button class="btn-neon btn-export" style="margin: 0; width: auto; margin-left: auto; padding: 8px 15px;" onclick="exportAuditData()">
+                    <i class="fas fa-file-excel"></i> Exportar Dados (Excel)
+                </button>
+            </div>
+
             <div class="dash-grid">
                 <div class="glass-card stat-box" style="border-top: 4px solid var(--neon-red);">
                     <h3 class="font-tech" style="font-size: 1rem; color: #aaa;">Pior Setor</h3>
@@ -169,16 +172,58 @@
                         <tbody id="table-sectors"><tr><td colspan="3" style="text-align: center;">Sem dados</td></tr></tbody>
                     </table>
                 </div>
+                <div class="glass-card">
+                    <h3 class="font-tech">Produtividade do Auditor</h3>
+                    <table>
+                        <thead><tr><th>Colaborador</th><th style="text-align: right;">Bips</th></tr></thead>
+                        <tbody id="table-auditors"><tr><td colspan="2" style="text-align: center;">Sem dados</td></tr></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        // SUAS CHAVES EXATAS (Vena144)
+        const firebaseConfig = {
+            apiKey: "AIzaSyC5vCvhA6VjjcbGOZ2LgxvETcPQgnFhQ6U",
+            authDomain: "auditoria-v144.firebaseapp.com",
+            projectId: "auditoria-v144",
+            storageBucket: "auditoria-v144.firebasestorage.app",
+            messagingSenderId: "762761228384",
+            appId: "1:762761228384:web:b92f8a8a716ed4a1389305",
+            measurementId: "G-RV45TC7VPK"
+        };
+
+        try {
+            const app = initializeApp(firebaseConfig);
+            window.db = getFirestore(app);
+            window.dbCollection = collection;
+            window.dbAddDoc = addDoc;
+            window.dbServerTimestamp = serverTimestamp;
+            window.dbGetDocs = getDocs; // Exporta a função de leitura para o sistema
+            
+            document.getElementById('status-firebase').style.color = 'var(--neon-green)';
+            document.getElementById('status-firebase').innerHTML = `<i class="fas fa-wifi"></i> Nuvem: Conectada`;
+        } catch(e) {
+            console.error("Erro ao conectar no Firebase: ", e);
+            document.getElementById('status-firebase').style.color = 'var(--neon-red)';
+            document.getElementById('status-firebase').innerHTML = `<i class="fas fa-times"></i> Erro de Nuvem`;
+        }
+    </script>
+
     <script>
-        let inventoryDB = {};
-        let productMap = {};
-        let barcodeDB = {};
-        let auditLog = []; 
+        let inventoryDB = {}; let productMap = {}; let barcodeDB = {}; let auditLog = []; 
         let dashboardStats = { total: 0, correct: 0, wrong: 0, sectors: {}, auditors: {} };
+
+        // Coloca a data de hoje no calendário automaticamente
+        document.addEventListener("DOMContentLoaded", () => {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('filter-date').value = today;
+        });
 
         document.getElementById('filePicking').addEventListener('change', e => handleExcelUpload(e, 'picking'));
         document.getElementById('fileBarcodes').addEventListener('change', e => handleExcelUpload(e, 'barcodes'));
@@ -197,8 +242,7 @@
                     if (matches[2]) cols.push(matches[2].replace(/""/g, '"'));
                     else cols.push(matches[3]);
                 }
-                let obj = {};
-                headers.forEach((h, idx) => { obj[h] = cols[idx] ? cols[idx].trim() : ''; });
+                let obj = {}; headers.forEach((h, idx) => { obj[h] = cols[idx] ? cols[idx].trim() : ''; });
                 result.push(obj);
             }
             return result;
@@ -207,9 +251,7 @@
         function handleExcelUpload(e, type) {
             const file = e.target.files[0];
             if (!file) return;
-
             document.getElementById(type === 'picking' ? 'info-picking' : 'info-barcodes').innerHTML = `<i class="fas fa-spinner fa-spin"></i> Processando...`;
-
             const reader = new FileReader();
             if (file.name.toLowerCase().endsWith('.csv')) {
                 reader.onload = function(evt) {
@@ -231,30 +273,13 @@
             }
         }
 
-        function cleanKey(str) {
-            if(!str) return '';
-            return String(str).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/[^A-Z0-9]/g, '');
-        }
+        function cleanKey(str) { return !str ? '' : String(str).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/[^A-Z0-9]/g, ''); }
+        function formatCode(val) { if(!val) return null; let str = String(val).trim(); if(str.endsWith('.0')) str = str.replace('.0', ''); return str.toUpperCase(); }
 
-        function formatCode(val) {
-            if(!val) return null;
-            let str = String(val).trim();
-            if(str.endsWith('.0')) str = str.replace('.0', '');
-            return str.toUpperCase();
-        }
-
-        // ==============================================================
-        // MOTOR DE UNIFICAÇÃO (Esquece o original, mapeia para o correto)
-        // ==============================================================
         function unificarSetor(rawSector) {
             if (!rawSector) return 'Geral';
             const s = String(rawSector).toUpperCase();
-            
-            // SE FOR HIGIENE OU CUIDADOS, TRANSFORMA IMEDIATAMENTE EM PERFUMARIA
-            if (s.includes('HIGIENE') || s.includes('CUIDADOS ESPECIAIS') || s.includes('CUIDADO ESPECIAL')) return 'Perfumaria';
-            
-            // DEMAIS PADRONIZAÇÕES
-            if (s.includes('PERFUMARIA')) return 'Perfumaria';
+            if (s.includes('HIGIENE') || s.includes('CUIDADOS ESPECIAIS') || s.includes('CUIDADO ESPECIAL') || s.includes('PERFUMARIA')) return 'Perfumaria';
             if (s.includes('DERMO')) return 'Dermo';
             if (s.includes('CONTROLADO') || s.includes('PSICOTROPICO') || s.includes('C1') || s.includes('B1')) return 'Controlado';
             if (s.includes('LATA')) return 'Lata';
@@ -262,17 +287,13 @@
             if (s.includes('VOLUMOSO')) return 'Volumoso';
             if (s.includes('RUA')) return 'Ruas';
             if (s.includes('MEDICAMENTO') || s.includes('OTC') || s.includes('PRESCRICAO')) return 'Medicamento';
-            
             return 'Geral';
         }
 
         function processPickingData(data) {
-            inventoryDB = {}; productMap = {};
-            let count = 0;
-            
+            inventoryDB = {}; productMap = {}; let count = 0;
             data.forEach(row => {
                 let loc = '', codLoc = '', prod = '', desc = '', rawSector = '';
-
                 for (let k in row) {
                     const ck = cleanKey(k);
                     if (ck === 'LOCALIZADOR' || ck === 'ENDERECO') loc = row[k];
@@ -281,31 +302,21 @@
                     if (ck.includes('DESCRICAO')) desc = row[k];
                     if (ck === 'SECAO' || ck === 'SETOR') rawSector = row[k];
                 }
-
                 if (loc && prod) {
-                    const strLoc = formatCode(loc);
-                    const strCodLoc = formatCode(codLoc);
-                    const strProd = formatCode(prod);
-                    const mappedSector = unificarSetor(rawSector); // Aplica a regra mágica de renomear
-
+                    const strLoc = formatCode(loc), strCodLoc = formatCode(codLoc), strProd = formatCode(prod);
+                    const mappedSector = unificarSetor(rawSector);
                     const item = { loc: strLoc, codLoc: strCodLoc, prod: strProd, desc: desc, sector: mappedSector };
-
-                    inventoryDB[strLoc] = item;
-                    if (strCodLoc) inventoryDB[strCodLoc] = item;
-                    
+                    inventoryDB[strLoc] = item; if (strCodLoc) inventoryDB[strCodLoc] = item;
                     if (!productMap[strProd]) productMap[strProd] = { desc: desc, locs: [], sector: mappedSector };
                     productMap[strProd].locs.push(strLoc);
                     count++;
                 }
             });
-
             if (count > 0) {
-                document.getElementById('info-picking').innerHTML = `<i class="fas fa-check"></i> ${count} ativos lidos (Setores Unificados)`;
+                document.getElementById('info-picking').innerHTML = `<i class="fas fa-check"></i> ${count} ativos carregados`;
                 document.getElementById('info-picking').style.color = 'var(--neon-green)';
                 document.getElementById('status-picking').style.color = 'var(--neon-green)';
-                document.getElementById('status-picking').innerHTML = `<i class="fas fa-check-circle"></i> Base Carregada`;
-            } else {
-                document.getElementById('info-picking').innerHTML = 'ERRO: Tabela não tem colunas reconhecidas.';
+                document.getElementById('status-picking').innerHTML = `<i class="fas fa-check-circle"></i> Base OK`;
             }
         }
 
@@ -322,29 +333,25 @@
             });
             document.getElementById('info-barcodes').innerHTML = `${Object.keys(barcodeDB).length} EANs carregados.`;
             document.getElementById('info-barcodes').style.color = 'var(--neon-orange)';
-            document.getElementById('status-barcode').style.color = 'var(--neon-orange)';
-            document.getElementById('status-barcode').innerHTML = `<i class="fas fa-check-circle"></i> EAN OK`;
         }
 
         function executeConsult() {
             if (Object.keys(inventoryDB).length === 0) { alert("Importe a base primeiro!"); return; }
-
             const rawScan = formatCode(document.getElementById('consult-prod').value);
             if (!rawScan) return;
             let internalCode = barcodeDB[rawScan] ? barcodeDB[rawScan] : rawScan;
             const productData = productMap[internalCode];
 
             if (productData && productData.locs.length > 0) {
-                showFeedback('consult-feedback', 'success', `<i class="fas fa-map-marker-alt" style="font-size:3rem; margin-bottom:10px;"></i><br><strong>GUARDE EM:</strong><br><strong style="color:var(--neon-green); font-size:1.6rem;">${productData.locs.join(' ou ')}</strong><br><small>${productData.desc}</small><br><br><span style="color:var(--neon-blue); font-size: 0.9rem;">Setor: ${productData.sector}</span>`);
+                showFeedback('consult-feedback', 'success', `<i class="fas fa-map-marker-alt" style="font-size:3rem; margin-bottom:10px;"></i><br><strong>GUARDE EM:</strong><br><strong style="color:var(--neon-green); font-size:1.6rem;">${productData.locs.join(' ou ')}</strong><br><small>${productData.desc}</small>`);
             } else {
-                showFeedback('consult-feedback', 'error', `<i class="fas fa-times-circle" style="font-size:3rem; margin-bottom:10px;"></i><br><strong>PRODUTO NÃO ENCONTRADO</strong>`);
+                showFeedback('consult-feedback', 'error', `<i class="fas fa-times-circle" style="font-size:3rem; margin-bottom:10px;"></i><br><strong>NÃO ENCONTRADO</strong>`);
             }
             document.getElementById('consult-prod').value = ''; document.getElementById('consult-prod').focus();
         }
 
-        function executeAudit() {
+        async function executeAudit() {
             if (Object.keys(inventoryDB).length === 0) { alert("Importe a base de Picking primeiro!"); return; }
-
             const auditorInput = document.getElementById('auditor-name').value.trim();
             const locInput = formatCode(document.getElementById('scan-loc').value);
             const rawScan = formatCode(document.getElementById('scan-prod').value);
@@ -353,49 +360,129 @@
             if (!locInput || !rawScan) return;
 
             const baseItem = inventoryDB[locInput];
-
             if (!baseItem) {
-                showFeedback('audit-feedback', 'error', `<i class="fas fa-bomb" style="font-size:2.5rem;"></i><br><strong>ENDEREÇO INEXISTENTE</strong><br>O localizador ${locInput} não existe na planilha.`);
+                showFeedback('audit-feedback', 'error', `<i class="fas fa-bomb" style="font-size:2.5rem;"></i><br><strong>ENDEREÇO INEXISTENTE</strong><br>O localizador ${locInput} não existe.`);
                 document.getElementById('scan-loc').value = ''; document.getElementById('scan-loc').focus();
                 return;
             }
 
             let productCodeToValidate = barcodeDB[rawScan] ? barcodeDB[rawScan] : rawScan;
-            
             let isCorrect = (baseItem.prod === productCodeToValidate);
             if (!isCorrect && !isNaN(baseItem.prod) && !isNaN(productCodeToValidate)) {
                 if (Number(baseItem.prod) === Number(productCodeToValidate)) isCorrect = true;
             }
             
-            auditLog.push({
-                'data_auditoria': new Date().toLocaleString('pt-BR'), 'nome_colaborador': auditorInput, 'setor': baseItem.sector,
-                'endereco_id': baseItem.loc, 'produto_esperado': baseItem.prod, 'produto_bipado': productCodeToValidate,
-                'status': isCorrect ? 'correto' : 'problema'
-            });
+            const registroAuditoria = {
+                data_auditoria: new Date().toLocaleString('pt-BR'),
+                nome_colaborador: auditorInput,
+                setor: baseItem.sector,
+                endereco_id: baseItem.loc,
+                produto_esperado: baseItem.prod,
+                produto_bipado: productCodeToValidate,
+                status: isCorrect ? 'correto' : 'problema'
+            };
+
+            auditLog.push(registroAuditoria);
+
+            if (window.db && window.dbCollection && window.dbAddDoc && window.dbServerTimestamp) {
+                const syncBadge = document.getElementById('sync-status');
+                syncBadge.classList.add('active'); 
+                try {
+                    registroAuditoria.timestamp = window.dbServerTimestamp(); 
+                    await window.dbAddDoc(window.dbCollection(window.db, "auditorias"), registroAuditoria);
+                } catch (error) {
+                    console.error("Erro Firebase:", error);
+                } finally {
+                    syncBadge.classList.remove('active');
+                }
+            }
 
             dashboardStats.total++;
             isCorrect ? dashboardStats.correct++ : dashboardStats.wrong++;
-
             if (!dashboardStats.sectors[baseItem.sector]) dashboardStats.sectors[baseItem.sector] = { total: 0, errors: 0 };
             dashboardStats.sectors[baseItem.sector].total++;
             if (!isCorrect) dashboardStats.sectors[baseItem.sector].errors++;
+
+            if (!dashboardStats.auditors[auditorInput]) dashboardStats.auditors[auditorInput] = 0;
+            dashboardStats.auditors[auditorInput]++;
 
             if (isCorrect) {
                 showFeedback('audit-feedback', 'success', `<i class="fas fa-check-circle" style="font-size:3rem;"></i><br><strong>OK!</strong><br><small>${baseItem.desc}</small>`);
             } else {
                 const correctLocs = productMap[productCodeToValidate] ? productMap[productCodeToValidate].locs.join(' / ') : "N/D";
-                showFeedback('audit-feedback', 'error', `
-                    <i class="fas fa-exclamation-triangle" style="font-size:3rem;"></i><br><strong>DIVERGÊNCIA!</strong><br>
-                    <div style="font-size: 0.9rem; text-align: left; margin-top: 10px;">
-                        Esperado: <b>${baseItem.prod}</b><br>Bipado: <b style="color:var(--neon-red)">${productCodeToValidate}</b><br>
-                        <span style="color: var(--neon-blue);">Esse produto bipado é do endereço: <b>${correctLocs}</b></span>
-                    </div>
-                `);
+                showFeedback('audit-feedback', 'error', `<i class="fas fa-exclamation-triangle" style="font-size:3rem;"></i><br><strong>DIVERGÊNCIA!</strong><br><div style="font-size: 0.9rem; text-align: left; margin-top: 10px;">Esperado: <b>${baseItem.prod}</b><br>Bipado: <b style="color:var(--neon-red)">${productCodeToValidate}</b><br><span style="color: var(--neon-blue);">Esse produto bipado é do endereço: <b>${correctLocs}</b></span></div>`);
             }
 
             document.getElementById('scan-loc').value = ''; document.getElementById('scan-prod').value = '';
             document.getElementById('scan-loc').focus();
             updateDashboard();
+        }
+
+        // ==============================================================
+        // FUNÇÃO DE PUXAR OS DADOS DA NUVEM FILTRADOS POR DATA
+        // ==============================================================
+        window.carregarDadosDaNuvem = async function() {
+            if (!window.db) { alert("Nuvem desconectada. Verifique a internet."); return; }
+            
+            const btn = document.querySelector('button[onclick="window.carregarDadosDaNuvem()"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Buscando...`;
+            
+            try {
+                const dateInput = document.getElementById('filter-date').value; // Formato YYYY-MM-DD
+                if(!dateInput) { alert("Selecione uma data no calendário primeiro!"); return; }
+                
+                // Converte de YYYY-MM-DD para DD/MM/YYYY
+                const [ano, mes, dia] = dateInput.split('-');
+                const dataAlvo = `${dia}/${mes}/${ano}`; 
+                
+                // Puxa toda a coleção do firebase
+                const querySnapshot = await window.dbGetDocs(window.dbCollection(window.db, "auditorias"));
+                
+                // Limpa a memória atual do sistema
+                auditLog = [];
+                dashboardStats = { total: 0, correct: 0, wrong: 0, sectors: {}, auditors: {} };
+                
+                let encontrados = 0;
+
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    
+                    // Se a data de auditoria deste documento começar com a data alvo (ex: 30/04/2026), carrega pro sistema
+                    if (data.data_auditoria && data.data_auditoria.includes(dataAlvo)) {
+                        auditLog.push(data);
+                        encontrados++;
+                        
+                        dashboardStats.total++;
+                        const isCorrect = (data.status === 'correto');
+                        isCorrect ? dashboardStats.correct++ : dashboardStats.wrong++;
+                        
+                        const setor = data.setor || 'Geral';
+                        const auditor = data.nome_colaborador || 'Desconhecido';
+                        
+                        if (!dashboardStats.sectors[setor]) dashboardStats.sectors[setor] = { total: 0, errors: 0 };
+                        dashboardStats.sectors[setor].total++;
+                        if (!isCorrect) dashboardStats.sectors[setor].errors++;
+                        
+                        if (!dashboardStats.auditors[auditor]) dashboardStats.auditors[auditor] = 0;
+                        dashboardStats.auditors[auditor]++;
+                    }
+                });
+                
+                updateDashboard();
+                
+                if(encontrados === 0) {
+                    alert(`Nenhuma auditoria encontrada na nuvem para a data: ${dataAlvo}`);
+                } else {
+                    alert(`${encontrados} auditorias carregadas com sucesso!`);
+                }
+                
+            } catch(e) {
+                console.error(e);
+                alert("Erro ao buscar dados da nuvem.");
+            } finally {
+                btn.innerHTML = originalText;
+            }
         }
 
         function showFeedback(elementId, type, message) {
@@ -407,11 +494,10 @@
             const acc = dashboardStats.total > 0 ? ((dashboardStats.correct / dashboardStats.total) * 100).toFixed(1) : 0;
             document.getElementById('stat-accuracy').innerText = acc + '%';
             document.getElementById('stat-total').innerText = dashboardStats.total;
-
             let worstSectorName = '---', maxErrors = -1;
+            
             const tbodySectors = document.getElementById('table-sectors');
             tbodySectors.innerHTML = '';
-            
             Object.keys(dashboardStats.sectors).forEach(sector => {
                 const data = dashboardStats.sectors[sector];
                 const sAcc = (( (data.total - data.errors) / data.total) * 100).toFixed(0);
@@ -419,14 +505,23 @@
                 tbodySectors.innerHTML += `<tr><td style="font-weight: bold; color: #fff;">${sector}</td><td style="color: ${data.errors > 0 ? 'var(--neon-red)' : '#fff'};">${data.errors}</td><td><div class="progress-bar"><div class="progress-fill" style="width: ${sAcc}%; background: ${sAcc > 90 ? 'var(--neon-green)' : 'var(--neon-red)'};"></div></div><small>${sAcc}%</small></td></tr>`;
             });
             if(maxErrors > 0) document.getElementById('worst-sector').innerText = worstSectorName;
+            else document.getElementById('worst-sector').innerText = "---";
+
+            const tbodyAuditors = document.getElementById('table-auditors');
+            tbodyAuditors.innerHTML = '';
+            Object.keys(dashboardStats.auditors).sort((a,b) => dashboardStats.auditors[b] - dashboardStats.auditors[a]).forEach(auditor => {
+                tbodyAuditors.innerHTML += `<tr><td><i class="fas fa-user-check"></i> ${auditor}</td><td style="text-align:right; font-weight:bold; color:var(--neon-blue);">${dashboardStats.auditors[auditor]}</td></tr>`;
+            });
+            if(Object.keys(dashboardStats.auditors).length === 0) tbodyAuditors.innerHTML = `<tr><td colspan="2" style="text-align: center;">Sem dados</td></tr>`;
         }
 
         function exportAuditData() {
-            if (auditLog.length === 0) { alert("Nenhuma auditoria realizada ainda."); return; }
-            const worksheet = XLSX.utils.json_to_sheet(auditLog);
+            if (auditLog.length === 0) { alert("Nenhuma auditoria carregada na tabela. Faça uma busca na nuvem primeiro."); return; }
+            const exportData = auditLog.map(({timestamp, ...rest}) => rest);
+            const worksheet = XLSX.utils.json_to_sheet(exportData);
             const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Dados");
-            XLSX.writeFile(workbook, `Relatorio_Picking_${new Date().toISOString().slice(0,10)}.xlsx`);
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Dados_Auditoria");
+            XLSX.writeFile(workbook, `Relatorio_Picking_${document.getElementById('filter-date').value}.xlsx`);
         }
 
         function showTab(tabId, btn) {
@@ -434,7 +529,6 @@
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('view-' + tabId).classList.add('active');
             btn.classList.add('active');
-            
             if (tabId === 'audit') {
                 if(!document.getElementById('auditor-name').value) document.getElementById('auditor-name').focus();
                 else document.getElementById('scan-loc').focus();
