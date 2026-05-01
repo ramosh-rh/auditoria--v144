@@ -56,8 +56,8 @@
         .sync-badge.active { display: inline-block; animation: pulse 1s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
-        /* Estilos do Modal da Câmera */
-        .scanner-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 1000; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        /* Estilos do Modal da Câmera e Login */
+        .scanner-overlay, .login-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.98); z-index: 1000; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
         #reader { width: 100%; max-width: 400px; border: 2px solid var(--neon-green); border-radius: 10px; overflow: hidden; background: #000; }
         .cam-btn { background: transparent; border: 2px solid var(--neon-blue); color: var(--neon-blue); border-radius: 8px; padding: 0 20px; cursor: pointer; transition: 0.3s; }
         .cam-btn:hover { background: var(--neon-blue); color: #000; box-shadow: 0 0 15px var(--neon-blue); }
@@ -65,6 +65,19 @@
     </style>
 </head>
 <body>
+
+    <div id="login-modal" class="login-overlay" style="display: flex; z-index: 9999;">
+        <div class="glass-card" style="text-align: center; max-width: 400px; width: 90%;">
+            <i class="fas fa-plus" style="font-size: 4rem; color: var(--neon-green); text-shadow: 0 0 15px var(--neon-green); margin-bottom: 20px;"></i>
+            <h2 class="font-tech" style="color: #fff; margin-bottom: 5px;">VENA144</h2>
+            <p style="color: #888; margin-bottom: 25px;">Sistema de Auditoria Cloud</p>
+            
+            <input type="password" id="sys-password" class="tech-input" placeholder="Digite a senha..." style="margin-bottom: 20px; text-align: center;" onkeypress="if(event.key === 'Enter') checkPassword()">
+            
+            <button class="btn-neon" style="width: 100%;" onclick="checkPassword()"><i class="fas fa-unlock"></i> ACESSAR SISTEMA</button>
+            <div id="login-error" style="color: var(--neon-red); margin-top: 15px; font-weight: bold; display: none;"><i class="fas fa-exclamation-triangle"></i> Senha Incorreta!</div>
+        </div>
+    </div>
 
     <nav class="navbar">
         <div class="logo">
@@ -101,7 +114,7 @@
                         <p>Anexar Estoque CSV/Excel</p>
                         <input type="file" id="filePicking" hidden accept=".xlsx, .xls, .csv">
                     </div>
-                    <div id="info-picking" style="margin-top: 15px; color: var(--neon-red); font-weight: bold; text-align: center;">Aguardando Planilha...</div>
+                    <div id="info-picking" style="margin-top: 15px; color: var(--neon-red); font-weight: bold; text-align: center;">Nenhuma Base na Memória</div>
                 </div>
 
                 <div class="glass-card">
@@ -114,6 +127,10 @@
                     <div id="info-barcodes" style="margin-top: 15px; color: #666; font-weight: bold; text-align: center;">Não carregado</div>
                 </div>
             </div>
+            
+            <button class="btn-neon" style="border-color: var(--neon-red); color: var(--neon-red); width: 100%; margin-top: 15px;" onclick="limparMemoriaLocal()">
+                <i class="fas fa-trash-alt"></i> Apagar Bases da Memória do Celular
+            </button>
         </div>
 
         <div id="view-consult" class="view">
@@ -233,65 +250,113 @@
     </script>
 
     <script>
-        let inventoryDB = {}; let productMap = {}; let barcodeDB = {}; let auditLog = []; 
-        let dashboardStats = { total: 0, correct: 0, wrong: 0, sectors: {}, auditors: {} };
-        
-        // Variaveis da Camera
-        let html5QrCode;
-        let currentInputId = '';
+        // ==========================================
+        // SISTEMA DE SEGURANÇA (SENHA)
+        // ==========================================
+        const SENHA_SISTEMA = "vena144"; // <-- VOCÊ PODE ALTERAR A SENHA AQUI SE QUISER
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('filter-date').value = today;
-        });
+        function checkAuth() {
+            if (localStorage.getItem('vena_auth') === 'liberado') {
+                document.getElementById('login-modal').style.display = 'none';
+            }
+        }
 
-        document.getElementById('filePicking').addEventListener('change', e => handleExcelUpload(e, 'picking'));
-        document.getElementById('fileBarcodes').addEventListener('change', e => handleExcelUpload(e, 'barcodes'));
+        function checkPassword() {
+            const pwd = document.getElementById('sys-password').value;
+            if (pwd === SENHA_SISTEMA) {
+                localStorage.setItem('vena_auth', 'liberado'); // Salva que está logado
+                document.getElementById('login-modal').style.display = 'none';
+            } else {
+                document.getElementById('login-error').style.display = 'block';
+                document.getElementById('sys-password').value = '';
+            }
+        }
 
         // ==========================================
-        // SISTEMA DA CÂMERA DE CÓDIGO DE BARRAS
+        // VARIÁVEIS GERAIS
+        // ==========================================
+        let inventoryDB = {}; let productMap = {}; let barcodeDB = {}; let auditLog = []; 
+        let dashboardStats = { total: 0, correct: 0, wrong: 0, sectors: {}, auditors: {} };
+        let html5QrCode; let currentInputId = '';
+
+        // INICIALIZAÇÃO
+        document.addEventListener("DOMContentLoaded", () => {
+            checkAuth(); // Verifica a senha
+            
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('filter-date').value = today;
+
+            // Carrega os dados que ficaram salvos na memória do navegador
+            carregarBasesDaMemoriaLocal();
+        });
+
+        // ==========================================
+        // SISTEMA DE MEMÓRIA PERSISTENTE
+        // ==========================================
+        function salvarMemoriaLocal(chave, dados) {
+            try {
+                localStorage.setItem(chave, JSON.stringify(dados));
+            } catch (e) {
+                console.warn("Base muito grande para o cache do celular. Será mantida apenas enquanto a aba estiver aberta.");
+            }
+        }
+
+        function carregarBasesDaMemoriaLocal() {
+            const pickingSalvo = localStorage.getItem('vena_base_picking');
+            const eanSalvo = localStorage.getItem('vena_base_ean');
+            
+            if (pickingSalvo) {
+                try {
+                    processPickingData(JSON.parse(pickingSalvo), false);
+                } catch(e) {}
+            }
+            if (eanSalvo) {
+                try {
+                    processBarcodeData(JSON.parse(eanSalvo), false);
+                } catch(e) {}
+            }
+        }
+
+        function limparMemoriaLocal() {
+            if(confirm("Tem certeza que deseja apagar as planilhas da memória do celular? Você precisará importar de novo.")) {
+                localStorage.removeItem('vena_base_picking');
+                localStorage.removeItem('vena_base_ean');
+                alert("Memória limpa! O sistema será recarregado.");
+                location.reload();
+            }
+        }
+
+        // ==========================================
+        // CÂMERA DE CÓDIGO DE BARRAS
         // ==========================================
         function openScanner(inputId) {
             currentInputId = inputId;
             document.getElementById('scanner-modal').style.display = 'flex';
-            
             html5QrCode = new Html5Qrcode("reader");
-            const config = { fps: 10, qrbox: { width: 250, height: 100 } }; // Formato retangular para EAN
-
+            const config = { fps: 10, qrbox: { width: 250, height: 100 } };
             html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess)
-            .catch(err => {
-                alert("Erro ao abrir a câmera. Verifique as permissões do navegador ou se está acessando via HTTPS.");
-                closeScanner();
-            });
+            .catch(err => { alert("Erro na câmera. Aceite as permissões ou use HTTPS."); closeScanner(); });
         }
 
-        function onScanSuccess(decodedText, decodedResult) {
-            // Toca um beep sonoro (se o navegador permitir)
-            let audio = new Audio('https://www.soundjay.com/button/beep-07.wav');
-            audio.play().catch(e => {});
-
-            // Preenche o campo
+        function onScanSuccess(decodedText) {
+            let audio = new Audio('https://www.soundjay.com/button/beep-07.wav'); audio.play().catch(e => {});
             document.getElementById(currentInputId).value = decodedText;
             closeScanner();
-
-            // Pula para a próxima ação de forma inteligente
-            if(currentInputId === 'consult-prod') {
-                executeConsult();
-            } else if(currentInputId === 'scan-loc') {
-                document.getElementById('scan-prod').focus();
-            } else if(currentInputId === 'scan-prod') {
-                executeAudit();
-            }
+            if(currentInputId === 'consult-prod') executeConsult();
+            else if(currentInputId === 'scan-loc') document.getElementById('scan-prod').focus();
+            else if(currentInputId === 'scan-prod') executeAudit();
         }
 
         function closeScanner() {
             document.getElementById('scanner-modal').style.display = 'none';
-            if (html5QrCode) {
-                html5QrCode.stop().then(() => { html5QrCode.clear(); }).catch(err => { console.log(err); });
-            }
+            if (html5QrCode) html5QrCode.stop().then(() => html5QrCode.clear()).catch(e => {});
         }
-        // ==========================================
 
+        // ==========================================
+        // PROCESSAMENTO DE ARQUIVOS EXCEL/CSV
+        // ==========================================
+        document.getElementById('filePicking').addEventListener('change', e => handleExcelUpload(e, 'picking'));
+        document.getElementById('fileBarcodes').addEventListener('change', e => handleExcelUpload(e, 'barcodes'));
 
         function parseManualCSV(text) {
             const lines = text.split(/\r?\n/);
@@ -320,9 +385,9 @@
             const reader = new FileReader();
             if (file.name.toLowerCase().endsWith('.csv')) {
                 reader.onload = function(evt) {
-                    const text = evt.target.result;
-                    if (type === 'picking') processPickingData(parseManualCSV(text));
-                    if (type === 'barcodes') processBarcodeData(parseManualCSV(text));
+                    const jsonData = parseManualCSV(evt.target.result);
+                    if (type === 'picking') processPickingData(jsonData, true);
+                    if (type === 'barcodes') processBarcodeData(jsonData, true);
                 };
                 reader.readAsText(file, 'ISO-8859-1'); 
             } else {
@@ -331,8 +396,8 @@
                     const workbook = XLSX.read(data, { type: 'array' });
                     const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
                     const jsonData = XLSX.utils.sheet_to_json(firstSheet, {defval: ""});
-                    if (type === 'picking') processPickingData(jsonData);
-                    if (type === 'barcodes') processBarcodeData(jsonData);
+                    if (type === 'picking') processPickingData(jsonData, true);
+                    if (type === 'barcodes') processBarcodeData(jsonData, true);
                 };
                 reader.readAsArrayBuffer(file);
             }
@@ -355,7 +420,7 @@
             return 'Geral';
         }
 
-        function processPickingData(data) {
+        function processPickingData(data, salvarMemoria = true) {
             inventoryDB = {}; productMap = {}; let count = 0;
             data.forEach(row => {
                 let loc = '', codLoc = '', prod = '', desc = '', rawSector = '';
@@ -378,14 +443,15 @@
                 }
             });
             if (count > 0) {
-                document.getElementById('info-picking').innerHTML = `<i class="fas fa-check"></i> ${count} ativos carregados`;
+                document.getElementById('info-picking').innerHTML = `<i class="fas fa-check"></i> ${count} ativos carregados da Memória`;
                 document.getElementById('info-picking').style.color = 'var(--neon-green)';
                 document.getElementById('status-picking').style.color = 'var(--neon-green)';
-                document.getElementById('status-picking').innerHTML = `<i class="fas fa-check-circle"></i> Base OK`;
+                document.getElementById('status-picking').innerHTML = `<i class="fas fa-check-circle"></i> Base Pronta`;
+                if(salvarMemoria) salvarMemoriaLocal('vena_base_picking', data);
             }
         }
 
-        function processBarcodeData(data) {
+        function processBarcodeData(data, salvarMemoria = true) {
             barcodeDB = {};
             data.forEach(row => {
                 let barCodeVal = null, prodCodeVal = null;
@@ -398,10 +464,11 @@
             });
             document.getElementById('info-barcodes').innerHTML = `${Object.keys(barcodeDB).length} EANs carregados.`;
             document.getElementById('info-barcodes').style.color = 'var(--neon-orange)';
+            if(salvarMemoria) salvarMemoriaLocal('vena_base_ean', data);
         }
 
         function executeConsult() {
-            if (Object.keys(inventoryDB).length === 0) { alert("Importe a base primeiro!"); return; }
+            if (Object.keys(inventoryDB).length === 0) { alert("Importe a base de Picking na aba 'Bases' primeiro!"); return; }
             const rawScan = formatCode(document.getElementById('consult-prod').value);
             if (!rawScan) return;
             let internalCode = barcodeDB[rawScan] ? barcodeDB[rawScan] : rawScan;
@@ -416,7 +483,7 @@
         }
 
         async function executeAudit() {
-            if (Object.keys(inventoryDB).length === 0) { alert("Importe a base de Picking primeiro!"); return; }
+            if (Object.keys(inventoryDB).length === 0) { alert("O sistema está vazio. Importe a base de Picking na aba 'Bases' primeiro!"); return; }
             const auditorInput = document.getElementById('auditor-name').value.trim();
             const locInput = formatCode(document.getElementById('scan-loc').value);
             const rawScan = formatCode(document.getElementById('scan-prod').value);
@@ -475,7 +542,7 @@
                 showFeedback('audit-feedback', 'success', `<i class="fas fa-check-circle" style="font-size:3rem;"></i><br><strong>OK!</strong><br><small>${baseItem.desc}</small>`);
             } else {
                 const correctLocs = productMap[productCodeToValidate] ? productMap[productCodeToValidate].locs.join(' / ') : "N/D";
-                showFeedback('audit-feedback', 'error', `<i class="fas fa-exclamation-triangle" style="font-size:3rem;"></i><br><strong>DIVERGÊNCIA!</strong><br><div style="font-size: 0.9rem; text-align: left; margin-top: 10px;">Esperado: <b>${baseItem.prod}</b><br>Bipado: <b style="color:var(--neon-red)">${productCodeToValidate}</b><br><span style="color: var(--neon-blue);">Esse produto bipado é do endereço: <b>${correctLocs}</b></span></div>`);
+                showFeedback('audit-feedback', 'error', `<i class="fas fa-exclamation-triangle" style="font-size:3rem;"></i><br><strong>DIVERGÊNCIA!</strong><br><div style="font-size: 0.9rem; text-align: left; margin-top: 10px;">Esperado: <b>${baseItem.prod}</b><br>Bipado: <b style="color:var(--neon-red)">${productCodeToValidate}</b><br><span style="color: var(--neon-blue);">Esse bipado é do endereço: <b>${correctLocs}</b></span></div>`);
             }
 
             document.getElementById('scan-loc').value = ''; document.getElementById('scan-prod').value = '';
@@ -499,42 +566,31 @@
                 
                 const querySnapshot = await window.dbGetDocs(window.dbCollection(window.db, "auditorias"));
                 
-                auditLog = [];
-                dashboardStats = { total: 0, correct: 0, wrong: 0, sectors: {}, auditors: {} };
+                auditLog = []; dashboardStats = { total: 0, correct: 0, wrong: 0, sectors: {}, auditors: {} };
                 let encontrados = 0;
 
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
                     if (data.data_auditoria && data.data_auditoria.includes(dataAlvo)) {
-                        auditLog.push(data);
-                        encontrados++;
-                        
+                        auditLog.push(data); encontrados++;
                         dashboardStats.total++;
                         const isCorrect = (data.status === 'correto');
                         isCorrect ? dashboardStats.correct++ : dashboardStats.wrong++;
-                        
-                        const setor = data.setor || 'Geral';
-                        const auditor = data.nome_colaborador || 'Desconhecido';
+                        const setor = data.setor || 'Geral'; const auditor = data.nome_colaborador || 'Desconhecido';
                         
                         if (!dashboardStats.sectors[setor]) dashboardStats.sectors[setor] = { total: 0, errors: 0 };
                         dashboardStats.sectors[setor].total++;
                         if (!isCorrect) dashboardStats.sectors[setor].errors++;
-                        
                         if (!dashboardStats.auditors[auditor]) dashboardStats.auditors[auditor] = 0;
                         dashboardStats.auditors[auditor]++;
                     }
                 });
                 
                 updateDashboard();
-                if(encontrados === 0) alert(`Nenhuma auditoria encontrada na nuvem para a data: ${dataAlvo}`);
+                if(encontrados === 0) alert(`Nenhuma auditoria na nuvem para a data: ${dataAlvo}`);
                 else alert(`${encontrados} auditorias carregadas com sucesso!`);
                 
-            } catch(e) {
-                console.error(e);
-                alert("Erro ao buscar dados da nuvem.");
-            } finally {
-                btn.innerHTML = originalText;
-            }
+            } catch(e) { console.error(e); alert("Erro ao buscar dados."); } finally { btn.innerHTML = originalText; }
         }
 
         function showFeedback(elementId, type, message) {
@@ -548,19 +604,16 @@
             document.getElementById('stat-total').innerText = dashboardStats.total;
             let worstSectorName = '---', maxErrors = -1;
             
-            const tbodySectors = document.getElementById('table-sectors');
-            tbodySectors.innerHTML = '';
+            const tbodySectors = document.getElementById('table-sectors'); tbodySectors.innerHTML = '';
             Object.keys(dashboardStats.sectors).forEach(sector => {
                 const data = dashboardStats.sectors[sector];
                 const sAcc = (( (data.total - data.errors) / data.total) * 100).toFixed(0);
                 if(data.errors > maxErrors) { maxErrors = data.errors; worstSectorName = sector; }
                 tbodySectors.innerHTML += `<tr><td style="font-weight: bold; color: #fff;">${sector}</td><td style="color: ${data.errors > 0 ? 'var(--neon-red)' : '#fff'};">${data.errors}</td><td><div class="progress-bar"><div class="progress-fill" style="width: ${sAcc}%; background: ${sAcc > 90 ? 'var(--neon-green)' : 'var(--neon-red)'};"></div></div><small>${sAcc}%</small></td></tr>`;
             });
-            if(maxErrors > 0) document.getElementById('worst-sector').innerText = worstSectorName;
-            else document.getElementById('worst-sector').innerText = "---";
+            document.getElementById('worst-sector').innerText = maxErrors > 0 ? worstSectorName : "---";
 
-            const tbodyAuditors = document.getElementById('table-auditors');
-            tbodyAuditors.innerHTML = '';
+            const tbodyAuditors = document.getElementById('table-auditors'); tbodyAuditors.innerHTML = '';
             Object.keys(dashboardStats.auditors).sort((a,b) => dashboardStats.auditors[b] - dashboardStats.auditors[a]).forEach(auditor => {
                 tbodyAuditors.innerHTML += `<tr><td><i class="fas fa-user-check"></i> ${auditor}</td><td style="text-align:right; font-weight:bold; color:var(--neon-blue);">${dashboardStats.auditors[auditor]}</td></tr>`;
             });
