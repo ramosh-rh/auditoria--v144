@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vena144 - Cloud Auditing</title>
+    <title>Vena144 - Cloud & Cam Scanner</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
     
     <style>
@@ -55,6 +55,13 @@
         .sync-badge { background: var(--neon-purple); color: #fff; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; margin-left: 10px; display: none;}
         .sync-badge.active { display: inline-block; animation: pulse 1s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        /* Estilos do Modal da Câmera */
+        .scanner-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 1000; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        #reader { width: 100%; max-width: 400px; border: 2px solid var(--neon-green); border-radius: 10px; overflow: hidden; background: #000; }
+        .cam-btn { background: transparent; border: 2px solid var(--neon-blue); color: var(--neon-blue); border-radius: 8px; padding: 0 20px; cursor: pointer; transition: 0.3s; }
+        .cam-btn:hover { background: var(--neon-blue); color: #000; box-shadow: 0 0 15px var(--neon-blue); }
+        .input-row { display: flex; gap: 10px; }
     </style>
 </head>
 <body>
@@ -70,6 +77,12 @@
             <div id="status-firebase" style="color: var(--neon-red);"><i class="fas fa-wifi"></i> Nuvem: Conectando...</div>
         </div>
     </nav>
+
+    <div id="scanner-modal" class="scanner-overlay">
+        <h3 class="font-tech" style="color: var(--neon-green); margin-bottom: 20px;"><i class="fas fa-camera"></i> Escaneie o Código</h3>
+        <div id="reader"></div>
+        <button class="btn-neon" style="margin-top: 30px; border-color: var(--neon-red); color: var(--neon-red);" onclick="closeScanner()"><i class="fas fa-times"></i> Cancelar</button>
+    </div>
 
     <div class="tab-container">
         <button class="tab-btn active" onclick="showTab('import', this)"><i class="fas fa-cloud-upload-alt"></i> Bases</button>
@@ -108,7 +121,10 @@
                 <h3 class="font-tech" style="text-align: center; color: var(--neon-blue);">Localizador de Produto</h3>
                 <div class="input-group">
                     <label>PRODUTO (EAN OU INTERNO)</label>
-                    <input type="text" id="consult-prod" class="tech-input" placeholder="Bipe aqui..." onkeypress="handleEnter(event, 'btn-consult')">
+                    <div class="input-row">
+                        <input type="text" id="consult-prod" class="tech-input" placeholder="Bipe ou digite..." onkeypress="handleEnter(event, 'btn-consult')">
+                        <button class="cam-btn" onclick="openScanner('consult-prod')"><i class="fas fa-camera" style="font-size:1.5rem;"></i></button>
+                    </div>
                 </div>
                 <button id="btn-consult" class="btn-neon" style="width: 100%; border-color: var(--neon-blue); color: var(--neon-blue);" onclick="executeConsult()">Localizar Prateleira</button>
                 <div id="consult-feedback" class="feedback-box"></div>
@@ -124,11 +140,17 @@
                 <hr style="border: 1px solid rgba(255,255,255,0.1); margin: 30px 0;">
                 <div class="input-group">
                     <label>1. BIPAR LOCALIZADOR</label>
-                    <input type="text" id="scan-loc" class="tech-input" placeholder="Ex: 111801 ou V43-..." onkeypress="handleEnter(event, 'scan-prod')">
+                    <div class="input-row">
+                        <input type="text" id="scan-loc" class="tech-input" placeholder="Ex: 111801 ou V43-..." onkeypress="handleEnter(event, 'scan-prod')">
+                        <button class="cam-btn" onclick="openScanner('scan-loc')"><i class="fas fa-camera" style="font-size:1.5rem;"></i></button>
+                    </div>
                 </div>
                 <div class="input-group">
                     <label>2. BIPAR PRODUTO</label>
-                    <input type="text" id="scan-prod" class="tech-input" placeholder="Ex: 122421" onkeypress="handleEnter(event, 'run-audit')">
+                    <div class="input-row">
+                        <input type="text" id="scan-prod" class="tech-input" placeholder="Ex: 122421 ou EAN" onkeypress="handleEnter(event, 'run-audit')">
+                        <button class="cam-btn" onclick="openScanner('scan-prod')"><i class="fas fa-camera" style="font-size:1.5rem;"></i></button>
+                    </div>
                 </div>
                 <button id="run-audit" class="btn-neon" style="width: 100%; font-size: 1.1rem;" onclick="executeAudit()">Gravar Auditoria na Nuvem</button>
                 <div id="audit-feedback" class="feedback-box"></div>
@@ -136,27 +158,23 @@
         </div>
 
         <div id="view-dashboard" class="view">
-            
             <div class="glass-card" style="display: flex; flex-wrap: wrap; gap: 15px; align-items: center; border-color: var(--neon-blue); padding: 15px;">
-                <label style="margin:0; color: var(--neon-blue); font-weight: bold;"><i class="fas fa-calendar-alt"></i> Data do Relatório:</label>
+                <label style="margin:0; color: var(--neon-blue); font-weight: bold;"><i class="fas fa-calendar-alt"></i> Data:</label>
                 <input type="date" id="filter-date" class="tech-input" style="width: auto; padding: 8px; margin: 0;">
-                
                 <button class="btn-neon" style="border-color: var(--neon-blue); color: var(--neon-blue); padding: 8px 15px;" onclick="window.carregarDadosDaNuvem()">
                     <i class="fas fa-cloud-download-alt"></i> Buscar na Nuvem
                 </button>
-                
                 <button class="btn-neon btn-export" style="margin: 0; width: auto; margin-left: auto; padding: 8px 15px;" onclick="exportAuditData()">
-                    <i class="fas fa-file-excel"></i> Exportar Dados (Excel)
+                    <i class="fas fa-file-excel"></i> Exportar Dados
                 </button>
             </div>
-
             <div class="dash-grid">
                 <div class="glass-card stat-box" style="border-top: 4px solid var(--neon-red);">
                     <h3 class="font-tech" style="font-size: 1rem; color: #aaa;">Pior Setor</h3>
                     <span id="worst-sector" class="stat-val" style="color: var(--neon-red); font-size: 1.8rem;">---</span>
                 </div>
                 <div class="glass-card stat-box" style="border-top: 4px solid var(--neon-blue);">
-                    <h3 class="font-tech" style="font-size: 1rem; color: #aaa;">Endereços Visitados</h3>
+                    <h3 class="font-tech" style="font-size: 1rem; color: #aaa;">Visitados</h3>
                     <span id="stat-total" class="stat-val" style="color: var(--neon-blue);">0</span>
                 </div>
                 <div class="glass-card stat-box" style="border-top: 4px solid var(--neon-green);">
@@ -173,7 +191,7 @@
                     </table>
                 </div>
                 <div class="glass-card">
-                    <h3 class="font-tech">Produtividade do Auditor</h3>
+                    <h3 class="font-tech">Produtividade</h3>
                     <table>
                         <thead><tr><th>Colaborador</th><th style="text-align: right;">Bips</th></tr></thead>
                         <tbody id="table-auditors"><tr><td colspan="2" style="text-align: center;">Sem dados</td></tr></tbody>
@@ -187,7 +205,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, collection, addDoc, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        // SUAS CHAVES EXATAS (Vena144)
         const firebaseConfig = {
             apiKey: "AIzaSyC5vCvhA6VjjcbGOZ2LgxvETcPQgnFhQ6U",
             authDomain: "auditoria-v144.firebaseapp.com",
@@ -204,22 +221,25 @@
             window.dbCollection = collection;
             window.dbAddDoc = addDoc;
             window.dbServerTimestamp = serverTimestamp;
-            window.dbGetDocs = getDocs; // Exporta a função de leitura para o sistema
+            window.dbGetDocs = getDocs; 
             
             document.getElementById('status-firebase').style.color = 'var(--neon-green)';
             document.getElementById('status-firebase').innerHTML = `<i class="fas fa-wifi"></i> Nuvem: Conectada`;
         } catch(e) {
-            console.error("Erro ao conectar no Firebase: ", e);
+            console.error("Erro Firebase: ", e);
             document.getElementById('status-firebase').style.color = 'var(--neon-red)';
-            document.getElementById('status-firebase').innerHTML = `<i class="fas fa-times"></i> Erro de Nuvem`;
+            document.getElementById('status-firebase').innerHTML = `<i class="fas fa-times"></i> Erro Nuvem`;
         }
     </script>
 
     <script>
         let inventoryDB = {}; let productMap = {}; let barcodeDB = {}; let auditLog = []; 
         let dashboardStats = { total: 0, correct: 0, wrong: 0, sectors: {}, auditors: {} };
+        
+        // Variaveis da Camera
+        let html5QrCode;
+        let currentInputId = '';
 
-        // Coloca a data de hoje no calendário automaticamente
         document.addEventListener("DOMContentLoaded", () => {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('filter-date').value = today;
@@ -227,6 +247,51 @@
 
         document.getElementById('filePicking').addEventListener('change', e => handleExcelUpload(e, 'picking'));
         document.getElementById('fileBarcodes').addEventListener('change', e => handleExcelUpload(e, 'barcodes'));
+
+        // ==========================================
+        // SISTEMA DA CÂMERA DE CÓDIGO DE BARRAS
+        // ==========================================
+        function openScanner(inputId) {
+            currentInputId = inputId;
+            document.getElementById('scanner-modal').style.display = 'flex';
+            
+            html5QrCode = new Html5Qrcode("reader");
+            const config = { fps: 10, qrbox: { width: 250, height: 100 } }; // Formato retangular para EAN
+
+            html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess)
+            .catch(err => {
+                alert("Erro ao abrir a câmera. Verifique as permissões do navegador ou se está acessando via HTTPS.");
+                closeScanner();
+            });
+        }
+
+        function onScanSuccess(decodedText, decodedResult) {
+            // Toca um beep sonoro (se o navegador permitir)
+            let audio = new Audio('https://www.soundjay.com/button/beep-07.wav');
+            audio.play().catch(e => {});
+
+            // Preenche o campo
+            document.getElementById(currentInputId).value = decodedText;
+            closeScanner();
+
+            // Pula para a próxima ação de forma inteligente
+            if(currentInputId === 'consult-prod') {
+                executeConsult();
+            } else if(currentInputId === 'scan-loc') {
+                document.getElementById('scan-prod').focus();
+            } else if(currentInputId === 'scan-prod') {
+                executeAudit();
+            }
+        }
+
+        function closeScanner() {
+            document.getElementById('scanner-modal').style.display = 'none';
+            if (html5QrCode) {
+                html5QrCode.stop().then(() => { html5QrCode.clear(); }).catch(err => { console.log(err); });
+            }
+        }
+        // ==========================================
+
 
         function parseManualCSV(text) {
             const lines = text.split(/\r?\n/);
@@ -418,9 +483,6 @@
             updateDashboard();
         }
 
-        // ==============================================================
-        // FUNÇÃO DE PUXAR OS DADOS DA NUVEM FILTRADOS POR DATA
-        // ==============================================================
         window.carregarDadosDaNuvem = async function() {
             if (!window.db) { alert("Nuvem desconectada. Verifique a internet."); return; }
             
@@ -429,26 +491,20 @@
             btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Buscando...`;
             
             try {
-                const dateInput = document.getElementById('filter-date').value; // Formato YYYY-MM-DD
+                const dateInput = document.getElementById('filter-date').value; 
                 if(!dateInput) { alert("Selecione uma data no calendário primeiro!"); return; }
                 
-                // Converte de YYYY-MM-DD para DD/MM/YYYY
                 const [ano, mes, dia] = dateInput.split('-');
                 const dataAlvo = `${dia}/${mes}/${ano}`; 
                 
-                // Puxa toda a coleção do firebase
                 const querySnapshot = await window.dbGetDocs(window.dbCollection(window.db, "auditorias"));
                 
-                // Limpa a memória atual do sistema
                 auditLog = [];
                 dashboardStats = { total: 0, correct: 0, wrong: 0, sectors: {}, auditors: {} };
-                
                 let encontrados = 0;
 
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
-                    
-                    // Se a data de auditoria deste documento começar com a data alvo (ex: 30/04/2026), carrega pro sistema
                     if (data.data_auditoria && data.data_auditoria.includes(dataAlvo)) {
                         auditLog.push(data);
                         encontrados++;
@@ -470,12 +526,8 @@
                 });
                 
                 updateDashboard();
-                
-                if(encontrados === 0) {
-                    alert(`Nenhuma auditoria encontrada na nuvem para a data: ${dataAlvo}`);
-                } else {
-                    alert(`${encontrados} auditorias carregadas com sucesso!`);
-                }
+                if(encontrados === 0) alert(`Nenhuma auditoria encontrada na nuvem para a data: ${dataAlvo}`);
+                else alert(`${encontrados} auditorias carregadas com sucesso!`);
                 
             } catch(e) {
                 console.error(e);
@@ -516,11 +568,11 @@
         }
 
         function exportAuditData() {
-            if (auditLog.length === 0) { alert("Nenhuma auditoria carregada na tabela. Faça uma busca na nuvem primeiro."); return; }
+            if (auditLog.length === 0) { alert("Nenhuma auditoria carregada. Faça uma busca na nuvem primeiro."); return; }
             const exportData = auditLog.map(({timestamp, ...rest}) => rest);
             const worksheet = XLSX.utils.json_to_sheet(exportData);
             const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Dados_Auditoria");
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Dados");
             XLSX.writeFile(workbook, `Relatorio_Picking_${document.getElementById('filter-date').value}.xlsx`);
         }
 
