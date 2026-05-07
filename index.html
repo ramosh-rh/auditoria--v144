@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vena144 - Auditoria Cloud V20.1</title>
+    <title>Vena144 - Auditoria Cloud V21</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
@@ -82,9 +82,9 @@
     </div>
 
     <div id="loading-overlay" class="full-overlay" style="z-index: 10001;">
-        <i class="fas fa-save fa-spin" style="font-size: 5rem; color: var(--neon-green); margin-bottom: 20px;"></i>
-        <h2 class="font-tech" style="color: var(--neon-green); text-align: center;">A GUARDAR NA MEMÓRIA</h2>
-        <p style="color: #fff; text-align: center; max-width: 80%;">A atualizar e substituir bases antigas.<br>Aguarde um momento!</p>
+        <i class="fas fa-cloud-upload-alt fa-beat" id="loading-icon" style="font-size: 5rem; color: var(--neon-blue); margin-bottom: 20px;"></i>
+        <h2 id="loading-title" class="font-tech" style="color: var(--neon-blue); text-align: center;">A GUARDAR...</h2>
+        <p id="loading-desc" style="color: #fff; text-align: center; max-width: 80%;">A atualizar os dados do sistema.<br>Aguarde um momento!</p>
     </div>
 
     <nav class="navbar">
@@ -114,43 +114,54 @@
 
     <div class="container">
         <div id="view-import" class="view active">
-            <div style="background: rgba(57, 255, 20, 0.1); border: 1px solid var(--neon-green); color: var(--neon-green); padding: 10px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: bold;">
-                <i class="fas fa-info-circle"></i> As planilhas devem ser anexadas DIRETAMENTE no aparelho onde vai auditar. Para atualizar o ficheiro, basta importar o novo arquivo que ele sobrepõe.
+            
+            <div class="glass-card" style="border-color: var(--neon-blue); text-align: center; background: rgba(0, 210, 255, 0.05); box-shadow: 0 0 20px rgba(0, 210, 255, 0.1);">
+                <h3 class="font-tech" style="color: var(--neon-blue); margin-top: 0; font-size: 1.5rem;"><i class="fas fa-cloud"></i> Sincronização em Nuvem</h3>
+                <p style="color: #ccc; margin-bottom: 20px; font-size: 0.95rem;">
+                    <strong>No PC (Escritório):</strong> Importe os Excel abaixo e clique em Enviar.<br>
+                    <strong>No Telemóvel (Corredor):</strong> Clique em Baixar para puxar tudo (sem precisar importar ficheiros).
+                </p>
+                <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                    <button class="btn-neon" style="border-color: var(--neon-purple); color: var(--neon-purple); flex-grow: 1;" onclick="enviarBasesParaNuvem()">
+                        <i class="fas fa-cloud-upload-alt"></i> 1. Enviar p/ Nuvem (PC)
+                    </button>
+                    <button class="btn-neon" style="border-color: var(--neon-green); color: var(--neon-green); background: rgba(57, 255, 20, 0.1); flex-grow: 1; font-size: 1.1rem; padding: 15px;" onclick="baixarBasesDaNuvem()">
+                        <i class="fas fa-cloud-download-alt"></i> 2. Baixar da Nuvem (Mobile)
+                    </button>
+                </div>
             </div>
+
             <div class="upload-grid">
                 <div class="glass-card">
-                    <h3 class="font-tech" style="color: var(--neon-blue);"><i class="fas fa-map-marker-alt"></i> 1. Base Picking</h3>
-                    <div class="upload-zone" onclick="document.getElementById('filePicking').click()">
-                        <i class="fas fa-boxes" style="font-size: 2.5rem; color: var(--neon-blue); margin-bottom: 10px;"></i>
-                        <p>Atualizar Estoque Picking</p>
+                    <h3 class="font-tech" style="color: #aaa; font-size: 1rem;"><i class="fas fa-map-marker-alt"></i> Base Picking (Apenas PC)</h3>
+                    <div class="upload-zone" onclick="document.getElementById('filePicking').click()" style="padding: 15px;">
+                        <i class="fas fa-file-excel" style="font-size: 2rem; color: #aaa; margin-bottom: 10px;"></i>
                         <input type="file" id="filePicking" hidden accept=".xlsx, .xls, .csv">
                     </div>
-                    <div id="info-picking" style="margin-top: 15px; color: var(--neon-red); font-weight: bold; text-align: center;">Nenhuma Base</div>
+                    <div id="info-picking" style="margin-top: 10px; color: var(--neon-red); font-weight: bold; text-align: center; font-size: 0.8rem;">Vazia</div>
                 </div>
 
                 <div class="glass-card">
-                    <h3 class="font-tech" style="color: var(--neon-orange);"><i class="fas fa-barcode"></i> 2. Códigos EAN</h3>
-                    <div class="upload-zone" onclick="document.getElementById('fileBarcodes').click()">
-                        <i class="fas fa-barcode" style="font-size: 2.5rem; color: var(--neon-orange); margin-bottom: 10px;"></i>
-                        <p>Atualizar Planilha EANs</p>
+                    <h3 class="font-tech" style="color: #aaa; font-size: 1rem;"><i class="fas fa-barcode"></i> Códigos EAN (Apenas PC)</h3>
+                    <div class="upload-zone" onclick="document.getElementById('fileBarcodes').click()" style="padding: 15px;">
+                        <i class="fas fa-file-excel" style="font-size: 2rem; color: #aaa; margin-bottom: 10px;"></i>
                         <input type="file" id="fileBarcodes" hidden accept=".xlsx, .xls, .csv">
                     </div>
-                    <div id="info-barcodes" style="margin-top: 15px; color: #666; font-weight: bold; text-align: center;">Não carregado</div>
+                    <div id="info-barcodes" style="margin-top: 10px; color: #666; font-weight: bold; text-align: center; font-size: 0.8rem;">Vazia</div>
                 </div>
 
                 <div class="glass-card">
-                    <h3 class="font-tech" style="color: var(--neon-purple);"><i class="fas fa-pallet"></i> 3. Base Reserva</h3>
-                    <div class="upload-zone" onclick="document.getElementById('fileReserva').click()">
-                        <i class="fas fa-pallet" style="font-size: 2.5rem; color: var(--neon-purple); margin-bottom: 10px;"></i>
-                        <p>Atualizar Planilha Reserva</p>
+                    <h3 class="font-tech" style="color: #aaa; font-size: 1rem;"><i class="fas fa-pallet"></i> Base Reserva (Apenas PC)</h3>
+                    <div class="upload-zone" onclick="document.getElementById('fileReserva').click()" style="padding: 15px;">
+                        <i class="fas fa-file-excel" style="font-size: 2rem; color: #aaa; margin-bottom: 10px;"></i>
                         <input type="file" id="fileReserva" hidden accept=".xlsx, .xls, .csv">
                     </div>
-                    <div id="info-reserva" style="margin-top: 15px; color: var(--neon-red); font-weight: bold; text-align: center;">Nenhuma Base</div>
+                    <div id="info-reserva" style="margin-top: 10px; color: var(--neon-red); font-weight: bold; text-align: center; font-size: 0.8rem;">Vazia</div>
                 </div>
             </div>
             
             <button class="btn-neon" style="border-color: var(--neon-red); color: var(--neon-red); width: 100%; margin-top: 15px;" onclick="limparMemoriaLocal()">
-                <i class="fas fa-trash-alt"></i> Apagar Todas as Bases da Memória Manualmente
+                <i class="fas fa-trash-alt"></i> Formatar Memória Local (Apenas em caso de erro)
             </button>
         </div>
 
@@ -327,7 +338,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, serverTimestamp, getDocs, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyC5vCvhA6VjjcbGOZ2LgxvETcPQgnFhQ6U",
@@ -345,6 +356,9 @@
             window.dbAddDoc = addDoc;
             window.dbServerTimestamp = serverTimestamp;
             window.dbGetDocs = getDocs; 
+            window.dbDoc = doc;
+            window.dbSetDoc = setDoc;
+            window.dbGetDoc = getDoc;
             
             document.getElementById('status-firebase').style.color = 'var(--neon-green)';
             document.getElementById('status-firebase').innerHTML = `<i class="fas fa-wifi"></i> Nuvem: Conectada`;
@@ -373,7 +387,6 @@
             }
         }
 
-        // Gera a data atual no formato universal DD/MM/YYYY
         function obterDataUniversal() {
             const hoje = new Date();
             return `${String(hoje.getDate()).padStart(2, '0')}/${String(hoje.getMonth() + 1).padStart(2, '0')}/${hoje.getFullYear()}`;
@@ -391,8 +404,6 @@
         let ticketsPendentes = {};
         let auditReservaLog = []; 
 
-        let html5QrCode; let currentInputId = '';
-
         document.addEventListener("DOMContentLoaded", () => {
             checkAuth(); 
             const today = new Date().toISOString().split('T')[0];
@@ -401,10 +412,138 @@
         });
 
         // ==========================================
-        // SISTEMA DE SUPER MEMÓRIA (ATUALIZAÇÃO)
+        // SINCRONIZAÇÃO NUVEM (NOVO)
+        // ==========================================
+        
+        function setTelaCarregamento(mostrar, titulo, desc, icon) {
+            document.getElementById('loading-overlay').style.display = mostrar ? 'flex' : 'none';
+            if(mostrar) {
+                document.getElementById('loading-title').innerText = titulo;
+                document.getElementById('loading-desc').innerText = desc;
+                document.getElementById('loading-icon').className = "fas fa-beat " + icon;
+            }
+        }
+
+        async function enviarBasesParaNuvem() {
+            if (!window.db) { alert("Aguarde a conexão com a nuvem."); return; }
+            if (Object.keys(inventoryDB).length === 0 && Object.keys(reservaDB).length === 0) {
+                alert("Não tem bases carregadas no computador para enviar."); return;
+            }
+
+            try {
+                setTelaCarregamento(true, "A ENVIAR PARA A NUVEM", "A sincronizar as planilhas para o telemóvel puxar...", "fa-cloud-upload-alt");
+
+                const uploadEmLotes = async (nome, arrayObj) => {
+                    const TAMANHO_LOTE = 1500;
+                    let totalLotes = Math.ceil(arrayObj.length / TAMANHO_LOTE);
+                    await window.dbSetDoc(window.dbDoc(window.db, "bases_config", nome + "_meta"), { lotes: totalLotes, data: new Date().toISOString() });
+                    for (let i = 0; i < totalLotes; i++) {
+                        let lote = arrayObj.slice(i * TAMANHO_LOTE, (i + 1) * TAMANHO_LOTE);
+                        await window.dbSetDoc(window.dbDoc(window.db, "bases_config", nome + "_" + i), { dados: JSON.stringify(lote) });
+                    }
+                };
+
+                let pArray = []; for(let key in inventoryDB) { pArray.push(inventoryDB[key]); }
+                await uploadEmLotes("picking", pArray);
+
+                let eArray = []; for(let key in barcodeDB) { eArray.push({b: key, p: barcodeDB[key]}); }
+                await uploadEmLotes("ean", eArray);
+
+                let rArray = []; for(let key in reservaDB) { rArray.push({loc: key, items: reservaDB[key]}); }
+                await uploadEmLotes("reserva", rArray);
+
+                alert("Sucesso! Bases enviadas para a Nuvem. Agora pode ir ao telemóvel e clicar em 'Baixar da Nuvem'.");
+            } catch(e) {
+                console.error(e);
+                alert("Erro ao enviar. Verifique a internet.");
+            } finally {
+                setTelaCarregamento(false);
+            }
+        }
+
+        async function baixarBasesDaNuvem() {
+            if (!window.db) { alert("Aguarde a conexão com a nuvem."); return; }
+            try {
+                setTelaCarregamento(true, "A BAIXAR DA NUVEM", "A puxar as planilhas. Só demora uns segundos...", "fa-cloud-download-alt");
+
+                const baixarLotes = async (nome) => {
+                    const metaSnap = await window.dbGetDoc(window.dbDoc(window.db, "bases_config", nome + "_meta"));
+                    if (!metaSnap.exists()) return [];
+                    let totalLotes = metaSnap.data().lotes;
+                    let arrayFinal = [];
+                    for (let i = 0; i < totalLotes; i++) {
+                        const loteSnap = await window.dbGetDoc(window.dbDoc(window.db, "bases_config", nome + "_" + i));
+                        if (loteSnap.exists()) {
+                            arrayFinal = arrayFinal.concat(JSON.parse(loteSnap.data().dados));
+                        }
+                    }
+                    return arrayFinal;
+                };
+
+                const arrPicking = await baixarLotes("picking");
+                const arrEan = await baixarLotes("ean");
+                const arrReserva = await baixarLotes("reserva");
+
+                if(arrPicking.length === 0 && arrReserva.length === 0) {
+                    alert("A nuvem está vazia. Precisa clicar em 'Enviar para Nuvem' usando o computador primeiro.");
+                    setTelaCarregamento(false);
+                    return;
+                }
+
+                // Reconstrói Memória Picking
+                inventoryDB = {}; productMap = {};
+                arrPicking.forEach(item => {
+                    inventoryDB[item.loc] = item;
+                    if(item.codLoc) inventoryDB[item.codLoc] = item;
+                    if(!productMap[item.prod]) productMap[item.prod] = { desc: item.desc, locs: [], sector: item.sector };
+                    if(!productMap[item.prod].locs.includes(item.loc)) productMap[item.prod].locs.push(item.loc);
+                });
+                if(arrPicking.length > 0) {
+                    document.getElementById('info-picking').innerHTML = `<i class="fas fa-check"></i> ${arrPicking.length} ativos (Da Nuvem)`;
+                    document.getElementById('info-picking').style.color = 'var(--neon-blue)';
+                    if(typeof localforage !== 'undefined') {
+                        await localforage.setItem('vena_base_picking_obj', inventoryDB);
+                        await localforage.setItem('vena_base_picking_map', productMap);
+                    }
+                }
+
+                // Reconstrói Memória EAN
+                barcodeDB = {};
+                arrEan.forEach(item => { barcodeDB[item.b] = item.p; });
+                if(arrEan.length > 0) {
+                    document.getElementById('info-barcodes').innerHTML = `<i class="fas fa-check"></i> ${arrEan.length} EANs (Da Nuvem)`;
+                    document.getElementById('info-barcodes').style.color = 'var(--neon-blue)';
+                    if(typeof localforage !== 'undefined') await localforage.setItem('vena_base_ean_obj', barcodeDB);
+                }
+
+                // Reconstrói Memória Reserva
+                reservaDB = {}; let countReserva = 0;
+                arrReserva.forEach(item => {
+                    reservaDB[item.loc] = item.items;
+                    countReserva += item.items.length;
+                });
+                if(arrReserva.length > 0) {
+                    document.getElementById('info-reserva').innerHTML = `<i class="fas fa-check"></i> ${countReserva} caixas (Da Nuvem)`;
+                    document.getElementById('info-reserva').style.color = 'var(--neon-blue)';
+                    if(typeof localforage !== 'undefined') await localforage.setItem('vena_base_reserva_obj', reservaDB);
+                }
+
+                if(typeof localforage !== 'undefined') await localforage.setItem('vena_bases_nuvem_sync', true);
+                alert("Bases atualizadas da Nuvem com sucesso e salvas neste telemóvel!");
+
+            } catch(e) {
+                console.error(e);
+                alert("Erro ao puxar da nuvem. Verifique a internet.");
+            } finally {
+                setTelaCarregamento(false);
+            }
+        }
+
+        // ==========================================
+        // CARREGAMENTO LOCAL / ANTIGO
         // ==========================================
         async function salvarComOverlay(type, jsonData) {
-            document.getElementById('loading-overlay').style.display = 'flex';
+            setTelaCarregamento(true, "A PROCESSAR...", "Lendo a planilha Excel...", "fa-save");
             await new Promise(resolve => setTimeout(resolve, 300));
             try {
                 if (type === 'picking') {
@@ -418,42 +557,51 @@
                     if (typeof localforage !== 'undefined') await localforage.setItem('vena_base_reserva', jsonData);
                 }
                 setTimeout(() => { 
-                    document.getElementById('loading-overlay').style.display = 'none'; 
-                    alert("Base atualizada e guardada no aparelho com sucesso!"); 
+                    setTelaCarregamento(false);
+                    alert("Importado no PC com sucesso! Agora clique em 'Enviar para a Nuvem'."); 
                 }, 500);
             } catch (e) {
-                document.getElementById('loading-overlay').style.display = 'none';
-                alert("Erro ao gravar. A memória do navegador pode estar cheia ou o ficheiro é demasiado grande.");
+                setTelaCarregamento(false);
+                alert("Erro ao gravar. A memória do navegador pode estar cheia.");
             }
         }
 
         async function carregarBasesDaMemoriaLocal() {
             try {
                 if (typeof localforage !== 'undefined') {
-                    const pickingSalvo = await localforage.getItem('vena_base_picking');
-                    if (pickingSalvo) processPickingData(pickingSalvo, false);
-                    
-                    const eanSalvo = await localforage.getItem('vena_base_ean');
-                    if (eanSalvo) processBarcodeData(eanSalvo, false);
-                    
-                    const reservaSalva = await localforage.getItem('vena_base_reserva');
-                    if (reservaSalva) processReservaData(reservaSalva, false);
+                    // 1. Tenta carregar objetos já formatados da Nuvem (MUITO MAIS RÁPIDO NO MOBILE)
+                    const isCloudSync = await localforage.getItem('vena_bases_nuvem_sync');
+                    if (isCloudSync) {
+                        const pObj = await localforage.getItem('vena_base_picking_obj');
+                        const pMap = await localforage.getItem('vena_base_picking_map');
+                        if(pObj && pMap) { inventoryDB = pObj; productMap = pMap; document.getElementById('info-picking').innerHTML = `<i class="fas fa-check"></i> Pronta (Memória)`; document.getElementById('info-picking').style.color = 'var(--neon-green)'; }
 
-                    const ticketsSalvos = await localforage.getItem('vena_tickets_reserva');
-                    if (ticketsSalvos) {
-                        ticketsPendentes = ticketsSalvos;
-                        renderTicketsPendentes();
+                        const eObj = await localforage.getItem('vena_base_ean_obj');
+                        if(eObj) { barcodeDB = eObj; document.getElementById('info-barcodes').innerHTML = `<i class="fas fa-check"></i> EANs Prontos`; document.getElementById('info-barcodes').style.color = 'var(--neon-green)'; }
+
+                        const rObj = await localforage.getItem('vena_base_reserva_obj');
+                        if(rObj) { reservaDB = rObj; document.getElementById('info-reserva').innerHTML = `<i class="fas fa-check"></i> Pronta (Memória)`; document.getElementById('info-reserva').style.color = 'var(--neon-green)'; }
+                    } else {
+                        // 2. Se for PC, carrega do raw JSON original
+                        const pickingSalvo = await localforage.getItem('vena_base_picking');
+                        if (pickingSalvo) processPickingData(pickingSalvo, false);
+                        const eanSalvo = await localforage.getItem('vena_base_ean');
+                        if (eanSalvo) processBarcodeData(eanSalvo, false);
+                        const reservaSalva = await localforage.getItem('vena_base_reserva');
+                        if (reservaSalva) processReservaData(reservaSalva, false);
                     }
+
+                    // Carrega os Registos Pausados
+                    const ticketsSalvos = await localforage.getItem('vena_tickets_reserva');
+                    if (ticketsSalvos) { ticketsPendentes = ticketsSalvos; renderTicketsPendentes(); }
                 }
             } catch(e) {}
         }
 
         async function limparMemoriaLocal() {
-            if(confirm("Deseja apagar todas as bases da memória local? Terá de as anexar novamente.")) {
+            if(confirm("ATENÇÃO: Isto vai apagar as bases guardadas neste telemóvel/PC. Terá de baixar da nuvem novamente. Continuar?")) {
                 if (typeof localforage !== 'undefined') {
-                    await localforage.removeItem('vena_base_picking');
-                    await localforage.removeItem('vena_base_ean');
-                    await localforage.removeItem('vena_base_reserva');
+                    await localforage.clear();
                 }
                 alert("Memória limpa! A reiniciar...");
                 location.reload();
@@ -461,7 +609,7 @@
         }
 
         // ==========================================
-        // IMPORTAÇÃO DE FICHEIROS
+        // LÓGICA EXCEL
         // ==========================================
         document.getElementById('filePicking').addEventListener('change', e => handleExcelUpload(e, 'picking'));
         document.getElementById('fileBarcodes').addEventListener('change', e => handleExcelUpload(e, 'barcodes'));
@@ -490,7 +638,7 @@
         function handleExcelUpload(e, type) {
             const file = e.target.files[0];
             if (!file) return;
-            document.getElementById('loading-overlay').style.display = 'flex';
+            setTelaCarregamento(true, "A PROCESSAR...", "Lendo ficheiro...", "fa-save");
             const reader = new FileReader();
             if (file.name.toLowerCase().endsWith('.csv')) {
                 reader.onload = async function(evt) {
@@ -572,14 +720,13 @@
         }
 
         function iniciarReserva() {
-            if(Object.keys(reservaDB).length === 0) { alert("Atenção: Anexe a planilha de Reserva no ecrã Bases no seu telemóvel!"); return; }
+            if(Object.keys(reservaDB).length === 0) { alert("Atenção: A base está vazia. Clique em Baixar da Nuvem primeiro!"); return; }
             const auditor = document.getElementById('auditor-reserva').value.trim();
             let loc = formatCode(document.getElementById('loc-reserva').value);
             
             if(!auditor) { alert("Informe o nome do auditor!"); return; }
             if(!loc) { alert("Bipe o localizador!"); return; }
 
-            // Cria um Registo Novo (REG-XXXX)
             const randomStr = Math.random().toString(36).substring(2, 6).toUpperCase();
             activeTicket = `REG-${randomStr}`;
             reservaCurrentLoc = loc;
@@ -639,7 +786,6 @@
             document.getElementById('item-reserva').focus();
         }
 
-        // Renderiza a lista toda baseada no Array (permite edição)
         function renderListaBips() {
             document.getElementById('reserva-lbl-scan').innerText = reservaScanned.length;
             const container = document.getElementById('reserva-lista-bips');
@@ -739,14 +885,14 @@
 
         async function salvarReservaNuvem() {
             if (!window.db) { alert("Sem ligação à nuvem."); return; }
-            document.getElementById('loading-overlay').style.display = 'flex';
+            setTelaCarregamento(true, "A SALVAR AUDITORIA", "A gravar o registo final...", "fa-cloud-upload-alt");
             
             let statusFinal = (window.reservaResult.missingList.length === 0 && window.reservaResult.extrasList.length === 0) ? 'conforme' : 'divergente';
 
             const registro = {
                 ticket: window.reservaResult.ticket,
                 data_auditoria: new Date().toLocaleString('pt-BR'),
-                data_filtro: obterDataUniversal(), // DATA BLINDADA PARA O RELATÓRIO
+                data_filtro: obterDataUniversal(), 
                 nome_colaborador: window.reservaResult.auditor,
                 endereco_id: window.reservaResult.loc,
                 tipo_auditoria: 'reserva',
@@ -777,7 +923,7 @@
                 console.error(e);
                 alert("Erro ao gravar.");
             } finally {
-                document.getElementById('loading-overlay').style.display = 'none';
+                setTelaCarregamento(false);
             }
         }
 
@@ -828,7 +974,7 @@
         }
 
         function executeConsult() {
-            if (Object.keys(inventoryDB).length === 0) { alert("Sincronize a base!"); return; }
+            if (Object.keys(inventoryDB).length === 0) { alert("Base vazia. Baixe da nuvem primeiro."); return; }
             const rawScan = formatCode(document.getElementById('consult-prod').value);
             if (!rawScan) return;
             let internalCode = barcodeDB[rawScan] ? barcodeDB[rawScan] : rawScan;
@@ -843,7 +989,7 @@
         }
 
         async function executeAudit() {
-            if (Object.keys(inventoryDB).length === 0) { alert("Base vazia!"); return; }
+            if (Object.keys(inventoryDB).length === 0) { alert("Base vazia. Baixe da nuvem primeiro."); return; }
             const auditorInput = document.getElementById('auditor-name').value.trim();
             const locInput = formatCode(document.getElementById('scan-loc').value);
             const rawScan = formatCode(document.getElementById('scan-prod').value);
@@ -864,7 +1010,7 @@
             
             const registroAuditoria = {
                 data_auditoria: new Date().toLocaleString('pt-BR'),
-                data_filtro: obterDataUniversal(), // DATA BLINDADA PARA O RELATÓRIO
+                data_filtro: obterDataUniversal(),
                 nome_colaborador: auditorInput,
                 setor: baseItem.sector,
                 endereco_id: baseItem.loc,
@@ -903,14 +1049,14 @@
         }
 
         // ==========================================
-        // FETCH NUVEM E EXPORTAÇÕES (RELATÓRIOS BLINDADOS)
+        // RELATÓRIOS
         // ==========================================
         window.carregarDadosDaNuvem = async function() {
             if (!window.db) { alert("Nuvem desconectada."); return; }
             const dateInput = document.getElementById('filter-date').value; 
             if(!dateInput) { alert("Selecione uma data!"); return; }
             const [ano, mes, dia] = dateInput.split('-');
-            const dataAlvoUniversal = `${dia}/${mes}/${ano}`; // Formato cravado
+            const dataAlvoUniversal = `${dia}/${mes}/${ano}`; 
             
             const btn = document.querySelector('button[onclick="window.carregarDadosDaNuvem()"]');
             const originalText = btn.innerHTML;
@@ -950,7 +1096,7 @@
                     }
                 });
 
-                alert(`Sincronização Concluída!\n\nPicking encontrados: ${countPicking}\nReservas (Registos) encontrados: ${countReserva}`);
+                alert(`Relatórios Puxados!\nPicking encontrados: ${countPicking}\nReservas (Registos) encontrados: ${countReserva}`);
             } catch(e) {
                 console.error(e); alert("Erro ao buscar dados.");
             } finally {
