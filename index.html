@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vena144 - Auditoria Cloud (Registros)</title>
+    <title>Vena144 - Auditoria Cloud V20.1</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
@@ -75,15 +75,15 @@
             <i class="fas fa-plus" style="font-size: 4rem; color: var(--neon-green); text-shadow: 0 0 15px var(--neon-green); margin-bottom: 20px;"></i>
             <h2 class="font-tech" style="color: #fff; margin-bottom: 5px;">VENA144</h2>
             <p style="color: #888; margin-bottom: 25px;">Sistema de Auditoria Cloud</p>
-            <input type="password" id="sys-password" class="tech-input" placeholder="Senha..." style="margin-bottom: 20px; text-align: center;" onkeypress="if(event.key === 'Enter') checkPassword()">
-            <button class="btn-neon" style="width: 100%;" onclick="checkPassword()"><i class="fas fa-unlock"></i> ACESSAR SISTEMA</button>
-            <div id="login-error" style="color: var(--neon-red); margin-top: 15px; font-weight: bold; display: none;"><i class="fas fa-exclamation-triangle"></i> Senha Incorreta!</div>
+            <input type="password" id="sys-password" class="tech-input" placeholder="Palavra-passe..." style="margin-bottom: 20px; text-align: center;" onkeypress="if(event.key === 'Enter') checkPassword()">
+            <button class="btn-neon" style="width: 100%;" onclick="checkPassword()"><i class="fas fa-unlock"></i> ACEDER AO SISTEMA</button>
+            <div id="login-error" style="color: var(--neon-red); margin-top: 15px; font-weight: bold; display: none;"><i class="fas fa-exclamation-triangle"></i> Palavra-passe Incorreta!</div>
         </div>
     </div>
 
     <div id="loading-overlay" class="full-overlay" style="z-index: 10001;">
         <i class="fas fa-save fa-spin" style="font-size: 5rem; color: var(--neon-green); margin-bottom: 20px;"></i>
-        <h2 class="font-tech" style="color: var(--neon-green); text-align: center;">GRAVANDO NA MEMÓRIA</h2>
+        <h2 class="font-tech" style="color: var(--neon-green); text-align: center;">A GUARDAR NA MEMÓRIA</h2>
         <p style="color: #fff; text-align: center; max-width: 80%;">A atualizar e substituir bases antigas.<br>Aguarde um momento!</p>
     </div>
 
@@ -94,7 +94,7 @@
             <span id="sync-status" class="sync-badge"><i class="fas fa-sync fa-spin"></i> Nuvem...</span>
         </div>
         <div class="status-panel">
-            <div id="status-firebase" style="color: var(--neon-red);"><i class="fas fa-wifi"></i> Nuvem: Conectando...</div>
+            <div id="status-firebase" style="color: var(--neon-red);"><i class="fas fa-wifi"></i> Nuvem: A Ligar...</div>
         </div>
     </nav>
 
@@ -115,14 +115,14 @@
     <div class="container">
         <div id="view-import" class="view active">
             <div style="background: rgba(57, 255, 20, 0.1); border: 1px solid var(--neon-green); color: var(--neon-green); padding: 10px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: bold;">
-                <i class="fas fa-info-circle"></i> As planilhas importadas ficam salvas. Para atualizar, basta importar o novo arquivo que ele substituirá o antigo automaticamente.
+                <i class="fas fa-info-circle"></i> As planilhas devem ser anexadas DIRETAMENTE no aparelho onde vai auditar. Para atualizar o ficheiro, basta importar o novo arquivo que ele sobrepõe.
             </div>
             <div class="upload-grid">
                 <div class="glass-card">
                     <h3 class="font-tech" style="color: var(--neon-blue);"><i class="fas fa-map-marker-alt"></i> 1. Base Picking</h3>
                     <div class="upload-zone" onclick="document.getElementById('filePicking').click()">
                         <i class="fas fa-boxes" style="font-size: 2.5rem; color: var(--neon-blue); margin-bottom: 10px;"></i>
-                        <p>Atualizar Estoque Picking (CSV/Excel)</p>
+                        <p>Atualizar Estoque Picking</p>
                         <input type="file" id="filePicking" hidden accept=".xlsx, .xls, .csv">
                     </div>
                     <div id="info-picking" style="margin-top: 15px; color: var(--neon-red); font-weight: bold; text-align: center;">Nenhuma Base</div>
@@ -202,7 +202,7 @@
                 <h3 class="font-tech" style="text-align: center; color: var(--neon-purple); margin-bottom: 20px;">NOVA AUDITORIA (RESERVA)</h3>
                 <div class="input-group">
                     <label style="color: var(--neon-purple);">NOME DO AUDITOR</label>
-                    <input type="text" id="auditor-reserva" class="tech-input" placeholder="Digite seu nome...">
+                    <input type="text" id="auditor-reserva" class="tech-input" placeholder="Digite o seu nome...">
                 </div>
                 <hr style="border: 1px solid rgba(255,255,255,0.1); margin: 30px 0;">
                 <div class="input-group">
@@ -215,7 +215,7 @@
                 <button id="btn-init-reserva" class="btn-neon" style="width: 100%; border-color: var(--neon-purple); color: var(--neon-purple);" onclick="iniciarReserva()"><i class="fas fa-play"></i> Iniciar Contagem do Endereço</button>
                 
                 <div id="box-tickets" style="margin-top: 40px; display: none;">
-                    <h4 style="color: var(--neon-orange); border-bottom: 1px solid var(--neon-orange); padding-bottom: 5px;">AUDITORIAS PAUSADAS (REGISTROS)</h4>
+                    <h4 style="color: var(--neon-orange); border-bottom: 1px solid var(--neon-orange); padding-bottom: 5px;">AUDITORIAS PAUSADAS (REGISTOS)</h4>
                     <div id="list-tickets"></div>
                 </div>
             </div>
@@ -223,7 +223,7 @@
             <div class="glass-card" id="reserva-step-2" style="max-width: 700px; margin: 0 auto; border-color: var(--neon-purple); display: none;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 8px;">
                     <div>
-                        <span style="color: #aaa; font-size: 0.9rem;">Registro: <span id="reserva-lbl-ticket" style="color: #fff;"></span></span><br>
+                        <span style="color: #aaa; font-size: 0.9rem;">Registo: <span id="reserva-lbl-ticket" style="color: #fff;"></span></span><br>
                         <b style="font-size: 1.5rem; color: var(--neon-purple);" id="reserva-lbl-loc">---</b>
                     </div>
                     <div style="text-align: right;">
@@ -241,7 +241,8 @@
                     <button id="btn-bipar-reserva" style="display:none;" onclick="biparReserva()"></button>
                 </div>
 
-                <div style="max-height: 200px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 8px; margin-bottom: 20px;" id="reserva-lista-bips"></div>
+                <div style="max-height: 250px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 8px; margin-bottom: 20px;" id="reserva-lista-bips">
+                    </div>
 
                 <button class="btn-neon" style="width: 100%; border-color: var(--neon-green); color: var(--neon-green);" onclick="finalizarReserva()"><i class="fas fa-check"></i> Finalizar Auditoria</button>
                 <button class="btn-neon" style="width: 100%; border-color: var(--neon-orange); color: var(--neon-orange);" onclick="pausarReserva()"><i class="fas fa-pause"></i> Pausar Auditoria (Continuar Depois)</button>
@@ -267,7 +268,7 @@
                     </div>
                 </div>
 
-                <button class="btn-neon" style="width: 100%; margin-top: 20px; font-size: 1.2rem; padding: 15px;" onclick="salvarReservaNuvem()"><i class="fas fa-cloud-upload-alt"></i> Salvar na Nuvem e Liberar</button>
+                <button class="btn-neon" style="width: 100%; margin-top: 20px; font-size: 1.2rem; padding: 15px;" onclick="salvarReservaNuvem()"><i class="fas fa-cloud-upload-alt"></i> Salvar na Nuvem e Libertar</button>
             </div>
         </div>
 
@@ -302,6 +303,23 @@
                 <div class="glass-card stat-box" style="border-top: 4px solid var(--neon-green);">
                     <h3 class="font-tech" style="font-size: 1rem; color: #aaa;">Acuracidade</h3>
                     <span id="stat-accuracy" class="stat-val" style="color: var(--neon-green);">0%</span>
+                </div>
+            </div>
+            
+            <div class="dash-grid">
+                <div class="glass-card">
+                    <h3 class="font-tech">Qualidade por Setor</h3>
+                    <table>
+                        <thead><tr><th>Setor</th><th>Erros</th><th>Acurácia</th></tr></thead>
+                        <tbody id="table-sectors"><tr><td colspan="3" style="text-align: center;">Sem dados</td></tr></tbody>
+                    </table>
+                </div>
+                <div class="glass-card">
+                    <h3 class="font-tech">Produtividade</h3>
+                    <table>
+                        <thead><tr><th>Colaborador</th><th style="text-align: right;">Bips</th></tr></thead>
+                        <tbody id="table-auditors"><tr><td colspan="2" style="text-align: center;">Sem dados</td></tr></tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -355,15 +373,21 @@
             }
         }
 
+        // Gera a data atual no formato universal DD/MM/YYYY
+        function obterDataUniversal() {
+            const hoje = new Date();
+            return `${String(hoje.getDate()).padStart(2, '0')}/${String(hoje.getMonth() + 1).padStart(2, '0')}/${hoje.getFullYear()}`;
+        }
+
         // Variáveis Picking
         let inventoryDB = {}; let productMap = {}; let barcodeDB = {}; let auditLog = []; 
         let dashboardStats = { total: 0, correct: 0, wrong: 0, sectors: {}, auditors: {} };
         
-        // Variáveis Reserva e Registros (Antigos Tickets)
+        // Variáveis Reserva e Registos
         let reservaDB = {}; 
         let reservaCurrentLoc = ''; 
         let reservaScanned = [];
-        let activeTicket = null; // Agora gera REG-XXXX
+        let activeTicket = null; 
         let ticketsPendentes = {};
         let auditReservaLog = []; 
 
@@ -395,11 +419,11 @@
                 }
                 setTimeout(() => { 
                     document.getElementById('loading-overlay').style.display = 'none'; 
-                    alert("Base atualizada e salva com sucesso!"); 
+                    alert("Base atualizada e guardada no aparelho com sucesso!"); 
                 }, 500);
             } catch (e) {
                 document.getElementById('loading-overlay').style.display = 'none';
-                alert("Erro ao gravar. Memória do celular pode estar cheia.");
+                alert("Erro ao gravar. A memória do navegador pode estar cheia ou o ficheiro é demasiado grande.");
             }
         }
 
@@ -425,19 +449,19 @@
         }
 
         async function limparMemoriaLocal() {
-            if(confirm("Deseja apagar todas as bases da memória?")) {
+            if(confirm("Deseja apagar todas as bases da memória local? Terá de as anexar novamente.")) {
                 if (typeof localforage !== 'undefined') {
                     await localforage.removeItem('vena_base_picking');
                     await localforage.removeItem('vena_base_ean');
                     await localforage.removeItem('vena_base_reserva');
                 }
-                alert("Memória limpa! Reiniciando...");
+                alert("Memória limpa! A reiniciar...");
                 location.reload();
             }
         }
 
         // ==========================================
-        // IMPORTAÇÃO DE ARQUIVOS
+        // IMPORTAÇÃO DE FICHEIROS
         // ==========================================
         document.getElementById('filePicking').addEventListener('change', e => handleExcelUpload(e, 'picking'));
         document.getElementById('fileBarcodes').addEventListener('change', e => handleExcelUpload(e, 'barcodes'));
@@ -491,7 +515,7 @@
         function formatCode(val) { if(!val) return null; let str = String(val).trim(); if(str.endsWith('.0')) str = str.replace('.0', ''); return str.toUpperCase(); }
 
         // ==========================================
-        // LÓGICA DE AUDITORIA DE RESERVA E REGISTROS
+        // LÓGICA DE AUDITORIA DE RESERVA E REGISTOS
         // ==========================================
         function processReservaData(data, salvarMemoria = true) {
             reservaDB = {}; let count = 0;
@@ -548,14 +572,14 @@
         }
 
         function iniciarReserva() {
-            if(Object.keys(reservaDB).length === 0) { alert("Importe a planilha de Reserva na aba Bases!"); return; }
+            if(Object.keys(reservaDB).length === 0) { alert("Atenção: Anexe a planilha de Reserva no ecrã Bases no seu telemóvel!"); return; }
             const auditor = document.getElementById('auditor-reserva').value.trim();
             let loc = formatCode(document.getElementById('loc-reserva').value);
             
             if(!auditor) { alert("Informe o nome do auditor!"); return; }
             if(!loc) { alert("Bipe o localizador!"); return; }
 
-            // Cria um Registro Novo (REG-XXXX)
+            // Cria um Registo Novo (REG-XXXX)
             const randomStr = Math.random().toString(36).substring(2, 6).toUpperCase();
             activeTicket = `REG-${randomStr}`;
             reservaCurrentLoc = loc;
@@ -575,7 +599,7 @@
         }
 
         async function deletarTicket(tkId) {
-            if(confirm("Excluir este registro pausado?")) {
+            if(confirm("Excluir este registo pausado?")) {
                 delete ticketsPendentes[tkId];
                 if(typeof localforage !== 'undefined') await localforage.setItem('vena_tickets_reserva', ticketsPendentes);
                 renderTicketsPendentes();
@@ -591,10 +615,8 @@
             document.getElementById('reserva-lbl-ticket').innerText = activeTicket;
             document.getElementById('reserva-lbl-loc').innerText = reservaCurrentLoc;
             document.getElementById('reserva-lbl-exp').innerText = expected;
-            document.getElementById('reserva-lbl-scan').innerText = reservaScanned.length;
             
-            document.getElementById('reserva-lista-bips').innerHTML = "";
-            reservaScanned.forEach(scan => addBipNaTela(scan.code, scan.desc));
+            renderListaBips(); 
             
             document.getElementById('item-reserva').focus();
         }
@@ -610,20 +632,45 @@
             }
             
             reservaScanned.push({ code: val, desc: desc });
-            document.getElementById('reserva-lbl-scan').innerText = reservaScanned.length;
             
-            addBipNaTela(val, desc);
+            renderListaBips(); 
             
             document.getElementById('item-reserva').value = '';
             document.getElementById('item-reserva').focus();
         }
 
-        function addBipNaTela(code, desc) {
-            let li = document.createElement('div');
-            li.style.padding = '10px'; li.style.borderBottom = '1px solid rgba(255,255,255,0.05)'; li.style.color = 'var(--neon-blue)';
-            li.innerHTML = `<i class="fas fa-box"></i> <b>${code}</b> <br><small style="color:#aaa;">${desc}</small>`;
-            document.getElementById('reserva-lista-bips').prepend(li);
+        // Renderiza a lista toda baseada no Array (permite edição)
+        function renderListaBips() {
+            document.getElementById('reserva-lbl-scan').innerText = reservaScanned.length;
+            const container = document.getElementById('reserva-lista-bips');
+            container.innerHTML = '';
+            
+            for (let i = reservaScanned.length - 1; i >= 0; i--) {
+                let scan = reservaScanned[i];
+                let li = document.createElement('div');
+                li.style.padding = '10px'; 
+                li.style.borderBottom = '1px solid rgba(255,255,255,0.05)'; 
+                li.style.display = 'flex'; 
+                li.style.justifyContent = 'space-between'; 
+                li.style.alignItems = 'center';
+                
+                li.innerHTML = `
+                    <div style="color: var(--neon-blue);">
+                        <i class="fas fa-box"></i> <b>${scan.code}</b> <br><small style="color:#aaa;">${scan.desc}</small>
+                    </div>
+                    <button style="background:transparent; border:none; color:var(--neon-red); font-size:1.4rem; cursor:pointer;" onclick="removerBipDaReserva(${i})">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                `;
+                container.appendChild(li);
+            }
         }
+
+        window.removerBipDaReserva = function(index) {
+            reservaScanned.splice(index, 1);
+            renderListaBips();
+            document.getElementById('item-reserva').focus();
+        };
 
         async function pausarReserva() {
             ticketsPendentes[activeTicket] = {
@@ -691,7 +738,7 @@
         }
 
         async function salvarReservaNuvem() {
-            if (!window.db) { alert("Sem conexão com a nuvem."); return; }
+            if (!window.db) { alert("Sem ligação à nuvem."); return; }
             document.getElementById('loading-overlay').style.display = 'flex';
             
             let statusFinal = (window.reservaResult.missingList.length === 0 && window.reservaResult.extrasList.length === 0) ? 'conforme' : 'divergente';
@@ -699,6 +746,7 @@
             const registro = {
                 ticket: window.reservaResult.ticket,
                 data_auditoria: new Date().toLocaleString('pt-BR'),
+                data_filtro: obterDataUniversal(), // DATA BLINDADA PARA O RELATÓRIO
                 nome_colaborador: window.reservaResult.auditor,
                 endereco_id: window.reservaResult.loc,
                 tipo_auditoria: 'reserva',
@@ -717,7 +765,7 @@
                     if(typeof localforage !== 'undefined') await localforage.setItem('vena_tickets_reserva', ticketsPendentes);
                 }
                 
-                alert("Registro " + activeTicket + " finalizado e salvo na nuvem!");
+                alert("Registo " + activeTicket + " finalizado e salvo na nuvem!");
                 
                 document.getElementById('reserva-step-3').style.display = 'none';
                 document.getElementById('reserva-step-1').style.display = 'block';
@@ -727,7 +775,7 @@
                 
             } catch(e) {
                 console.error(e);
-                alert("Erro ao salvar.");
+                alert("Erro ao gravar.");
             } finally {
                 document.getElementById('loading-overlay').style.display = 'none';
             }
@@ -816,6 +864,7 @@
             
             const registroAuditoria = {
                 data_auditoria: new Date().toLocaleString('pt-BR'),
+                data_filtro: obterDataUniversal(), // DATA BLINDADA PARA O RELATÓRIO
                 nome_colaborador: auditorInput,
                 setor: baseItem.sector,
                 endereco_id: baseItem.loc,
@@ -854,53 +903,67 @@
         }
 
         // ==========================================
-        // FETCH NUVEM E EXPORTAÇÕES (RELATÓRIOS)
+        // FETCH NUVEM E EXPORTAÇÕES (RELATÓRIOS BLINDADOS)
         // ==========================================
         window.carregarDadosDaNuvem = async function() {
             if (!window.db) { alert("Nuvem desconectada."); return; }
             const dateInput = document.getElementById('filter-date').value; 
             if(!dateInput) { alert("Selecione uma data!"); return; }
             const [ano, mes, dia] = dateInput.split('-');
-            const dataAlvo = `${dia}/${mes}/${ano}`; 
+            const dataAlvoUniversal = `${dia}/${mes}/${ano}`; // Formato cravado
             
-            const querySnapshot = await window.dbGetDocs(window.dbCollection(window.db, "auditorias"));
-            auditLog = []; dashboardStats = { total: 0, correct: 0, wrong: 0, sectors: {}, auditors: {} };
-            let countPicking = 0;
+            const btn = document.querySelector('button[onclick="window.carregarDadosDaNuvem()"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> A Buscar...`;
+            
+            try {
+                const querySnapshot = await window.dbGetDocs(window.dbCollection(window.db, "auditorias"));
+                auditLog = []; dashboardStats = { total: 0, correct: 0, wrong: 0, sectors: {}, auditors: {} };
+                let countPicking = 0;
 
-            querySnapshot.forEach((doc) => {
-                const data = doc.data();
-                if (data.data_auditoria && data.data_auditoria.includes(dataAlvo)) {
-                    auditLog.push(data); countPicking++;
-                    dashboardStats.total++;
-                    const isCorrect = (data.status === 'correto');
-                    isCorrect ? dashboardStats.correct++ : dashboardStats.wrong++;
-                    const setor = data.setor || 'Geral'; const auditor = data.nome_colaborador || 'Desconhecido';
-                    
-                    if (!dashboardStats.sectors[setor]) dashboardStats.sectors[setor] = { total: 0, errors: 0 };
-                    dashboardStats.sectors[setor].total++;
-                    if (!isCorrect) dashboardStats.sectors[setor].errors++;
-                    if (!dashboardStats.auditors[auditor]) dashboardStats.auditors[auditor] = 0;
-                    dashboardStats.auditors[auditor]++;
-                }
-            });
-            updateDashboard();
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if (data.data_filtro === dataAlvoUniversal || (data.data_auditoria && data.data_auditoria.includes(dataAlvoUniversal))) {
+                        auditLog.push(data); countPicking++;
+                        dashboardStats.total++;
+                        const isCorrect = (data.status === 'correto');
+                        isCorrect ? dashboardStats.correct++ : dashboardStats.wrong++;
+                        const setor = data.setor || 'Geral'; const auditor = data.nome_colaborador || 'Desconhecido';
+                        
+                        if (!dashboardStats.sectors[setor]) dashboardStats.sectors[setor] = { total: 0, errors: 0 };
+                        dashboardStats.sectors[setor].total++;
+                        if (!isCorrect) dashboardStats.sectors[setor].errors++;
+                        if (!dashboardStats.auditors[auditor]) dashboardStats.auditors[auditor] = 0;
+                        dashboardStats.auditors[auditor]++;
+                    }
+                });
+                updateDashboard();
 
-            const queryReserva = await window.dbGetDocs(window.dbCollection(window.db, "auditorias_reserva"));
-            auditReservaLog = [];
-            let countReserva = 0;
-            queryReserva.forEach((doc) => {
-                const data = doc.data();
-                if (data.data_auditoria && data.data_auditoria.includes(dataAlvo)) {
-                    auditReservaLog.push(data);
-                    countReserva++;
-                }
-            });
+                const queryReserva = await window.dbGetDocs(window.dbCollection(window.db, "auditorias_reserva"));
+                auditReservaLog = [];
+                let countReserva = 0;
+                queryReserva.forEach((doc) => {
+                    const data = doc.data();
+                    if (data.data_filtro === dataAlvoUniversal || (data.data_auditoria && data.data_auditoria.includes(dataAlvoUniversal))) {
+                        auditReservaLog.push(data);
+                        countReserva++;
+                    }
+                });
 
-            alert(`Sincronização Concluída!\n\nPicking encontrados: ${countPicking}\nReservas (Registros) encontrados: ${countReserva}`);
+                alert(`Sincronização Concluída!\n\nPicking encontrados: ${countPicking}\nReservas (Registos) encontrados: ${countReserva}`);
+            } catch(e) {
+                console.error(e); alert("Erro ao buscar dados.");
+            } finally {
+                btn.innerHTML = originalText;
+            }
         }
 
-        function exportAuditData() {
-            if (auditLog.length === 0) { alert("Nenhum dado de Picking."); return; }
+        async function exportAuditData() {
+            if (auditLog.length === 0) { 
+                alert("A procurar dados automaticamente da nuvem...");
+                await window.carregarDadosDaNuvem();
+                if (auditLog.length === 0) return; 
+            }
             const exportData = auditLog.map(({timestamp, ...rest}) => rest);
             const worksheet = XLSX.utils.json_to_sheet(exportData);
             const workbook = XLSX.utils.book_new();
@@ -908,12 +971,16 @@
             XLSX.writeFile(workbook, `Relatorio_Picking_${document.getElementById('filter-date').value}.xlsx`);
         }
 
-        function exportAuditReservaData() {
-            if (auditReservaLog.length === 0) { alert("Nenhum dado de Reserva para esta data. Busque na Nuvem primeiro."); return; }
+        async function exportAuditReservaData() {
+            if (auditReservaLog.length === 0) { 
+                alert("A procurar dados automaticamente da nuvem...");
+                await window.carregarDadosDaNuvem();
+                if (auditReservaLog.length === 0) return; 
+            }
             
             const exportData = auditReservaLog.map(item => {
                 return {
-                    Registro: item.ticket || "-",
+                    Registo: item.ticket || "-",
                     Data: item.data_auditoria,
                     Auditor: item.nome_colaborador,
                     Localizador: item.endereco_id,
@@ -926,7 +993,7 @@
 
             const worksheet = XLSX.utils.json_to_sheet(exportData);
             const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Reserva_Registros");
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Reserva_Registos");
             XLSX.writeFile(workbook, `Relatorio_Reserva_${document.getElementById('filter-date').value}.xlsx`);
         }
 
