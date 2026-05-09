@@ -12,20 +12,20 @@
     <style>
         /* PALETA DE CORES: AZUL, VERMELHO E BRANCO */
         :root {
-            --brand-blue: #0033A0;        /* Azul Escuro Corporativo */
+            --brand-blue: #0033A0;        
             --brand-blue-hover: #002277;  
-            --brand-blue-light: #E6F0FA;  /* Fundo azuladado bem claro */
+            --brand-blue-light: #E6F0FA;  
             
-            --brand-red: #DA291C;         /* Vermelho Vivo */
+            --brand-red: #DA291C;         
             --brand-red-hover: #B52015;
-            --brand-red-light: #FCEAE9;   /* Fundo avermelhado bem claro */
+            --brand-red-light: #FCEAE9;   
             
-            --brand-white: #FFFFFF;       /* Branco Puro */
-            --brand-bg: #F4F6F9;          /* Fundo da tela (Off-white) */
+            --brand-white: #FFFFFF;       
+            --brand-bg: #F4F6F9;          
             
-            --text-dark: #1A1A1A;         /* Texto principal */
-            --text-muted: #666666;        /* Texto secundário */
-            --border-light: #D1D9E6;      /* Bordas discretas */
+            --text-dark: #1A1A1A;         
+            --text-muted: #666666;        
+            --border-light: #D1D9E6;      
         }
 
         * { box-sizing: border-box; }
@@ -40,11 +40,10 @@
 
         h1, h2, h3, h4 { font-weight: normal; margin-top: 0; }
 
-        /* Cabeçalho */
         .navbar { 
             background: var(--brand-blue); 
             color: var(--brand-white); 
-            border-bottom: 4px solid var(--brand-red); /* Detalhe Vermelho */
+            border-bottom: 4px solid var(--brand-red); 
             padding: 0.75rem 2rem; 
             display: flex; 
             justify-content: space-between; 
@@ -58,7 +57,6 @@
         .logo { font-size: 1.3rem; font-weight: bold; display: flex; align-items: center; gap: 10px; letter-spacing: 1px;}
         .status-panel { display: flex; gap: 15px; font-size: 0.85rem;}
 
-        /* Abas de Navegação */
         .tab-container { 
             display: flex; 
             background: var(--brand-white);
@@ -89,7 +87,6 @@
         .view.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Cartões Brancos */
         .theme-card { 
             background: var(--brand-white); 
             border: 1px solid var(--border-light); 
@@ -101,7 +98,6 @@
 
         .theme-card-title { color: var(--brand-blue); font-size: 1.15rem; margin-bottom: 15px; font-weight: bold; border-bottom: 1px solid var(--brand-bg); padding-bottom: 10px;}
 
-        /* Formulários */
         .input-group { margin-bottom: 1.2rem; }
         .input-group label { display: block; color: var(--text-muted); margin-bottom: 5px; font-size: 0.85rem; font-weight: bold;}
         
@@ -119,7 +115,6 @@
         }
         .theme-input:focus { border-color: var(--brand-blue); box-shadow: 0 0 0 2px var(--brand-blue-light); }
 
-        /* Botões */
         .btn-primary { 
             background: var(--brand-blue); 
             color: var(--brand-white); 
@@ -146,8 +141,7 @@
         .cam-btn { background: var(--brand-bg); border: 1px solid #A0B0C0; color: var(--text-dark); border-radius: 4px; padding: 0 15px; cursor: pointer; transition: 0.2s; }
         .cam-btn:hover { background: #D1D9E6; color: var(--brand-blue); }
 
-        /* Feedback Boxes */
-        .feedback-box { padding: 20px; border-radius: 4px; text-align: center; margin-top: 15px; display: none; font-weight: bold;}
+        .feedback-box { padding: 20px; border-radius: 4px; text-align: left; margin-top: 15px; display: none; font-weight: bold;}
         .feedback-box.success { display: block; background: var(--brand-blue-light); border-left: 5px solid var(--brand-blue); color: var(--brand-blue); }
         .feedback-box.error { display: block; background: var(--brand-red-light); border-left: 5px solid var(--brand-red); color: var(--brand-red); }
 
@@ -157,7 +151,6 @@
         
         .input-row { display: flex; gap: 10px; }
         
-        /* Tabelas */
         table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem;}
         th { text-align: left; color: var(--brand-blue); padding: 12px 8px; border-bottom: 2px solid var(--brand-blue); font-weight: bold; background: var(--brand-bg);}
         td { padding: 12px 8px; border-bottom: 1px solid var(--border-light); color: var(--text-dark);}
@@ -171,16 +164,28 @@
         .stat-title { font-size: 0.85rem; color: var(--text-muted); font-weight: bold; text-transform: uppercase;}
         .stat-val { font-size: 2.2rem; font-weight: bold; color: var(--text-dark); display: block; margin-top: 5px;}
 
-        /* Overlays */
         .full-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 51, 160, 0.9); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; }
         #reader { width: 100%; max-width: 400px; border: 4px solid var(--brand-white); border-radius: 8px; overflow: hidden; background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.5);}
 
-        /* Badges e Tags */
         .theme-badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; }
         .badge-error { background: var(--brand-red-light); color: var(--brand-red); border: 1px solid var(--brand-red); }
         .badge-success { background: var(--brand-blue-light); color: var(--brand-blue); border: 1px solid var(--brand-blue); }
 
         .ticket-box { border: 1px solid var(--border-light); border-radius: 4px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; background: var(--brand-white); border-left: 4px solid var(--brand-red);}
+        
+        .loc-tag { background: #fff; padding: 4px 8px; border-radius: 4px; font-size: 0.9rem; margin-right: 6px; margin-bottom: 6px; color: var(--text-dark); border: 1px solid var(--border-light); display: inline-block; box-shadow: 0 2px 4px rgba(0,0,0,0.05);}
+        .loc-tag b { color: var(--brand-red); font-size: 1rem;}
+        .loc-tag i { color: var(--text-muted); font-size: 0.8rem; margin-right: 4px;}
+        
+        .alert-saved {
+            background: #E8F5E9; color: #2E7D32; border: 1px solid #A5D6A7; padding: 15px; border-radius: 8px;
+            margin-bottom: 20px; display: flex; align-items: center; gap: 15px; font-weight: bold;
+        }
+
+        .ai-insight {
+            background: #FFF8E1; border-left: 4px solid #FFC107; padding: 8px 12px; border-radius: 4px; font-size: 0.85rem; color: #424242; margin-top: 5px;
+        }
+        .ai-insight i { color: #FFC107; margin-right: 5px; font-size: 1rem;}
     </style>
 </head>
 <body>
@@ -219,8 +224,8 @@
     </div>
 
     <div class="tab-container">
-        <button class="tab-btn active" onclick="showTab('import', this)"><i class="fas fa-sync-alt"></i> Sincronização</button>
-        <button class="tab-btn" onclick="showTab('consult', this)"><i class="fas fa-search"></i> Busca Ativa</button>
+        <button class="tab-btn active" id="btn-tab-import" onclick="showTab('import', this)"><i class="fas fa-sync-alt"></i> Sincronização</button>
+        <button class="tab-btn" id="btn-tab-consult" onclick="showTab('consult', this)"><i class="fas fa-search"></i> Busca Ativa</button>
         <button class="tab-btn" onclick="showTab('audit', this)"><i class="fas fa-dolly-flatbed"></i> Auditar Picking</button>
         <button class="tab-btn" onclick="showTab('reserva', this)"><i class="fas fa-pallet"></i> Auditar Reserva</button>
         <button class="tab-btn" onclick="showTab('dashboard', this)"><i class="fas fa-chart-pie"></i> Painel de Desempenho</button>
@@ -229,23 +234,31 @@
     <div class="container">
         <div id="view-import" class="view active">
             
+            <div class="alert-saved">
+                <i class="fas fa-save" style="font-size: 2rem;"></i>
+                <div>
+                    Os dados já ficam salvos no aparelho de forma automática!<br>
+                    <span style="font-weight: normal; font-size: 0.9rem; color: var(--text-dark);">Só utilize esta tela quando necessitar importar planilhas novas (Actualizar o sistema) ou forçar download da Nuvem.</span>
+                </div>
+            </div>
+
             <div class="theme-card" style="border-left: 5px solid var(--brand-blue);">
                 <h3 class="theme-card-title"><i class="fas fa-cloud"></i> Distribuição em Nuvem</h3>
                 <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.95rem;">
-                    <strong>Equipe de Controle (PC):</strong> Faça a importação local dos arquivos e clique em "1. Enviar para Nuvem".<br>
-                    <strong>Operadores (Celular):</strong> Para iniciar o turno, clique em "2. Baixar da Nuvem".
+                    <strong>Equipa de Controlo (PC):</strong> Após carregar os Excel novos, clique em "1. Enviar para Nuvem".<br>
+                    <strong>Operadores (Telemóveis):</strong> O sistema baixa actualizações automaticamente. Use o botão 2 só se precisar forçar.
                 </p>
                 <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                     <button class="btn-primary btn-secondary" style="flex-grow: 1;" onclick="enviarBasesParaNuvem()">
                         <i class="fas fa-cloud-upload-alt"></i> 1. Enviar para Nuvem
                     </button>
                     <button class="btn-primary" style="flex-grow: 1; padding: 15px;" onclick="baixarBasesDaNuvem()">
-                        <i class="fas fa-cloud-download-alt"></i> 2. Baixar da Nuvem
+                        <i class="fas fa-cloud-download-alt"></i> 2. Forçar Download
                     </button>
                 </div>
             </div>
 
-            <h4 style="color: var(--brand-blue); margin-top: 30px; margin-bottom: 15px; font-weight: bold;"><i class="fas fa-desktop"></i> Carga Local (Uso Exclusivo do PC)</h4>
+            <h4 style="color: var(--brand-blue); margin-top: 30px; margin-bottom: 15px; font-weight: bold;"><i class="fas fa-desktop"></i> Carga Local / Actualização das Planilhas</h4>
             <div class="upload-grid">
                 <div class="theme-card" style="margin-bottom: 0;">
                     <div style="color: var(--text-dark); font-weight: bold; margin-bottom: 10px;"><i class="fas fa-map-marker-alt" style="color:var(--brand-red);"></i> Tabela Picking</div>
@@ -253,7 +266,7 @@
                         <i class="fas fa-file-excel" style="font-size: 2.5rem; color: var(--brand-blue); margin-bottom: 10px;"></i>
                         <input type="file" id="filePicking" hidden accept=".xlsx, .xls, .csv">
                     </div>
-                    <div id="info-picking" style="margin-top: 10px; color: var(--brand-red); text-align: center; font-size: 0.85rem; font-weight: bold;">Status: Vazio</div>
+                    <div id="info-picking" style="margin-top: 10px; color: var(--brand-red); text-align: center; font-size: 0.85rem; font-weight: bold;">Status: A aguardar Ficheiro</div>
                 </div>
 
                 <div class="theme-card" style="margin-bottom: 0;">
@@ -262,7 +275,7 @@
                         <i class="fas fa-file-excel" style="font-size: 2.5rem; color: var(--brand-blue); margin-bottom: 10px;"></i>
                         <input type="file" id="fileBarcodes" hidden accept=".xlsx, .xls, .csv">
                     </div>
-                    <div id="info-barcodes" style="margin-top: 10px; color: var(--brand-red); text-align: center; font-size: 0.85rem; font-weight: bold;">Status: Vazio</div>
+                    <div id="info-barcodes" style="margin-top: 10px; color: var(--brand-red); text-align: center; font-size: 0.85rem; font-weight: bold;">Status: A aguardar Ficheiro</div>
                 </div>
 
                 <div class="theme-card" style="margin-bottom: 0;">
@@ -271,20 +284,20 @@
                         <i class="fas fa-file-excel" style="font-size: 2.5rem; color: var(--brand-blue); margin-bottom: 10px;"></i>
                         <input type="file" id="fileReserva" hidden accept=".xlsx, .xls, .csv">
                     </div>
-                    <div id="info-reserva" style="margin-top: 10px; color: var(--brand-red); text-align: center; font-size: 0.85rem; font-weight: bold;">Status: Vazio</div>
+                    <div id="info-reserva" style="margin-top: 10px; color: var(--brand-red); text-align: center; font-size: 0.85rem; font-weight: bold;">Status: A aguardar Ficheiro</div>
                 </div>
             </div>
             
             <div style="text-align: right; margin-top: 20px;">
                 <button class="btn-danger" style="padding: 10px 15px; border-radius: 4px; font-weight:bold; cursor:pointer;" onclick="limparMemoriaLocal()">
-                    <i class="fas fa-eraser"></i> Limpar Dados do Aparelho
+                    <i class="fas fa-eraser"></i> Limpar Memória do Aparelho
                 </button>
             </div>
         </div>
 
         <div id="view-consult" class="view">
             <div class="theme-card" style="max-width: 600px; margin: 0 auto; border-top: 5px solid var(--brand-blue);">
-                <h3 class="theme-card-title" style="text-align: center;">Buscador de Alocação</h3>
+                <h3 class="theme-card-title" style="text-align: center;">Buscador de Alocação e Saldo</h3>
                 <div class="input-group">
                     <label>Código do Produto ou EAN</label>
                     <div class="input-row">
@@ -357,8 +370,8 @@
                         <b style="font-size: 1.5rem; color: #fff;" id="reserva-lbl-loc">---</b>
                     </div>
                     <div style="text-align: right; border-left: 1px solid rgba(255,255,255,0.3); padding-left: 15px;">
-                        <span style="font-size: 0.85rem; color: var(--brand-blue-light);">Sistema: <b id="reserva-lbl-exp" style="color: #fff;">0</b> un</span><br>
-                        <span style="font-size: 0.85rem; color: var(--brand-blue-light);">Contagem: <b id="reserva-lbl-scan" style="color: #fff; font-size: 1.3rem;">0</b> un</span>
+                        <span style="font-size: 0.85rem; color: var(--brand-blue-light);">Saldo Sist.: <b id="reserva-lbl-exp" style="color: #fff; font-size: 1.1rem;">0</b> un</span><br>
+                        <span style="font-size: 0.85rem; color: var(--brand-blue-light);">Físico Lido: <b id="reserva-lbl-scan" style="color: #fff; font-size: 1.3rem;">0</b> un</span>
                     </div>
                 </div>
 
@@ -469,7 +482,7 @@
                 <div class="theme-card">
                     <h3 class="theme-card-title">Ranking Operacional</h3>
                     <table>
-                        <thead><tr><th>Colaborador</th><th style="text-align: right;">Leituras</th></tr></thead>
+                        <thead><tr><th>Colaborador</th><th style="text-align: right;">Leituras Realizadas</th></tr></thead>
                         <tbody id="table-auditors"><tr><td colspan="2" style="text-align: center;">Vazio</td></tr></tbody>
                     </table>
                 </div>
@@ -477,7 +490,7 @@
 
             <div class="theme-card" style="margin-top: 20px; border-top: 4px solid var(--brand-red);">
                 <h3 class="theme-card-title" style="color: var(--brand-red);"><i class="fas fa-search-dollar"></i> Auditoria de Divergências (Picking)</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Listagem exata das falhas apontadas no piso.</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Listagem com Análise Inteligente do motivo do erro.</p>
                 <div style="overflow-x: auto;">
                     <table>
                         <thead>
@@ -485,12 +498,35 @@
                                 <th style="color: var(--brand-red); border-bottom: 2px solid var(--brand-red);">Hora</th>
                                 <th style="color: var(--brand-red); border-bottom: 2px solid var(--brand-red);">Colaborador</th>
                                 <th style="color: var(--brand-red); border-bottom: 2px solid var(--brand-red);">Endereço</th>
-                                <th style="color: var(--brand-red); border-bottom: 2px solid var(--brand-red);">Produto (Cadastro)</th>
-                                <th style="color: var(--brand-red); border-bottom: 2px solid var(--brand-red);">Bipado (Real)</th>
+                                <th style="color: var(--brand-red); border-bottom: 2px solid var(--brand-red);">Previsto / Bipado</th>
+                                <th style="color: var(--brand-red); border-bottom: 2px solid var(--brand-red);">Análise do Robô (I.A.)</th>
+                                <th style="color: var(--brand-red); border-bottom: 2px solid var(--brand-red); text-align:center;">Acções</th>
                             </tr>
                         </thead>
                         <tbody id="table-divergences-log">
-                            <tr><td colspan="5" style="text-align: center;">Gere o relatório acima.</td></tr>
+                            <tr><td colspan="6" style="text-align: center;">Gere o relatório acima.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="theme-card" style="margin-top: 20px; border-top: 4px solid var(--brand-blue);">
+                <h3 class="theme-card-title" style="color: var(--brand-blue);"><i class="fas fa-pallet"></i> Histórico de Inventário (Reserva)</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Listagem dos endereços de reserva com diagnóstico de furos ou sobras.</p>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr style="background: var(--brand-blue-light);">
+                                <th style="color: var(--brand-blue); border-bottom: 2px solid var(--brand-blue);">Hora</th>
+                                <th style="color: var(--brand-blue); border-bottom: 2px solid var(--brand-blue);">Colaborador</th>
+                                <th style="color: var(--brand-blue); border-bottom: 2px solid var(--brand-blue);">End. Reserva</th>
+                                <th style="color: var(--brand-blue); border-bottom: 2px solid var(--brand-blue);">Status Final</th>
+                                <th style="color: var(--brand-blue); border-bottom: 2px solid var(--brand-blue);">Detalhamento Sistêmico e Análise do Robô (I.A.)</th>
+                                <th style="color: var(--brand-blue); border-bottom: 2px solid var(--brand-blue); text-align:center;">Acções</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-reserva-log">
+                            <tr><td colspan="6" style="text-align: center;">Gere o relatório acima.</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -501,7 +537,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, serverTimestamp, getDocs, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, serverTimestamp, getDocs, doc, setDoc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyC5vCvhA6VjjcbGOZ2LgxvETcPQgnFhQ6U",
@@ -522,9 +558,15 @@
             window.dbDoc = doc;
             window.dbSetDoc = setDoc;
             window.dbGetDoc = getDoc;
+            window.dbDeleteDoc = deleteDoc; 
             
             document.getElementById('status-firebase').style.color = '#FFFFFF';
             document.getElementById('status-firebase').innerHTML = `<i class="fas fa-check-circle"></i> Nuvem Online`;
+
+            setTimeout(() => {
+                if(window.dispararAutoSync) window.dispararAutoSync();
+            }, 1500);
+
         } catch(e) {
             console.error("Erro Firebase: ", e);
         }
@@ -555,7 +597,6 @@
             return `${String(hoje.getDate()).padStart(2, '0')}/${String(hoje.getMonth() + 1).padStart(2, '0')}/${hoje.getFullYear()}`;
         }
 
-        // Variáveis de Estado
         let inventoryDB = {}; let productMap = {}; let barcodeDB = {}; let auditLog = []; 
         let dashboardStats = { total: 0, correct: 0, wrong: 0, sectors: {}, auditors: {} };
         let divergenciasLogData = []; 
@@ -567,16 +608,37 @@
         let ticketsPendentes = {};
         let auditReservaLog = []; 
 
-        document.addEventListener("DOMContentLoaded", () => {
+        document.addEventListener("DOMContentLoaded", async () => {
             checkAuth(); 
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('filter-date').value = today;
-            carregarBasesDaMemoriaLocal();
+            
+            const hasDataLoaded = await carregarBasesDaMemoriaLocal();
+            if(hasDataLoaded) {
+                const btnConsult = document.getElementById('btn-tab-consult');
+                showTab('consult', btnConsult);
+            }
         });
 
-        // ==========================================
-        // SINCRONIZAÇÃO NUVEM
-        // ==========================================
+        async function verificarAtualizacaoAutomatica() {
+            if (!window.db || typeof localforage === 'undefined') return;
+            try {
+                const metaSnap = await window.dbGetDoc(window.dbDoc(window.db, "bases_config", "picking_meta"));
+                if (metaSnap.exists()) {
+                    const cloudTimestamp = metaSnap.data().data;
+                    const localTimestamp = await localforage.getItem('vena_bases_timestamp');
+                    
+                    if (!localTimestamp || new Date(cloudTimestamp) > new Date(localTimestamp)) {
+                        console.log("Atualização detectada! Iniciando download automático...");
+                        await baixarBasesDaNuvem(true);
+                    }
+                }
+            } catch(e) {
+                console.log("Sincronização automática ignorada", e);
+            }
+        }
+        window.dispararAutoSync = verificarAtualizacaoAutomatica;
+
         function setTelaCarregamento(mostrar, titulo, desc, icon) {
             document.getElementById('loading-overlay').style.display = mostrar ? 'flex' : 'none';
             if(mostrar) {
@@ -586,7 +648,7 @@
             }
         }
 
-        async function enviarBasesParaNuvem() {
+        window.enviarBasesParaNuvem = async function() {
             if (!window.db) { alert("Aguarde a conexão com o banco de dados."); return; }
             if (Object.keys(inventoryDB).length === 0 && Object.keys(reservaDB).length === 0) {
                 alert("Nenhuma base em memória para transmitir."); return;
@@ -594,11 +656,12 @@
 
             try {
                 setTelaCarregamento(true, "Transmitindo Dados", "Enviando dados para o servidor central...", "fa-cloud-upload-alt");
+                const timestampISO = new Date().toISOString(); 
 
                 const uploadEmLotes = async (nome, arrayObj) => {
                     const TAMANHO_LOTE = 1500;
                     let totalLotes = Math.ceil(arrayObj.length / TAMANHO_LOTE);
-                    await window.dbSetDoc(window.dbDoc(window.db, "bases_config", nome + "_meta"), { lotes: totalLotes, data: new Date().toISOString() });
+                    await window.dbSetDoc(window.dbDoc(window.db, "bases_config", nome + "_meta"), { lotes: totalLotes, data: timestampISO });
                     for (let i = 0; i < totalLotes; i++) {
                         let lote = arrayObj.slice(i * TAMANHO_LOTE, (i + 1) * TAMANHO_LOTE);
                         await window.dbSetDoc(window.dbDoc(window.db, "bases_config", nome + "_" + i), { dados: JSON.stringify(lote) });
@@ -614,20 +677,20 @@
                 let rArray = []; for(let key in reservaDB) { rArray.push({loc: key, items: reservaDB[key]}); }
                 await uploadEmLotes("reserva", rArray);
 
-                alert("Transmissão concluída! A operação pode baixar os dados no coletor/celular.");
+                if(typeof localforage !== 'undefined') await localforage.setItem('vena_bases_timestamp', timestampISO);
+                alert("Transmissão concluída!");
             } catch(e) {
                 console.error(e);
-                alert("Erro de comunicação com o servidor.");
+                alert("Erro de comunicação.");
             } finally {
                 setTelaCarregamento(false);
             }
         }
 
-        async function baixarBasesDaNuvem() {
-            if (!window.db) { alert("Aguarde a conexão com o banco de dados."); return; }
+        window.baixarBasesDaNuvem = async function(isAuto = false) {
+            if (!window.db) { if(!isAuto) alert("Aguarde a conexão."); return; }
             try {
-                setTelaCarregamento(true, "Recebendo Dados", "Puxando informações mais recentes...", "fa-cloud-download-alt");
-
+                if(!isAuto) setTelaCarregamento(true, "Recebendo Dados", "Puxando informações...", "fa-cloud-download-alt");
                 const baixarLotes = async (nome) => {
                     const metaSnap = await window.dbGetDoc(window.dbDoc(window.db, "bases_config", nome + "_meta"));
                     if (!metaSnap.exists()) return [];
@@ -635,9 +698,7 @@
                     let arrayFinal = [];
                     for (let i = 0; i < totalLotes; i++) {
                         const loteSnap = await window.dbGetDoc(window.dbDoc(window.db, "bases_config", nome + "_" + i));
-                        if (loteSnap.exists()) {
-                            arrayFinal = arrayFinal.concat(JSON.parse(loteSnap.data().dados));
-                        }
+                        if (loteSnap.exists()) arrayFinal = arrayFinal.concat(JSON.parse(loteSnap.data().dados));
                     }
                     return arrayFinal;
                 };
@@ -646,12 +707,6 @@
                 const arrEan = await baixarLotes("ean");
                 const arrReserva = await baixarLotes("reserva");
 
-                if(arrPicking.length === 0 && arrReserva.length === 0) {
-                    alert("O servidor não possui bases ativas. A gerência deve enviar pelo PC primeiro.");
-                    setTelaCarregamento(false);
-                    return;
-                }
-
                 inventoryDB = {}; productMap = {};
                 arrPicking.forEach(item => {
                     inventoryDB[item.loc] = item;
@@ -659,103 +714,134 @@
                     if(!productMap[item.prod]) productMap[item.prod] = { desc: item.desc, locs: [], sector: item.sector };
                     if(!productMap[item.prod].locs.includes(item.loc)) productMap[item.prod].locs.push(item.loc);
                 });
-                if(arrPicking.length > 0) {
-                    document.getElementById('info-picking').innerHTML = `<i class="fas fa-check"></i> ${arrPicking.length} posições recebidas`;
-                    document.getElementById('info-picking').style.color = 'var(--brand-blue)';
-                    if(typeof localforage !== 'undefined') {
-                        await localforage.setItem('vena_base_picking_obj', inventoryDB);
-                        await localforage.setItem('vena_base_picking_map', productMap);
-                    }
-                }
-
+                
                 barcodeDB = {};
                 arrEan.forEach(item => { barcodeDB[item.b] = item.p; });
-                if(arrEan.length > 0) {
-                    document.getElementById('info-barcodes').innerHTML = `<i class="fas fa-check"></i> ${arrEan.length} códigos EAN`;
-                    document.getElementById('info-barcodes').style.color = 'var(--brand-blue)';
-                    if(typeof localforage !== 'undefined') await localforage.setItem('vena_base_ean_obj', barcodeDB);
+
+                reservaDB = {};
+                arrReserva.forEach(item => { reservaDB[item.loc] = item.items; });
+
+                if(typeof localforage !== 'undefined') {
+                    await localforage.setItem('vena_base_picking_obj', inventoryDB);
+                    await localforage.setItem('vena_base_picking_map', productMap);
+                    await localforage.setItem('vena_base_ean_obj', barcodeDB);
+                    await localforage.setItem('vena_base_reserva_obj', reservaDB);
+                    await localforage.setItem('vena_bases_nuvem_sync', true);
                 }
-
-                reservaDB = {}; let countReserva = 0;
-                arrReserva.forEach(item => {
-                    reservaDB[item.loc] = item.items;
-                    countReserva += item.items.length;
-                });
-                if(arrReserva.length > 0) {
-                    document.getElementById('info-reserva').innerHTML = `<i class="fas fa-check"></i> ${countReserva} pallets em reserva`;
-                    document.getElementById('info-reserva').style.color = 'var(--brand-blue)';
-                    if(typeof localforage !== 'undefined') await localforage.setItem('vena_base_reserva_obj', reservaDB);
-                }
-
-                if(typeof localforage !== 'undefined') await localforage.setItem('vena_bases_nuvem_sync', true);
-                alert("Carga efetuada com sucesso. Aparelho pronto.");
-
+                if(!isAuto) alert("Carga efectuada!");
             } catch(e) {
                 console.error(e);
-                alert("Falha na sincronização. Verifique o Wi-Fi ou 4G.");
             } finally {
                 setTelaCarregamento(false);
             }
         }
 
         // ==========================================
-        // CARREGAMENTO LOCAL / EXCEL
+        // LEITURA 100% BLINDADA COM A BIBLIOTECA XLSX
         // ==========================================
+        function parseNumberBR(val) {
+            if(val === undefined || val === null || val === '') return 0;
+            if(typeof val === 'number') return val;
+            let str = String(val).trim();
+            str = str.replace(/[^0-9,\.-]/g, '');
+            if(str === '') return 0;
+            if(str.includes(',') && str.includes('.')) {
+                if(str.lastIndexOf(',') > str.lastIndexOf('.')) {
+                    str = str.replace(/\./g, '').replace(',', '.');
+                } else {
+                    str = str.replace(/,/g, '');
+                }
+            } else if(str.includes(',')) {
+                str = str.replace(',', '.');
+            }
+            return parseFloat(str) || 0;
+        }
+
         async function salvarComOverlay(type, jsonData) {
-            setTelaCarregamento(true, "Lendo Planilha", "Estruturando banco de dados...", "fa-cog");
+            setTelaCarregamento(true, "A ler Planilha", "A estruturar base de dados...", "fa-cog");
             await new Promise(resolve => setTimeout(resolve, 300));
             try {
                 if (type === 'picking') {
-                    processPickingData(jsonData, false);
+                    processPickingData(jsonData);
                     if (typeof localforage !== 'undefined') await localforage.setItem('vena_base_picking', jsonData);
                 } else if (type === 'barcodes') {
-                    processBarcodeData(jsonData, false);
+                    processBarcodeData(jsonData);
                     if (typeof localforage !== 'undefined') await localforage.setItem('vena_base_ean', jsonData);
                 } else if (type === 'reserva') {
-                    processReservaData(jsonData, false);
+                    processReservaData(jsonData);
                     if (typeof localforage !== 'undefined') await localforage.setItem('vena_base_reserva', jsonData);
                 }
+                
+                if (typeof localforage !== 'undefined') {
+                    await localforage.setItem('vena_bases_timestamp', new Date('2100-01-01').toISOString());
+                    await localforage.setItem('vena_base_picking_obj', inventoryDB);
+                    await localforage.setItem('vena_base_picking_map', productMap);
+                    await localforage.setItem('vena_base_ean_obj', barcodeDB);
+                    await localforage.setItem('vena_base_reserva_obj', reservaDB);
+                    await localforage.setItem('vena_bases_nuvem_sync', true);
+                }
+
                 setTimeout(() => { 
                     setTelaCarregamento(false);
-                    alert("Importação finalizada. Clique em Enviar para a Nuvem."); 
+                    alert("Importação local finalizada no PC. Lembre-se de clicar em '1. Enviar para Nuvem'."); 
                 }, 500);
             } catch (e) {
                 setTelaCarregamento(false);
-                alert("Erro ao ler o arquivo Excel.");
+                alert("Erro ao ler o ficheiro.");
             }
         }
 
         async function carregarBasesDaMemoriaLocal() {
+            let dataFound = false;
             try {
                 if (typeof localforage !== 'undefined') {
                     const isCloudSync = await localforage.getItem('vena_bases_nuvem_sync');
                     if (isCloudSync) {
                         const pObj = await localforage.getItem('vena_base_picking_obj');
                         const pMap = await localforage.getItem('vena_base_picking_map');
-                        if(pObj && pMap) { inventoryDB = pObj; productMap = pMap; document.getElementById('info-picking').innerHTML = `<i class="fas fa-check"></i> Memória Local OK`; document.getElementById('info-picking').style.color = 'var(--brand-blue)'; }
+                        if(pObj && pMap) { 
+                            inventoryDB = pObj; productMap = pMap; 
+                            document.getElementById('info-picking').innerHTML = `<i class="fas fa-check"></i> Salvo na Memória`; 
+                            document.getElementById('info-picking').style.color = 'var(--brand-blue)'; 
+                            dataFound = true;
+                        }
 
                         const eObj = await localforage.getItem('vena_base_ean_obj');
-                        if(eObj) { barcodeDB = eObj; document.getElementById('info-barcodes').innerHTML = `<i class="fas fa-check"></i> Memória Local OK`; document.getElementById('info-barcodes').style.color = 'var(--brand-blue)'; }
+                        if(eObj) { 
+                            barcodeDB = eObj; 
+                            document.getElementById('info-barcodes').innerHTML = `<i class="fas fa-check"></i> Salvo na Memória`; 
+                            document.getElementById('info-barcodes').style.color = 'var(--brand-blue)'; 
+                        }
 
                         const rObj = await localforage.getItem('vena_base_reserva_obj');
-                        if(rObj) { reservaDB = rObj; document.getElementById('info-reserva').innerHTML = `<i class="fas fa-check"></i> Memória Local OK`; document.getElementById('info-reserva').style.color = 'var(--brand-blue)'; }
+                        if(rObj) { 
+                            reservaDB = rObj; 
+                            document.getElementById('info-reserva').innerHTML = `<i class="fas fa-check"></i> Salvo na Memória`; 
+                            document.getElementById('info-reserva').style.color = 'var(--brand-blue)'; 
+                            dataFound = true;
+                        }
                     } else {
                         const pickingSalvo = await localforage.getItem('vena_base_picking');
-                        if (pickingSalvo) processPickingData(pickingSalvo, false);
+                        if (pickingSalvo) { processPickingData(pickingSalvo); dataFound = true; }
+                        
                         const eanSalvo = await localforage.getItem('vena_base_ean');
-                        if (eanSalvo) processBarcodeData(eanSalvo, false);
+                        if (eanSalvo) processBarcodeData(eanSalvo);
+                        
                         const reservaSalva = await localforage.getItem('vena_base_reserva');
-                        if (reservaSalva) processReservaData(reservaSalva, false);
+                        if (reservaSalva) { processReservaData(reservaSalva); dataFound = true; }
                     }
 
                     const ticketsSalvos = await localforage.getItem('vena_tickets_reserva');
                     if (ticketsSalvos) { ticketsPendentes = ticketsSalvos; renderTicketsPendentes(); }
                 }
-            } catch(e) {}
+            } catch(e) {
+                console.error("Erro ao carregar cache local", e);
+            }
+            return dataFound;
         }
 
         async function limparMemoriaLocal() {
-            if(confirm("CUIDADO: Isso irá apagar a memória deste dispositivo. Continuar?")) {
+            if(confirm("CUIDADO: Isto irá apagar toda a memória deste dispositivo. Continuar?")) {
                 if (typeof localforage !== 'undefined') {
                     await localforage.clear();
                 }
@@ -768,88 +854,107 @@
         document.getElementById('fileBarcodes').addEventListener('change', e => handleExcelUpload(e, 'barcodes'));
         document.getElementById('fileReserva').addEventListener('change', e => handleExcelUpload(e, 'reserva'));
 
-        function parseManualCSV(text) {
-            const lines = text.split(/\r?\n/);
-            if (lines.length < 1) return [];
-            const delimiter = lines[0].includes(';') ? ';' : ',';
-            const headers = lines[0].split(delimiter).map(h => h.trim().replace(/^"|"$/g, ''));
-            const result = [];
-            for (let i = 1; i < lines.length; i++) {
-                if (!lines[i].trim()) continue;
-                const regex = new RegExp(`(${delimiter}|\\r?\\n|\\r|^)(?:"([^"]*(?:""[^"]*)*)"|([^"${delimiter}\\r\\n]*))`, 'gi');
-                let cols = []; let matches = null;
-                while (matches = regex.exec(lines[i])) {
-                    if (matches[2]) cols.push(matches[2].replace(/""/g, '"'));
-                    else cols.push(matches[3]);
-                }
-                let obj = {}; headers.forEach((h, idx) => { obj[h] = cols[idx] ? cols[idx].trim() : ''; });
-                result.push(obj);
-            }
-            return result;
-        }
-
         function handleExcelUpload(e, type) {
             const file = e.target.files[0];
             if (!file) return;
-            setTelaCarregamento(true, "Aguarde", "Processando arquivo...", "fa-cog");
+            setTelaCarregamento(true, "A aguardar", "A processar ficheiro com motor avançado...", "fa-cog");
+            
             const reader = new FileReader();
-            if (file.name.toLowerCase().endsWith('.csv')) {
-                reader.onload = async function(evt) {
-                    const jsonData = parseManualCSV(evt.target.result);
-                    await salvarComOverlay(type, jsonData);
-                };
-                reader.readAsText(file, 'ISO-8859-1'); 
-            } else {
-                reader.onload = async function(evt) {
+            reader.onload = async function(evt) {
+                try {
                     const data = new Uint8Array(evt.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
                     const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
                     const jsonData = XLSX.utils.sheet_to_json(firstSheet, {defval: ""});
+                    
                     await salvarComOverlay(type, jsonData);
-                };
-                reader.readAsArrayBuffer(file);
-            }
+                } catch(err) {
+                    console.error("Erro na leitura do ficheiro", err);
+                    alert("Erro ao ler o ficheiro. Certifique-se de que é um Excel ou CSV válido.");
+                    setTelaCarregamento(false);
+                }
+            };
+            reader.readAsArrayBuffer(file);
             e.target.value = ''; 
         }
 
         function cleanKey(str) { return !str ? '' : String(str).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/[^A-Z0-9]/g, ''); }
         function formatCode(val) { if(!val) return null; let str = String(val).trim(); if(str.endsWith('.0')) str = str.replace('.0', ''); return str.toUpperCase(); }
 
-        // ==========================================
-        // AUDITORIA RESERVA 
-        // ==========================================
-        function processReservaData(data, salvarMemoria = true) {
+        function buscarEnderecosSaldos(codigo) {
+            let resultados = [];
+            if(!codigo) return resultados;
+            let cleanCode = codigo.toString().replace(/^V0+/, ''); 
+            let mapLocs = new Set(); 
+
+            for(let key in inventoryDB) {
+                let item = inventoryDB[key];
+                if(key === item.loc && (item.prod === codigo || item.prod === cleanCode || barcodeDB[codigo] === item.prod || barcodeDB[item.prod] === codigo)) {
+                    let locKey = item.loc + '-P';
+                    if(!mapLocs.has(locKey)) {
+                        resultados.push({ loc: item.loc, saldo: item.saldo || 0, tipo: 'Picking' });
+                        mapLocs.add(locKey);
+                    }
+                }
+            }
+            
+            for(let loc in reservaDB) {
+                let items = reservaDB[loc];
+                let totalSaldoLocal = 0;
+                let achouNoLocal = false;
+                
+                items.forEach(i => {
+                    if(i.prod === codigo || i.lv === codigo || i.lv === cleanCode || i.prod === cleanCode || barcodeDB[codigo] === i.prod) {
+                        totalSaldoLocal += (i.expectedQtd || 0);
+                        achouNoLocal = true;
+                    }
+                });
+                
+                if(achouNoLocal) {
+                    let locKey = loc + '-R';
+                    if(!mapLocs.has(locKey)) {
+                        resultados.push({ loc: loc, saldo: totalSaldoLocal, tipo: 'Reserva' });
+                        mapLocs.add(locKey);
+                    }
+                }
+            }
+            return resultados;
+        }
+
+        function processReservaData(data) {
             reservaDB = {}; let count = 0;
             data.forEach(row => {
-                let loc = '', prod = '', lv = '', desc = '', qtd = 0;
+                let loc = '', prod = '', lv = '', desc = '';
+                let qtd = null;
+                
                 for (let k in row) {
                     const ck = cleanKey(k);
                     if (ck === 'LOCALIZADOR' || ck === 'ENDERECO') loc = row[k];
                     if (ck === 'PRODUTO') prod = row[k];
                     if (ck.includes('CODIGOLV') || ck.includes('CODIGOL')) lv = row[k];
                     if (ck.includes('DESCRICAO')) desc = row[k];
-                    if (ck === 'SALDO' || ck === 'QTD' || ck === 'QUANTIDADE') {
-                        qtd = parseFloat(row[k]) || 0;
+                    
+                    if (ck.includes('SALDO') || ck === 'QTD' || ck.includes('QUANTIDADE') || ck === 'ESTOQUE') {
+                        qtd = parseNumberBR(row[k]);
                     }
                 }
                 
                 if (loc && (prod || lv)) {
                     loc = formatCode(loc); prod = formatCode(prod); lv = formatCode(lv);
                     if (!reservaDB[loc]) reservaDB[loc] = [];
-                    
-                    if (qtd === 0 && row['SALDO'] === undefined && row['Saldo'] === undefined) qtd = 1;
+                    if (qtd === null) qtd = 0;
                     
                     let existing = reservaDB[loc].find(e => (lv && e.lv === lv) || (!lv && prod && e.prod === prod));
                     if (existing) {
-                        existing.expectedQtd += Math.max(0, qtd);
+                        existing.expectedQtd += qtd;
                     } else {
-                        reservaDB[loc].push({ prod: prod, lv: lv, desc: desc, expectedQtd: Math.max(0, qtd) });
+                        reservaDB[loc].push({ prod: prod, lv: lv, desc: desc, expectedQtd: qtd });
                         count++;
                     }
                 }
             });
             if (count > 0) {
-                document.getElementById('info-reserva').innerHTML = `<i class="fas fa-check"></i> ${count} itens alocados`;
+                document.getElementById('info-reserva').innerHTML = `<i class="fas fa-check"></i> Importado (${count})`;
                 document.getElementById('info-reserva').style.color = 'var(--brand-blue)';
             }
         }
@@ -860,10 +965,7 @@
             list.innerHTML = '';
             
             const keys = Object.keys(ticketsPendentes);
-            if(keys.length === 0) {
-                box.style.display = 'none';
-                return;
-            }
+            if(keys.length === 0) { box.style.display = 'none'; return; }
             box.style.display = 'block';
 
             keys.forEach(tkId => {
@@ -934,7 +1036,6 @@
             document.getElementById('reserva-lbl-exp').innerText = expectedUnits;
             
             renderListaBips(); 
-            
             document.getElementById('item-reserva').focus();
         }
 
@@ -945,14 +1046,16 @@
             let totalQtd = cx * un;
 
             if(!val) return;
-            if(totalQtd <= 0) { alert("Quantidade deve ser maior que zero."); return; }
+            if(totalQtd <= 0) { alert("A quantidade deve ser maior que zero."); return; }
             
-            let desc = 'Material não reconhecido (Risco de Sobra)';
+            let desc = 'Material não cadastrado';
             let cleanScan = val.replace(/^V0+/, ''); 
 
             if(reservaDB[reservaCurrentLoc]) {
                 let found = reservaDB[reservaCurrentLoc].find(e => e.prod === val || e.lv === val || e.lv === cleanScan);
                 if(found) desc = found.desc;
+            } else if (productMap[val] || productMap[cleanScan]) {
+                desc = (productMap[val] || productMap[cleanScan]).desc;
             }
             
             let existingScan = reservaScanned.find(e => e.code === val || e.cleanCode === cleanScan);
@@ -960,51 +1063,34 @@
                 existingScan.totalQtd += totalQtd;
                 existingScan.history.push(`${cx}cx de ${un}`);
             } else {
-                reservaScanned.push({ 
-                    code: val, 
-                    cleanCode: cleanScan, 
-                    desc: desc, 
-                    totalQtd: totalQtd,
-                    history: [`${cx}cx de ${un}`]
-                });
+                reservaScanned.push({ code: val, cleanCode: cleanScan, desc: desc, totalQtd: totalQtd, history: [`${cx}cx de ${un}`] });
             }
             
             renderListaBips(); 
             
             document.getElementById('item-reserva').value = '';
-            document.getElementById('qtd-caixas').value = '1';
-            document.getElementById('qtd-unidades').value = '1';
             document.getElementById('item-reserva').focus();
         }
 
         function renderListaBips() {
             let scannedUnits = reservaScanned.reduce((acc, curr) => acc + curr.totalQtd, 0);
             document.getElementById('reserva-lbl-scan').innerText = scannedUnits;
-            
-            const container = document.getElementById('reserva-lista-bips');
-            container.innerHTML = '';
+            const container = document.getElementById('reserva-lista-bips'); container.innerHTML = '';
             
             for (let i = reservaScanned.length - 1; i >= 0; i--) {
                 let scan = reservaScanned[i];
-                let li = document.createElement('div');
-                li.style.padding = '12px 15px'; 
-                li.style.borderBottom = '1px solid var(--border-light)'; 
-                li.style.display = 'flex'; 
-                li.style.justifyContent = 'space-between'; 
-                li.style.alignItems = 'center';
-                
-                li.innerHTML = `
-                    <div style="color: var(--text-dark);">
-                        <i class="fas fa-box" style="color: var(--brand-red);"></i> <b style="font-size: 1.1rem;">${scan.code}</b> 
-                        <span class="theme-badge badge-success" style="margin-left:8px; font-size: 0.85rem; background: var(--brand-blue); color: white; border:none;">${scan.totalQtd} un</span>
-                        <br><small style="color:var(--text-muted);">${scan.desc}</small>
-                        <br><small style="color:#aaa;">Somatória: ${scan.history.join(' + ')}</small>
-                    </div>
-                    <button class="btn-danger" style="padding: 8px 12px; border-radius: 4px; cursor: pointer;" onclick="removerBipDaReserva(${i})">
-                        <i class="fas fa-trash-alt"></i>
-                    </button>
-                `;
-                container.appendChild(li);
+                container.innerHTML += `
+                    <div style="padding:12px 15px; border-bottom:1px solid var(--border-light); display:flex; justify-content:space-between; align-items:center;">
+                        <div style="color: var(--text-dark);">
+                            <i class="fas fa-box" style="color: var(--brand-red);"></i> <b style="font-size: 1.1rem;">${scan.code}</b> 
+                            <span class="theme-badge badge-success" style="margin-left:8px; font-size: 0.85rem; background: var(--brand-blue); color: white; border:none;">${scan.totalQtd} un</span>
+                            <br><small style="color:var(--text-muted);">${scan.desc}</small>
+                            <br><small style="color:#aaa;">Soma: ${scan.history.join(' + ')}</small>
+                        </div>
+                        <button class="btn-danger" style="padding: 8px 12px; border-radius: 4px; cursor: pointer;" onclick="removerBipDaReserva(${i})">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>`;
             }
         }
 
@@ -1079,29 +1165,45 @@
         }
 
         function renderReservaQtdList(elementId, arr, color, icon, isDiff) {
-            let el = document.getElementById(elementId);
-            el.innerHTML = '';
-            if(arr.length === 0) {
-                el.innerHTML = `<div style="padding:10px; color:var(--text-muted); text-align:center;">Nenhuma divergência apurada</div>`;
-                return;
-            }
+            let el = document.getElementById(elementId); el.innerHTML = '';
+            if(arr.length === 0) { el.innerHTML = `<div style="padding:10px; color:var(--text-muted); text-align:center;">Nenhuma divergência apurada</div>`; return; }
+            
             arr.forEach(item => {
                 let code = item.code || item.lv || item.prod;
-                let textQtd = isDiff 
-                    ? `Físico Lançado: <b>${item.scanned}</b> | Previsto: <b>${item.expected}</b> <br><span style="color:${color}; font-weight:bold;">Ajustar: ${item.diff} un</span>` 
-                    : `Quantidade: <b>${item.qtd} un</b>`;
+                let desc = item.desc;
                 
-                el.innerHTML += `<div style="padding:10px; border-bottom:1px solid var(--border-light); color:var(--text-dark);">
-                    <i class="${icon}" style="color:${color}"></i> <b style="color:${color}; font-size:1.05rem;">${code}</b> 
-                    <br><small style="color:var(--text-muted);">${item.desc}</small>
-                    <div style="margin-top: 5px; font-size: 0.9rem; background: var(--brand-bg); padding: 5px 10px; border-radius: 4px; border-left: 3px solid ${color};">${textQtd}</div>
+                let locsData = buscarEnderecosSaldos(code).filter(l => l.loc !== reservaCurrentLoc);
+                let outrosEnderecos = "";
+
+                if(locsData.length > 0) {
+                    let tags = locsData.map(l => `<span class="loc-tag" style="border-left: 3px solid ${l.tipo === 'Picking' ? 'var(--brand-blue)' : 'var(--brand-red)'};" title="${l.tipo}"><i class="${l.tipo === 'Picking' ? 'fas fa-map-marker-alt' : 'fas fa-pallet'}" style="color:${l.tipo === 'Picking' ? 'var(--brand-blue)' : 'var(--brand-red)'}"></i> ${l.loc} (<b>Saldo: ${l.saldo} un</b>)</span>`).join("");
+                    
+                    outrosEnderecos = `<div style="margin-top:10px; border-top:1px dashed #ccc; padding-top:10px;">
+                        <small style="color: var(--text-muted);"><b><i class="fas fa-search-location"></i> Consta também nos endereços:</b></small><br>
+                        <div style="margin-top: 5px;">${tags}</div>
+                    </div>`;
+                } else {
+                    outrosEnderecos = `<div style="margin-top:10px; border-top:1px dashed #ccc; padding-top:10px;">
+                        <small style="color: var(--brand-red);"><b><i class="fas fa-exclamation-triangle"></i> Único endereço sistémico.</b> (Não consta em mais nenhum local na base)</small>
+                    </div>`;
+                }
+
+                let textQtd = isDiff 
+                    ? `Físico Contado: <b>${item.scanned}</b> | Saldo do Sistema: <b>${item.expected}</b> <br><span style="color:${color}; font-weight:bold; font-size:1rem;">Ajuste Sistémico: ${item.diff} un</span>` 
+                    : `Saldo Confirmado (Físico = Sist.): <b>${item.qtd} un</b>`;
+                
+                el.innerHTML += `<div style="padding:15px; border-bottom:1px solid var(--border-light); color:var(--text-dark);">
+                    <i class="${icon}" style="color:${color}"></i> <b style="color:${color}; font-size:1.15rem;">${code}</b> 
+                    <br><b style="font-size: 0.9rem;">${desc}</b>
+                    <div style="margin-top: 8px; font-size: 0.9rem; background: var(--brand-bg); padding: 8px 12px; border-radius: 4px; border-left: 4px solid ${color};">${textQtd}</div>
+                    ${outrosEnderecos}
                 </div>`;
             });
         }
 
         async function salvarReservaNuvem() {
             if (!window.db) { alert("Sistema de nuvem indisponível."); return; }
-            setTelaCarregamento(true, "Finalizando", "Salvando documento no banco...", "fa-sync");
+            setTelaCarregamento(true, "A finalizar", "A guardar o documento no banco...", "fa-sync");
             
             let statusFinal = (window.reservaResult.missingList.length === 0 && window.reservaResult.extrasList.length === 0) ? 'conforme' : 'divergente';
 
@@ -1112,9 +1214,9 @@
                 nome_colaborador: window.reservaResult.auditor,
                 endereco_id: window.reservaResult.loc,
                 tipo_auditoria: 'reserva',
-                conformes_lv: window.reservaResult.matchesList.map(m => `${m.code} (Qtd: ${m.qtd})`),
-                faltantes_lv: window.reservaResult.missingList.map(m => `${m.code} (Lido: ${m.scanned} / Sist: ${m.expected})`),
-                sobras_lv: window.reservaResult.extrasList.map(x => `${x.code} (Lido: ${x.scanned} / Sist: ${x.expected})`),
+                conformes_lv: window.reservaResult.matchesList.map(m => `${m.code} (Saldo Confirmado: ${m.qtd})`),
+                faltantes_lv: window.reservaResult.missingList.map(m => `${m.code} (Físico: ${m.scanned} / Sist: ${m.expected})`),
+                sobras_lv: window.reservaResult.extrasList.map(x => `${x.code} (Físico: ${x.scanned} / Sist: ${x.expected})`),
                 status: statusFinal
             };
 
@@ -1143,13 +1245,12 @@
             }
         }
 
-        // ==========================================
-        // AUDITORIA PICKING
-        // ==========================================
         function processPickingData(data) {
             inventoryDB = {}; productMap = {}; let count = 0;
             data.forEach(row => {
                 let loc = '', codLoc = '', prod = '', desc = '', rawSector = '';
+                let saldo = null;
+                
                 for (let k in row) {
                     const ck = cleanKey(k);
                     if (ck === 'LOCALIZADOR' || ck === 'ENDERECO') loc = row[k];
@@ -1157,19 +1258,26 @@
                     if (ck === 'PRODUTO') prod = row[k];
                     if (ck.includes('DESCRICAO')) desc = row[k];
                     if (ck === 'SECAO' || ck === 'SETOR') rawSector = row[k];
+                    
+                    if (ck.includes('SALDO') || ck === 'QTD' || ck.includes('QUANTIDADE') || ck === 'ESTOQUE') {
+                        saldo = parseNumberBR(row[k]);
+                    }
                 }
                 if (loc && prod) {
                     const strLoc = formatCode(loc), strCodLoc = formatCode(codLoc), strProd = formatCode(prod);
                     const mappedSector = rawSector ? String(rawSector).toUpperCase() : 'GERAL';
-                    const item = { loc: strLoc, codLoc: strCodLoc, prod: strProd, desc: desc, sector: mappedSector };
+                    if(saldo === null) saldo = 0;
+                    
+                    const item = { loc: strLoc, codLoc: strCodLoc, prod: strProd, desc: desc, sector: mappedSector, saldo: saldo };
+                    
                     inventoryDB[strLoc] = item; if (strCodLoc) inventoryDB[strCodLoc] = item;
                     if (!productMap[strProd]) productMap[strProd] = { desc: desc, locs: [], sector: mappedSector };
-                    productMap[strProd].locs.push(strLoc);
+                    if(!productMap[strProd].locs.includes(strLoc)) productMap[strProd].locs.push(strLoc);
                     count++;
                 }
             });
             if (count > 0) {
-                document.getElementById('info-picking').innerHTML = `<i class="fas fa-check"></i> ${count} registros ok.`;
+                document.getElementById('info-picking').innerHTML = `<i class="fas fa-check"></i> Importado (${count})`;
                 document.getElementById('info-picking').style.color = 'var(--brand-blue)';
             }
         }
@@ -1185,19 +1293,27 @@
                 }
                 if (barCodeVal && prodCodeVal) barcodeDB[barCodeVal] = prodCodeVal;
             });
-            document.getElementById('info-barcodes').innerHTML = `${Object.keys(barcodeDB).length} vínculos ok.`;
+            document.getElementById('info-barcodes').innerHTML = `<i class="fas fa-check"></i> Importado (${Object.keys(barcodeDB).length})`;
             document.getElementById('info-barcodes').style.color = 'var(--brand-blue)';
         }
 
         function executeConsult() {
-            if (Object.keys(inventoryDB).length === 0) { alert("Necessário Sincronização inicial."); return; }
+            if (Object.keys(inventoryDB).length === 0 && Object.keys(reservaDB).length === 0) { alert("Base de dados vazia. Realize a importação."); return; }
             const rawScan = formatCode(document.getElementById('consult-prod').value);
             if (!rawScan) return;
             let internalCode = barcodeDB[rawScan] ? barcodeDB[rawScan] : rawScan;
-            const productData = productMap[internalCode];
+            
+            let productData = productMap[internalCode];
+            let locsData = buscarEnderecosSaldos(internalCode);
 
-            if (productData && productData.locs.length > 0) {
-                showFeedback('consult-feedback', 'success', `<i class="fas fa-map-marker-alt" style="font-size:2rem; margin-bottom:10px;"></i><br><strong>ALOCAÇÃO DO SISTEMA:</strong><br><strong style="font-size:1.5rem;">${productData.locs.join(' ou ')}</strong><br><small style="color:var(--brand-blue);">${productData.desc}</small>`);
+            if (locsData.length > 0) {
+                let desc = productData ? productData.desc : (reservaScanned.find(e => e.code===internalCode)?.desc || "Produto localizado");
+                
+                let totalSaldo = locsData.reduce((acc, curr) => acc + curr.saldo, 0);
+                
+                let tagsHtml = locsData.map(l => `<span class="loc-tag" style="border-left: 3px solid ${l.tipo === 'Picking' ? 'var(--brand-blue)' : 'var(--brand-red)'}; font-size:1.1rem; padding: 6px 12px; margin-bottom:10px; display:inline-block;"><i class="${l.tipo === 'Picking' ? 'fas fa-map-marker-alt' : 'fas fa-pallet'}" style="color:${l.tipo === 'Picking' ? 'var(--brand-blue)' : 'var(--brand-red)'}"></i> ${l.loc} (<b>Saldo: ${l.saldo} un</b>)</span><br>`).join("");
+                
+                showFeedback('consult-feedback', 'success', `<i class="fas fa-search-location" style="font-size:2rem; margin-bottom:10px;"></i><br><strong>MAPA DE ALOCAÇÃO:</strong><br><small style="color:var(--brand-blue); display:block; margin-bottom:10px; font-size:1.1rem;">${desc}</small><div style="font-size:1.1rem; font-weight:bold; color:var(--brand-white); margin-bottom:15px; background:var(--brand-blue); padding:8px; border-radius:4px;">Saldo Total Sistémico: ${totalSaldo} un</div>${tagsHtml}`);
             } else {
                 showFeedback('consult-feedback', 'error', `<i class="fas fa-times-circle" style="font-size:2rem; margin-bottom:10px;"></i><br><strong>SKU NÃO LOCALIZADO</strong>`);
             }
@@ -1256,7 +1372,8 @@
             if (isCorrect) {
                 showFeedback('audit-feedback', 'success', `<strong>BATEU (OK)</strong><br><small style="color:var(--brand-blue);">${baseItem.desc}</small>`);
             } else {
-                const correctLocs = productMap[productCodeToValidate] ? productMap[productCodeToValidate].locs.join(' / ') : "Sem Alocação";
+                let pDataErr = productMap[productCodeToValidate] || {locs:[]};
+                const correctLocs = pDataErr.locs.length > 0 ? pDataErr.locs.join(' / ') : "Sem Alocação de Picking";
                 showFeedback('audit-feedback', 'error', `<strong>DIVERGÊNCIA FÍSICA</strong><br><div style="font-size: 0.9rem; text-align: left; margin-top: 10px; background:white; padding:10px; border-radius:4px; border:1px solid var(--brand-red);">Previsto (Sistema): <b>${baseItem.prod}</b><br>Lido no Local: <b style="color:var(--brand-red)">${productCodeToValidate}</b><br><span style="color: var(--text-muted);">Endereço original do produto lido: <b>${correctLocs}</b></span></div>`);
             }
             document.getElementById('scan-loc').value = ''; document.getElementById('scan-prod').value = '';
@@ -1264,19 +1381,31 @@
             updateDashboard();
         }
 
-        // ==========================================
-        // RELATÓRIOS 
-        // ==========================================
+        window.deletarRegistroDashboard = async function(colecao, docId) {
+            if(!confirm("⚠️ ATENÇÃO: Tem a certeza que deseja excluir permanentemente este registo do servidor? Esta acção não pode ser desfeita.")) return;
+            try {
+                setTelaCarregamento(true, "A excluir", "A remover auditoria da base de dados...", "fa-trash-alt");
+                await window.dbDeleteDoc(window.dbDoc(window.db, colecao, docId));
+                alert("Registo apagado com sucesso!");
+                window.carregarDadosDaNuvem(); 
+            } catch(e) {
+                console.error("Erro ao excluir doc:", e);
+                alert("Erro ao excluir o registo. Verifique a sua ligação à internet.");
+            } finally {
+                setTelaCarregamento(false);
+            }
+        }
+
         window.carregarDadosDaNuvem = async function() {
-            if (!window.db) { alert("Sem conexão online."); return; }
+            if (!window.db) { alert("Sem ligação online."); return; }
             const dateInput = document.getElementById('filter-date').value; 
-            if(!dateInput) { alert("Informe a data para puxar os dados."); return; }
+            if(!dateInput) { alert("Informe a data para extrair os dados."); return; }
             const [ano, mes, dia] = dateInput.split('-');
             const dataAlvoUniversal = `${dia}/${mes}/${ano}`; 
             
             const btn = document.querySelector('button[onclick="window.carregarDadosDaNuvem()"]');
             const originalText = btn.innerHTML;
-            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Baixando...`;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> A baixar...`;
             
             try {
                 const querySnapshot = await window.dbGetDocs(window.dbCollection(window.db, "auditorias"));
@@ -1298,6 +1427,7 @@
                         if (!isCorrect) {
                             dashboardStats.sectors[setor].errors++;
                             divergenciasLogData.push({
+                                id: doc.id,
                                 hora: data.data_auditoria.split(' ')[1] || '-',
                                 auditor: auditor,
                                 loc: data.endereco_id,
@@ -1311,21 +1441,24 @@
                     }
                 });
                 
-                divergenciasLogData.sort((a,b) => b.hora.localeCompare(a.hora));
-                updateDashboard();
-
                 const queryReserva = await window.dbGetDocs(window.dbCollection(window.db, "auditorias_reserva"));
                 auditReservaLog = [];
                 let countReserva = 0;
                 queryReserva.forEach((doc) => {
                     const data = doc.data();
                     if (data.data_filtro === dataAlvoUniversal || (data.data_auditoria && data.data_auditoria.includes(dataAlvoUniversal))) {
-                        auditReservaLog.push(data);
+                        auditReservaLog.push({ id: doc.id, ...data });
                         countReserva++;
+                        
+                        const auditor = data.nome_colaborador || 'Não Informado';
+                        if (!dashboardStats.auditors[auditor]) dashboardStats.auditors[auditor] = 0;
+                        dashboardStats.auditors[auditor]++; 
                     }
                 });
 
-                alert(`Extração Concluída!\nPicking Extraídos: ${countPicking}\nDocumentos Reserva: ${countReserva}`);
+                updateDashboard();
+
+                alert(`Dados Carregados com Sucesso!\n- Leituras de Picking: ${countPicking}\n- Endereços de Reserva Auditados: ${countReserva}`);
             } catch(e) {
                 console.error(e); alert("Falha na consulta ao servidor.");
             } finally {
@@ -1335,7 +1468,7 @@
 
         async function exportAuditData() {
             if (auditLog.length === 0) { alert("Carregue os dados da nuvem primeiro."); return; }
-            const exportData = auditLog.map(({timestamp, ...rest}) => rest);
+            const exportData = auditLog.map(({timestamp, id, ...rest}) => rest);
             const worksheet = XLSX.utils.json_to_sheet(exportData);
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, "Ranking");
@@ -1362,11 +1495,6 @@
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, "Inventarios");
             XLSX.writeFile(workbook, `Resultados_Reserva_${document.getElementById('filter-date').value}.xlsx`);
-        }
-
-        function showFeedback(elementId, type, message) {
-            const el = document.getElementById(elementId);
-            el.className = 'feedback-box ' + type; el.innerHTML = message;
         }
 
         function updateDashboard() {
@@ -1396,17 +1524,114 @@
 
             const tbodyDivergences = document.getElementById('table-divergences-log');
             tbodyDivergences.innerHTML = '';
+            divergenciasLogData.sort((a,b) => b.hora.localeCompare(a.hora));
+            
             if(divergenciasLogData.length === 0) {
-                tbodyDivergences.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--brand-blue); font-weight: bold;"><i class="fas fa-thumbs-up"></i> Sistema operando sem erros na data atual.</td></tr>`;
+                tbodyDivergences.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--brand-blue); font-weight: bold;"><i class="fas fa-thumbs-up"></i> Sistema a operar sem erros de picking na data actual.</td></tr>`;
             } else {
                 divergenciasLogData.forEach(div => {
+                    let analiseRobo = "";
+                    let codBipadoLimpo = div.bipado.replace(/^V0+/, '');
+                    let prodDataInfo = productMap[div.bipado] || productMap[codBipadoLimpo];
+
+                    if(prodDataInfo && prodDataInfo.locs && prodDataInfo.locs.length > 0) {
+                        analiseRobo = `<div class="ai-insight"><i class="fas fa-robot"></i><b>Inversão de Endereço:</b> O operador retirou o produto da <b>Rua ${prodDataInfo.locs.join(', ')}</b> por engano.</div>`;
+                    } else {
+                        analiseRobo = `<div class="ai-insight" style="background:#FCEAE9; border-left-color:var(--brand-red);"><i class="fas fa-robot" style="color:var(--brand-red);"></i><b>Produto Desconhecido:</b> Este código não possui endereço de picking na malha.</div>`;
+                    }
+
                     tbodyDivergences.innerHTML += `
                         <tr>
                             <td style="color: var(--text-muted);">${div.hora}</td>
                             <td style="color: var(--text-dark);">${div.auditor}</td>
                             <td style="font-weight: bold; color: var(--brand-blue);">${div.loc}</td>
-                            <td style="color: var(--text-dark);">${div.esperado}</td>
-                            <td style="color: var(--brand-red); font-weight: bold;">${div.bipado}</td>
+                            <td style="color: var(--text-dark);">
+                                <small>Sistema:</small> <b>${div.esperado}</b><br>
+                                <small>Lido:</small> <b style="color:var(--brand-red);">${div.bipado}</b>
+                            </td>
+                            <td>${analiseRobo}</td>
+                            <td style="text-align: center; vertical-align: middle;">
+                                <button class="btn-danger" style="padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;" onclick="deletarRegistroDashboard('auditorias', '${div.id}')" title="Excluir este erro">
+                                    <i class="fas fa-trash-alt"></i> Excluir
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+
+            const tbodyReserva = document.getElementById('table-reserva-log');
+            tbodyReserva.innerHTML = '';
+            
+            if(auditReservaLog.length === 0) {
+                tbodyReserva.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--brand-blue); font-weight: bold;"><i class="fas fa-info-circle"></i> Nenhum inventário de reserva no período.</td></tr>`;
+            } else {
+                auditReservaLog.sort((a,b) => {
+                    let horaA = a.data_auditoria ? a.data_auditoria.split(' ')[1] : '';
+                    let horaB = b.data_auditoria ? b.data_auditoria.split(' ')[1] : '';
+                    return horaB.localeCompare(horaA);
+                });
+
+                auditReservaLog.forEach(res => {
+                    let hora = res.data_auditoria ? res.data_auditoria.split(' ')[1] : '-';
+                    let statusBadge = res.status === 'conforme' ? '<span class="theme-badge badge-success" style="background:var(--brand-blue); color:white; border:none;">CONFORME</span>' : '<span class="theme-badge badge-error" style="background:var(--brand-red); color:white; border:none;">DIVERGENTE</span>';
+                    
+                    let detalhamentoHtml = "";
+                    let todosItens = [...(res.conformes_lv || []), ...(res.faltantes_lv || []), ...(res.sobras_lv || [])];
+                    
+                    todosItens.forEach(itemStr => {
+                        let code = itemStr.split(' ')[0].replace(/[()]/g, '');
+                        let pData = productMap[code] || { desc: "Produto não identificado", locs: [] };
+                        
+                        let locsData = buscarEnderecosSaldos(code).filter(l => l.loc !== res.endereco_id);
+                        let tagsHtml = "";
+
+                        if(locsData.length > 0) {
+                            tagsHtml = locsData.map(l => `<span class="loc-tag" style="border-left: 3px solid ${l.tipo === 'Picking' ? 'var(--brand-blue)' : 'var(--brand-red)'};" title="${l.tipo}"><i class="${l.tipo === 'Picking' ? 'fas fa-map-marker-alt' : 'fas fa-pallet'}" style="color:${l.tipo === 'Picking' ? 'var(--brand-blue)' : 'var(--brand-red)'}"></i> ${l.loc} (<b>Saldo: ${l.saldo}</b>)</span>`).join("");
+                            tagsHtml = `<div style="margin-top: 6px;">${tagsHtml}</div>`;
+                        } else {
+                            tagsHtml = `<div style="margin-top: 6px; font-size:0.8rem; color:var(--text-muted);"><i class="fas fa-info-circle"></i> Sem outras alocações sistémicas</div>`;
+                        }
+
+                        let corLinha = "#fff"; let bordaLinha = "var(--border-light)";
+                        if(res.faltantes_lv && res.faltantes_lv.some(f => f.includes(code))) { corLinha = "var(--brand-red-light)"; bordaLinha = "var(--brand-red)"; }
+                        else if(res.sobras_lv && res.sobras_lv.some(s => s.includes(code))) { corLinha = "#FFF3E0"; bordaLinha = "#FF8C00"; }
+
+                        detalhamentoHtml += `<div style="margin-bottom:8px; padding:8px; border-radius:4px; background:${corLinha}; border:1px solid ${bordaLinha}; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                            <div style="display:flex; justify-content:space-between; align-items:start;">
+                                <div><b style="color:var(--text-dark); font-size:1.05rem;">${code}</b> - <small style="font-weight:bold; color:var(--text-muted);">${pData.desc}</small></div>
+                                <div style="font-size:0.8rem; font-weight:bold; color:var(--text-dark); text-align:right;">${itemStr.replace(code, '').trim()}</div>
+                            </div>
+                            ${tagsHtml}
+                        </div>`;
+                    });
+
+                    let analiseRobo = "";
+                    if(res.status !== 'conforme') {
+                        let motivos = [];
+                        if(res.faltantes_lv && res.faltantes_lv.length > 0) motivos.push("<b>Furo de Estoque:</b> Retirada física ocorreu sem a baixa no sistema");
+                        if(res.sobras_lv && res.sobras_lv.length > 0) motivos.push("<b>Sobra Física:</b> Entrada física no endereço ocorreu sem lançamento no sistema");
+                        
+                        analiseRobo = `<div class="ai-insight" style="margin-top: 10px; font-size: 0.9rem;">
+                                        <i class="fas fa-robot"></i> <b>Diagnóstico I.A:</b><br> ${motivos.join('.<br>')}
+                                      </div>`;
+                    }
+
+                    tbodyReserva.innerHTML += `
+                        <tr>
+                            <td style="color: var(--text-muted);">${hora}</td>
+                            <td style="color: var(--text-dark);">${res.nome_colaborador}</td>
+                            <td style="font-weight: bold; color: var(--brand-blue); font-size:1.1rem;">${res.endereco_id}</td>
+                            <td>${statusBadge}</td>
+                            <td style="font-size: 0.85rem; padding: 10px;">
+                                ${detalhamentoHtml}
+                                ${analiseRobo}
+                            </td>
+                            <td style="text-align: center; vertical-align: middle;">
+                                <button class="btn-danger" style="padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;" onclick="deletarRegistroDashboard('auditorias_reserva', '${res.id}')" title="Excluir este inventário">
+                                    <i class="fas fa-trash-alt"></i> Excluir
+                                </button>
+                            </td>
                         </tr>
                     `;
                 });
