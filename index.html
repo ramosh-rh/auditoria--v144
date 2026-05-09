@@ -3,336 +3,499 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vena144 - Auditoria Cloud V21.1</title>
+    <title>Vena144 - Blue & Red Corporate</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
     
     <style>
+        /* PALETA DE CORES: AZUL, VERMELHO E BRANCO */
         :root {
-            --neon-purple: #bc13fe; --neon-blue: #00d2ff; --neon-green: #39ff14; 
-            --neon-red: #ff3131; --neon-orange: #ff9900; --dark-bg: #0b0e14;
-            --card-bg: rgba(25, 30, 41, 0.8); --glass-border: rgba(188, 19, 254, 0.3);
+            --brand-blue: #0033A0;        /* Azul Escuro Corporativo */
+            --brand-blue-hover: #002277;  
+            --brand-blue-light: #E6F0FA;  /* Fundo azuladado bem claro */
+            
+            --brand-red: #DA291C;         /* Vermelho Vivo */
+            --brand-red-hover: #B52015;
+            --brand-red-light: #FCEAE9;   /* Fundo avermelhado bem claro */
+            
+            --brand-white: #FFFFFF;       /* Branco Puro */
+            --brand-bg: #F4F6F9;          /* Fundo da tela (Off-white) */
+            
+            --text-dark: #1A1A1A;         /* Texto principal */
+            --text-muted: #666666;        /* Texto secundário */
+            --border-light: #D1D9E6;      /* Bordas discretas */
         }
+
         * { box-sizing: border-box; }
-        body { background-color: var(--dark-bg); background-image: radial-gradient(circle at 50% 50%, #1a1f2e 0%, #0b0e14 100%); color: #e0e0e0; font-family: 'Rajdhani', sans-serif; margin: 0; min-height: 100vh; }
-        h1, h2, h3, .font-tech { font-family: 'Orbitron', sans-serif; text-transform: uppercase; letter-spacing: 2px; }
-        .navbar { background: rgba(0, 0, 0, 0.8); border-bottom: 1px solid var(--glass-border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-        .logo { color: var(--neon-blue); font-size: 1.5rem; font-weight: bold; text-shadow: 0 0 10px var(--neon-blue); display: flex; align-items: center; gap: 10px;}
-        .status-panel { display: flex; gap: 15px; font-size: 0.9rem; font-weight: bold;}
-        .tab-container { display: flex; gap: 10px; margin: 20px; justify-content: center; flex-wrap: wrap; }
-        .tab-btn { background: transparent; border: 1px solid var(--glass-border); color: #fff; padding: 10px 20px; cursor: pointer; transition: 0.3s; font-weight: 600; border-radius: 4px; }
-        .tab-btn.active { background: var(--neon-purple); box-shadow: 0 0 15px var(--neon-purple); border-color: transparent; }
+        
+        body { 
+            background-color: var(--brand-bg); 
+            color: var(--text-dark); 
+            font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif; 
+            margin: 0; 
+            min-height: 100vh; 
+        }
+
+        h1, h2, h3, h4 { font-weight: normal; margin-top: 0; }
+
+        /* Cabeçalho */
+        .navbar { 
+            background: var(--brand-blue); 
+            color: var(--brand-white); 
+            border-bottom: 4px solid var(--brand-red); /* Detalhe Vermelho */
+            padding: 0.75rem 2rem; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            position: sticky; 
+            top: 0; 
+            z-index: 100;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .logo { font-size: 1.3rem; font-weight: bold; display: flex; align-items: center; gap: 10px; letter-spacing: 1px;}
+        .status-panel { display: flex; gap: 15px; font-size: 0.85rem;}
+
+        /* Abas de Navegação */
+        .tab-container { 
+            display: flex; 
+            background: var(--brand-white);
+            border-bottom: 1px solid var(--border-light);
+            padding: 0 20px;
+            overflow-x: auto;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        
+        .tab-btn { 
+            background: transparent; 
+            border: none; 
+            border-bottom: 4px solid transparent;
+            color: var(--text-muted); 
+            padding: 15px 20px; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            font-weight: bold; 
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+        
+        .tab-btn:hover { color: var(--brand-blue); background: var(--brand-blue-light); }
+        .tab-btn.active { color: var(--brand-blue); border-bottom-color: var(--brand-red); }
+
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        .view { display: none; animation: slideUp 0.5s ease-out; }
+        .view { display: none; animation: fadeIn 0.3s ease-in-out; }
         .view.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .glass-card { background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 15px; padding: 25px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8); margin-bottom: 20px; }
-        .input-group { margin-bottom: 20px; }
-        .input-group label { display: block; color: var(--neon-blue); margin-bottom: 8px; font-size: 0.9rem; font-weight: bold;}
-        .tech-input { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid #333; padding: 15px; color: #fff; font-size: 1.2rem; border-radius: 8px; outline: none; transition: 0.3s; font-family: 'Rajdhani'; font-weight: bold; }
-        .tech-input:focus { border-color: var(--neon-purple); box-shadow: 0 0 10px rgba(188, 19, 254, 0.5); }
-        .btn-neon { background: transparent; border: 2px solid var(--neon-green); color: var(--neon-green); padding: 12px 30px; font-weight: bold; cursor: pointer; border-radius: 5px; transition: 0.3s; text-transform: uppercase; font-family: 'Orbitron'; margin-bottom: 10px; }
-        .btn-neon:hover { background: var(--neon-green); color: #000; box-shadow: 0 0 20px var(--neon-green); }
-        .btn-export { border-color: var(--neon-orange); color: var(--neon-orange); width: auto;}
-        .btn-export:hover { background: var(--neon-orange); color: #000; box-shadow: 0 0 20px var(--neon-orange); }
-        .btn-export-reserva { border-color: var(--neon-blue); color: var(--neon-blue); width: auto;}
-        .btn-export-reserva:hover { background: var(--neon-blue); color: #000; box-shadow: 0 0 20px var(--neon-blue); }
-        .feedback-box { padding: 30px; border-radius: 10px; text-align: center; margin-top: 20px; display: none; }
-        .feedback-box.success { display: block; background: rgba(57, 255, 20, 0.1); border: 1px solid var(--neon-green); color: var(--neon-green); box-shadow: 0 0 20px rgba(57, 255, 20, 0.2); }
-        .feedback-box.error { display: block; background: rgba(255, 49, 49, 0.1); border: 1px solid var(--neon-red); color: var(--neon-red); box-shadow: 0 0 20px rgba(255, 49, 49, 0.2); animation: shake 0.4s; }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
-        .upload-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        .upload-zone { border: 2px dashed var(--glass-border); padding: 30px 20px; text-align: center; border-radius: 15px; cursor: pointer; transition: 0.3s; height: 100%; }
-        .upload-zone:hover { border-color: var(--neon-blue); background: rgba(0, 210, 255, 0.05); }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th { text-align: left; color: var(--neon-blue); padding: 12px; border-bottom: 2px solid #333; }
-        td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .progress-bar { height: 8px; background: #222; border-radius: 4px; overflow: hidden; margin-top: 5px; }
-        .progress-fill { height: 100%; transition: width 1s; }
-        .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
-        .stat-box { text-align: center; padding: 20px; border-radius: 10px; background: rgba(255,255,255,0.03); }
-        .stat-val { font-size: 2.5rem; font-weight: bold; display: block; margin: 10px 0;}
-        .sync-badge { background: var(--neon-purple); color: #fff; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; margin-left: 10px; display: none;}
-        .sync-badge.active { display: inline-block; animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-        .full-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.98); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-        #reader { width: 100%; max-width: 400px; border: 2px solid var(--neon-green); border-radius: 10px; overflow: hidden; background: #000; }
-        .cam-btn { background: transparent; border: 2px solid var(--neon-blue); color: var(--neon-blue); border-radius: 8px; padding: 0 20px; cursor: pointer; transition: 0.3s; }
-        .cam-btn:hover { background: var(--neon-blue); color: #000; box-shadow: 0 0 15px var(--neon-blue); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Cartões Brancos */
+        .theme-card { 
+            background: var(--brand-white); 
+            border: 1px solid var(--border-light); 
+            border-radius: 8px; 
+            padding: 1.5rem; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
+            margin-bottom: 1.5rem; 
+        }
+
+        .theme-card-title { color: var(--brand-blue); font-size: 1.15rem; margin-bottom: 15px; font-weight: bold; border-bottom: 1px solid var(--brand-bg); padding-bottom: 10px;}
+
+        /* Formulários */
+        .input-group { margin-bottom: 1.2rem; }
+        .input-group label { display: block; color: var(--text-muted); margin-bottom: 5px; font-size: 0.85rem; font-weight: bold;}
+        
+        .theme-input { 
+            width: 100%; 
+            background: var(--brand-white); 
+            border: 1px solid #A0B0C0; 
+            padding: 0.8rem; 
+            color: var(--text-dark); 
+            font-size: 1rem; 
+            border-radius: 4px; 
+            outline: none; 
+            transition: 0.2s; 
+            font-weight: 500;
+        }
+        .theme-input:focus { border-color: var(--brand-blue); box-shadow: 0 0 0 2px var(--brand-blue-light); }
+
+        /* Botões */
+        .btn-primary { 
+            background: var(--brand-blue); 
+            color: var(--brand-white); 
+            border: none; 
+            padding: 0.8rem 1.5rem; 
+            font-weight: bold; 
+            cursor: pointer; 
+            border-radius: 4px; 
+            transition: 0.2s; 
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-primary:hover { background: var(--brand-blue-hover); box-shadow: 0 4px 8px rgba(0,51,160,0.2); }
+        
+        .btn-secondary { background: var(--brand-white); color: var(--brand-blue); border: 1px solid var(--brand-blue); }
+        .btn-secondary:hover { background: var(--brand-blue-light); }
+        
+        .btn-danger { background: var(--brand-red); color: var(--brand-white); border: none; }
+        .btn-danger:hover { background: var(--brand-red-hover); box-shadow: 0 4px 8px rgba(218,41,28,0.2); }
+
+        .cam-btn { background: var(--brand-bg); border: 1px solid #A0B0C0; color: var(--text-dark); border-radius: 4px; padding: 0 15px; cursor: pointer; transition: 0.2s; }
+        .cam-btn:hover { background: #D1D9E6; color: var(--brand-blue); }
+
+        /* Feedback Boxes */
+        .feedback-box { padding: 20px; border-radius: 4px; text-align: center; margin-top: 15px; display: none; font-weight: bold;}
+        .feedback-box.success { display: block; background: var(--brand-blue-light); border-left: 5px solid var(--brand-blue); color: var(--brand-blue); }
+        .feedback-box.error { display: block; background: var(--brand-red-light); border-left: 5px solid var(--brand-red); color: var(--brand-red); }
+
+        .upload-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .upload-zone { border: 2px dashed var(--brand-blue); padding: 20px; text-align: center; border-radius: 4px; cursor: pointer; transition: 0.2s; background: var(--brand-white); }
+        .upload-zone:hover { background: var(--brand-blue-light); }
+        
         .input-row { display: flex; gap: 10px; }
-        .ticket-box { background: rgba(0,0,0,0.4); border: 1px solid var(--neon-purple); border-radius: 8px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .ticket-info { color: #fff; }
-        .ticket-btn { background: var(--neon-purple); color: #fff; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        
+        /* Tabelas */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem;}
+        th { text-align: left; color: var(--brand-blue); padding: 12px 8px; border-bottom: 2px solid var(--brand-blue); font-weight: bold; background: var(--brand-bg);}
+        td { padding: 12px 8px; border-bottom: 1px solid var(--border-light); color: var(--text-dark);}
+        tr:hover td { background: var(--brand-blue-light); }
+
+        .progress-bar { height: 6px; background: var(--border-light); border-radius: 3px; overflow: hidden; margin-top: 5px; }
+        .progress-fill { height: 100%; transition: width 1s; }
+
+        .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
+        .stat-box { text-align: left; padding: 20px; border-radius: 4px; border-left: 5px solid var(--brand-blue); }
+        .stat-title { font-size: 0.85rem; color: var(--text-muted); font-weight: bold; text-transform: uppercase;}
+        .stat-val { font-size: 2.2rem; font-weight: bold; color: var(--text-dark); display: block; margin-top: 5px;}
+
+        /* Overlays */
+        .full-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 51, 160, 0.9); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        #reader { width: 100%; max-width: 400px; border: 4px solid var(--brand-white); border-radius: 8px; overflow: hidden; background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.5);}
+
+        /* Badges e Tags */
+        .theme-badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; }
+        .badge-error { background: var(--brand-red-light); color: var(--brand-red); border: 1px solid var(--brand-red); }
+        .badge-success { background: var(--brand-blue-light); color: var(--brand-blue); border: 1px solid var(--brand-blue); }
+
+        .ticket-box { border: 1px solid var(--border-light); border-radius: 4px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; background: var(--brand-white); border-left: 4px solid var(--brand-red);}
     </style>
 </head>
 <body>
 
     <div id="login-modal" class="full-overlay" style="display: flex; z-index: 10000;">
-        <div class="glass-card" style="text-align: center; max-width: 400px; width: 90%;">
-            <i class="fas fa-plus" style="font-size: 4rem; color: var(--neon-green); text-shadow: 0 0 15px var(--neon-green); margin-bottom: 20px;"></i>
-            <h2 class="font-tech" style="color: #fff; margin-bottom: 5px;">VENA144</h2>
-            <p style="color: #888; margin-bottom: 25px;">Sistema de Auditoria Cloud</p>
-            <input type="password" id="sys-password" class="tech-input" placeholder="Senha..." style="margin-bottom: 20px; text-align: center;" onkeypress="if(event.key === 'Enter') checkPassword()">
-            <button class="btn-neon" style="width: 100%;" onclick="checkPassword()"><i class="fas fa-unlock"></i> ACESSAR SISTEMA</button>
-            <div id="login-error" style="color: var(--neon-red); margin-top: 15px; font-weight: bold; display: none;"><i class="fas fa-exclamation-triangle"></i> Senha Incorreta!</div>
+        <div class="theme-card" style="text-align: center; max-width: 400px; width: 90%; margin: auto; box-shadow: 0 15px 35px rgba(0,0,0,0.3);">
+            <i class="fas fa-layer-group" style="font-size: 3rem; color: var(--brand-blue); margin-bottom: 15px;"></i>
+            <h2 style="color: var(--brand-blue); margin-bottom: 5px; font-weight: bold;">VENA144</h2>
+            <p style="color: var(--text-muted); margin-bottom: 25px; font-size: 0.9rem;">Área Restrita do Operador</p>
+            <input type="password" id="sys-password" class="theme-input" placeholder="Digite sua senha..." style="margin-bottom: 20px; text-align: center;" onkeypress="if(event.key === 'Enter') checkPassword()">
+            <button class="btn-primary" style="width: 100%;" onclick="checkPassword()">AUTENTICAR</button>
+            <div id="login-error" style="color: var(--brand-red); margin-top: 15px; font-size: 0.9rem; font-weight: bold; display: none;">Credenciais inválidas.</div>
         </div>
     </div>
 
-    <div id="loading-overlay" class="full-overlay" style="z-index: 10001;">
-        <i class="fas fa-cloud-upload-alt fa-beat" id="loading-icon" style="font-size: 5rem; color: var(--neon-blue); margin-bottom: 20px;"></i>
-        <h2 id="loading-title" class="font-tech" style="color: var(--neon-blue); text-align: center;">SALVANDO...</h2>
-        <p id="loading-desc" style="color: #fff; text-align: center; max-width: 80%;">A atualizar os dados do sistema.<br>Aguarde um momento!</p>
+    <div id="loading-overlay" class="full-overlay" style="z-index: 10001; background: rgba(255,255,255,0.95);">
+        <i class="fas fa-spinner fa-spin" id="loading-icon" style="font-size: 4rem; color: var(--brand-blue); margin-bottom: 20px;"></i>
+        <h2 id="loading-title" style="color: var(--brand-blue); text-align: center; font-weight: bold;">PROCESSANDO</h2>
+        <p id="loading-desc" style="color: var(--text-muted); text-align: center;">Por favor, aguarde a operação.</p>
     </div>
 
     <nav class="navbar">
         <div class="logo">
-            <i class="fas fa-plus" style="color: var(--neon-green); text-shadow: 0 0 5px var(--neon-green);"></i>
-            <span>Vena144</span>
-            <span id="sync-status" class="sync-badge"><i class="fas fa-sync fa-spin"></i> Nuvem...</span>
+            <i class="fas fa-cubes"></i>
+            <span>Vena144 <small style="font-weight: normal; font-size: 0.7rem; color: #E6F0FA;">| CORP</small></span>
         </div>
         <div class="status-panel">
-            <div id="status-firebase" style="color: var(--neon-red);"><i class="fas fa-wifi"></i> Nuvem: Conectando...</div>
+            <div id="status-firebase" style="color: #ffcccc;"><i class="fas fa-wifi"></i> Conectando à Nuvem...</div>
         </div>
     </nav>
 
-    <div id="scanner-modal" class="full-overlay">
-        <h3 class="font-tech" style="color: var(--neon-green); margin-bottom: 20px;"><i class="fas fa-camera"></i> Escaneie o Código</h3>
+    <div id="scanner-modal" class="full-overlay" style="background: rgba(0,0,0,0.9);">
+        <h3 style="color: var(--brand-white); margin-bottom: 20px;">Escaneie a Etiqueta</h3>
         <div id="reader"></div>
-        <button class="btn-neon" style="margin-top: 30px; border-color: var(--neon-red); color: var(--neon-red);" onclick="closeScanner()"><i class="fas fa-times"></i> Cancelar</button>
+        <button class="btn-danger" style="margin-top: 30px; padding: 10px 30px; border-radius: 4px; font-weight: bold; border: none; cursor:pointer;" onclick="closeScanner()"><i class="fas fa-times"></i> Cancelar Câmera</button>
     </div>
 
     <div class="tab-container">
-        <button class="tab-btn active" onclick="showTab('import', this)"><i class="fas fa-cloud-upload-alt"></i> Bases</button>
-        <button class="tab-btn" onclick="showTab('consult', this)"><i class="fas fa-search"></i> Busca Rápida</button>
-        <button class="tab-btn" onclick="showTab('audit', this)"><i class="fas fa-qrcode"></i> Auditar Picking</button>
-        <button class="tab-btn" onclick="showTab('reserva', this)"><i class="fas fa-boxes"></i> Auditar Reserva</button>
-        <button class="tab-btn" onclick="showTab('dashboard', this)"><i class="fas fa-chart-line"></i> Relatórios</button>
+        <button class="tab-btn active" onclick="showTab('import', this)"><i class="fas fa-sync-alt"></i> Sincronização</button>
+        <button class="tab-btn" onclick="showTab('consult', this)"><i class="fas fa-search"></i> Busca Ativa</button>
+        <button class="tab-btn" onclick="showTab('audit', this)"><i class="fas fa-dolly-flatbed"></i> Auditar Picking</button>
+        <button class="tab-btn" onclick="showTab('reserva', this)"><i class="fas fa-pallet"></i> Auditar Reserva</button>
+        <button class="tab-btn" onclick="showTab('dashboard', this)"><i class="fas fa-chart-pie"></i> Painel de Desempenho</button>
     </div>
 
     <div class="container">
         <div id="view-import" class="view active">
             
-            <div class="glass-card" style="border-color: var(--neon-blue); text-align: center; background: rgba(0, 210, 255, 0.05); box-shadow: 0 0 20px rgba(0, 210, 255, 0.1);">
-                <h3 class="font-tech" style="color: var(--neon-blue); margin-top: 0; font-size: 1.5rem;"><i class="fas fa-cloud"></i> Sincronização em Nuvem</h3>
-                <p style="color: #ccc; margin-bottom: 20px; font-size: 0.95rem;">
-                    <strong>No PC (Escritório):</strong> Importe os arquivos Excel abaixo e clique em Enviar.<br>
-                    <strong>No Celular (Corredor):</strong> Clique em Baixar para puxar tudo (sem precisar importar arquivos).
+            <div class="theme-card" style="border-left: 5px solid var(--brand-blue);">
+                <h3 class="theme-card-title"><i class="fas fa-cloud"></i> Distribuição em Nuvem</h3>
+                <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.95rem;">
+                    <strong>Equipe de Controle (PC):</strong> Faça a importação local dos arquivos e clique em "1. Enviar para Nuvem".<br>
+                    <strong>Operadores (Celular):</strong> Para iniciar o turno, clique em "2. Baixar da Nuvem".
                 </p>
-                <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-                    <button class="btn-neon" style="border-color: var(--neon-purple); color: var(--neon-purple); flex-grow: 1;" onclick="enviarBasesParaNuvem()">
-                        <i class="fas fa-cloud-upload-alt"></i> 1. Enviar p/ Nuvem (PC)
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <button class="btn-primary btn-secondary" style="flex-grow: 1;" onclick="enviarBasesParaNuvem()">
+                        <i class="fas fa-cloud-upload-alt"></i> 1. Enviar para Nuvem
                     </button>
-                    <button class="btn-neon" style="border-color: var(--neon-green); color: var(--neon-green); background: rgba(57, 255, 20, 0.1); flex-grow: 1; font-size: 1.1rem; padding: 15px;" onclick="baixarBasesDaNuvem()">
-                        <i class="fas fa-cloud-download-alt"></i> 2. Baixar da Nuvem (Celular)
+                    <button class="btn-primary" style="flex-grow: 1; padding: 15px;" onclick="baixarBasesDaNuvem()">
+                        <i class="fas fa-cloud-download-alt"></i> 2. Baixar da Nuvem
                     </button>
                 </div>
             </div>
 
+            <h4 style="color: var(--brand-blue); margin-top: 30px; margin-bottom: 15px; font-weight: bold;"><i class="fas fa-desktop"></i> Carga Local (Uso Exclusivo do PC)</h4>
             <div class="upload-grid">
-                <div class="glass-card">
-                    <h3 class="font-tech" style="color: #aaa; font-size: 1rem;"><i class="fas fa-map-marker-alt"></i> Base Picking (Apenas PC)</h3>
-                    <div class="upload-zone" onclick="document.getElementById('filePicking').click()" style="padding: 15px;">
-                        <i class="fas fa-file-excel" style="font-size: 2rem; color: #aaa; margin-bottom: 10px;"></i>
+                <div class="theme-card" style="margin-bottom: 0;">
+                    <div style="color: var(--text-dark); font-weight: bold; margin-bottom: 10px;"><i class="fas fa-map-marker-alt" style="color:var(--brand-red);"></i> Tabela Picking</div>
+                    <div class="upload-zone" onclick="document.getElementById('filePicking').click()">
+                        <i class="fas fa-file-excel" style="font-size: 2.5rem; color: var(--brand-blue); margin-bottom: 10px;"></i>
                         <input type="file" id="filePicking" hidden accept=".xlsx, .xls, .csv">
                     </div>
-                    <div id="info-picking" style="margin-top: 10px; color: var(--neon-red); font-weight: bold; text-align: center; font-size: 0.8rem;">Vazia</div>
+                    <div id="info-picking" style="margin-top: 10px; color: var(--brand-red); text-align: center; font-size: 0.85rem; font-weight: bold;">Status: Vazio</div>
                 </div>
 
-                <div class="glass-card">
-                    <h3 class="font-tech" style="color: #aaa; font-size: 1rem;"><i class="fas fa-barcode"></i> Códigos EAN (Apenas PC)</h3>
-                    <div class="upload-zone" onclick="document.getElementById('fileBarcodes').click()" style="padding: 15px;">
-                        <i class="fas fa-file-excel" style="font-size: 2rem; color: #aaa; margin-bottom: 10px;"></i>
+                <div class="theme-card" style="margin-bottom: 0;">
+                    <div style="color: var(--text-dark); font-weight: bold; margin-bottom: 10px;"><i class="fas fa-barcode" style="color:var(--brand-red);"></i> Vínculos EAN</div>
+                    <div class="upload-zone" onclick="document.getElementById('fileBarcodes').click()">
+                        <i class="fas fa-file-excel" style="font-size: 2.5rem; color: var(--brand-blue); margin-bottom: 10px;"></i>
                         <input type="file" id="fileBarcodes" hidden accept=".xlsx, .xls, .csv">
                     </div>
-                    <div id="info-barcodes" style="margin-top: 10px; color: #666; font-weight: bold; text-align: center; font-size: 0.8rem;">Vazia</div>
+                    <div id="info-barcodes" style="margin-top: 10px; color: var(--brand-red); text-align: center; font-size: 0.85rem; font-weight: bold;">Status: Vazio</div>
                 </div>
 
-                <div class="glass-card">
-                    <h3 class="font-tech" style="color: #aaa; font-size: 1rem;"><i class="fas fa-pallet"></i> Base Reserva (Apenas PC)</h3>
-                    <div class="upload-zone" onclick="document.getElementById('fileReserva').click()" style="padding: 15px;">
-                        <i class="fas fa-file-excel" style="font-size: 2rem; color: #aaa; margin-bottom: 10px;"></i>
+                <div class="theme-card" style="margin-bottom: 0;">
+                    <div style="color: var(--text-dark); font-weight: bold; margin-bottom: 10px;"><i class="fas fa-pallet" style="color:var(--brand-red);"></i> Tabela Reserva</div>
+                    <div class="upload-zone" onclick="document.getElementById('fileReserva').click()">
+                        <i class="fas fa-file-excel" style="font-size: 2.5rem; color: var(--brand-blue); margin-bottom: 10px;"></i>
                         <input type="file" id="fileReserva" hidden accept=".xlsx, .xls, .csv">
                     </div>
-                    <div id="info-reserva" style="margin-top: 10px; color: var(--neon-red); font-weight: bold; text-align: center; font-size: 0.8rem;">Vazia</div>
+                    <div id="info-reserva" style="margin-top: 10px; color: var(--brand-red); text-align: center; font-size: 0.85rem; font-weight: bold;">Status: Vazio</div>
                 </div>
             </div>
             
-            <button class="btn-neon" style="border-color: var(--neon-red); color: var(--neon-red); width: 100%; margin-top: 15px;" onclick="limparMemoriaLocal()">
-                <i class="fas fa-trash-alt"></i> Formatar Memória Local (Apenas em caso de erro)
-            </button>
+            <div style="text-align: right; margin-top: 20px;">
+                <button class="btn-danger" style="padding: 10px 15px; border-radius: 4px; font-weight:bold; cursor:pointer;" onclick="limparMemoriaLocal()">
+                    <i class="fas fa-eraser"></i> Limpar Dados do Aparelho
+                </button>
+            </div>
         </div>
 
         <div id="view-consult" class="view">
-            <div class="glass-card" style="max-width: 700px; margin: 0 auto; border-color: var(--neon-blue);">
-                <h3 class="font-tech" style="text-align: center; color: var(--neon-blue);">Localizador de Produto</h3>
+            <div class="theme-card" style="max-width: 600px; margin: 0 auto; border-top: 5px solid var(--brand-blue);">
+                <h3 class="theme-card-title" style="text-align: center;">Buscador de Alocação</h3>
                 <div class="input-group">
-                    <label>PRODUTO (EAN OU INTERNO)</label>
+                    <label>Código do Produto ou EAN</label>
                     <div class="input-row">
-                        <input type="text" id="consult-prod" class="tech-input" placeholder="Bipe ou digite..." onkeypress="handleEnter(event, 'btn-consult')">
-                        <button class="cam-btn" onclick="openScanner('consult-prod')"><i class="fas fa-camera" style="font-size:1.5rem;"></i></button>
+                        <input type="text" id="consult-prod" class="theme-input" placeholder="Digite ou bipe o código..." onkeypress="handleEnter(event, 'btn-consult')">
+                        <button class="cam-btn" onclick="openScanner('consult-prod')"><i class="fas fa-camera"></i></button>
                     </div>
                 </div>
-                <button id="btn-consult" class="btn-neon" style="width: 100%; border-color: var(--neon-blue); color: var(--neon-blue);" onclick="executeConsult()">Localizar Prateleira</button>
+                <button id="btn-consult" class="btn-primary" style="width: 100%;" onclick="executeConsult()">Pesquisar Sistema</button>
                 <div id="consult-feedback" class="feedback-box"></div>
             </div>
         </div>
 
         <div id="view-audit" class="view">
-            <div class="glass-card" style="max-width: 700px; margin: 0 auto;">
-                <h3 class="font-tech" style="text-align: center; color: var(--neon-blue); margin-bottom: 20px;">AUDITORIA PICKING</h3>
+            <div class="theme-card" style="max-width: 600px; margin: 0 auto;">
+                <h3 class="theme-card-title" style="text-align: center; color: var(--brand-blue);">Rotina de Picking</h3>
                 <div class="input-group">
-                    <label>NOME DO AUDITOR</label>
-                    <input type="text" id="auditor-name" class="tech-input" placeholder="Digite o seu nome..." style="border-color: var(--neon-orange);">
+                    <label>Operador (Matrícula/Nome)</label>
+                    <input type="text" id="auditor-name" class="theme-input" placeholder="Identificação do conferente...">
                 </div>
-                <hr style="border: 1px solid rgba(255,255,255,0.1); margin: 30px 0;">
-                <div class="input-group">
-                    <label>1. BIPAR LOCALIZADOR</label>
-                    <div class="input-row">
-                        <input type="text" id="scan-loc" class="tech-input" placeholder="Ex: 111801 ou V43-..." onkeypress="handleEnter(event, 'scan-prod')">
-                        <button class="cam-btn" onclick="openScanner('scan-loc')"><i class="fas fa-camera" style="font-size:1.5rem;"></i></button>
+                
+                <div style="background: var(--brand-bg); padding: 15px; border-radius: 4px; margin-bottom: 15px; border: 1px solid var(--border-light);">
+                    <div class="input-group">
+                        <label style="color: var(--brand-red);">1. Bipar Localizador (Endereço)</label>
+                        <div class="input-row">
+                            <input type="text" id="scan-loc" class="theme-input" placeholder="Ex: 111801" onkeypress="handleEnter(event, 'scan-prod')">
+                            <button class="cam-btn" onclick="openScanner('scan-loc')"><i class="fas fa-camera"></i></button>
+                        </div>
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label style="color: var(--brand-blue);">2. Bipar Produto Físico</label>
+                        <div class="input-row">
+                            <input type="text" id="scan-prod" class="theme-input" placeholder="Ex: 122421 ou EAN" onkeypress="handleEnter(event, 'run-audit')">
+                            <button class="cam-btn" onclick="openScanner('scan-prod')"><i class="fas fa-camera"></i></button>
+                        </div>
                     </div>
                 </div>
-                <div class="input-group">
-                    <label>2. BIPAR PRODUTO</label>
-                    <div class="input-row">
-                        <input type="text" id="scan-prod" class="tech-input" placeholder="Ex: 122421 ou EAN" onkeypress="handleEnter(event, 'run-audit')">
-                        <button class="cam-btn" onclick="openScanner('scan-prod')"><i class="fas fa-camera" style="font-size:1.5rem;"></i></button>
-                    </div>
-                </div>
-                <button id="run-audit" class="btn-neon" style="width: 100%; font-size: 1.1rem;" onclick="executeAudit()">Gravar Auditoria na Nuvem</button>
+                
+                <button id="run-audit" class="btn-primary" style="width: 100%; padding: 15px; font-size: 1.1rem;" onclick="executeAudit()">Confirmar Apontamento</button>
                 <div id="audit-feedback" class="feedback-box"></div>
             </div>
         </div>
 
         <div id="view-reserva" class="view">
             
-            <div class="glass-card" id="reserva-step-1" style="max-width: 700px; margin: 0 auto; border-color: var(--neon-purple);">
-                <h3 class="font-tech" style="text-align: center; color: var(--neon-purple); margin-bottom: 20px;">NOVA AUDITORIA (RESERVA)</h3>
+            <div class="theme-card" id="reserva-step-1" style="max-width: 600px; margin: 0 auto; border-top: 5px solid var(--brand-blue);">
+                <h3 class="theme-card-title" style="text-align: center;">Inventário de Reserva</h3>
                 <div class="input-group">
-                    <label style="color: var(--neon-purple);">NOME DO AUDITOR</label>
-                    <input type="text" id="auditor-reserva" class="tech-input" placeholder="Digite o seu nome...">
+                    <label>Operador (Matrícula/Nome)</label>
+                    <input type="text" id="auditor-reserva" class="theme-input" placeholder="Identificação do conferente...">
                 </div>
-                <hr style="border: 1px solid rgba(255,255,255,0.1); margin: 30px 0;">
                 <div class="input-group">
-                    <label style="color: var(--neon-purple);">ENDEREÇO DA RESERVA</label>
+                    <label style="color: var(--brand-red);">Endereço do Porta-Palete</label>
                     <div class="input-row">
-                        <input type="text" id="loc-reserva" class="tech-input" placeholder="Ex: V20-37-041" onkeypress="handleEnter(event, 'btn-init-reserva')">
-                        <button class="cam-btn" style="color:var(--neon-purple); border-color:var(--neon-purple);" onclick="openScanner('loc-reserva')"><i class="fas fa-camera" style="font-size:1.5rem;"></i></button>
+                        <input type="text" id="loc-reserva" class="theme-input" placeholder="Ex: V20-37-041" onkeypress="handleEnter(event, 'btn-init-reserva')">
+                        <button class="cam-btn" onclick="openScanner('loc-reserva')"><i class="fas fa-camera"></i></button>
                     </div>
                 </div>
-                <button id="btn-init-reserva" class="btn-neon" style="width: 100%; border-color: var(--neon-purple); color: var(--neon-purple);" onclick="iniciarReserva()"><i class="fas fa-play"></i> Iniciar Contagem do Endereço</button>
+                <button id="btn-init-reserva" class="btn-primary" style="width: 100%;" onclick="iniciarReserva()">Abrir Endereço para Contagem</button>
                 
-                <div id="box-tickets" style="margin-top: 40px; display: none;">
-                    <h4 style="color: var(--neon-orange); border-bottom: 1px solid var(--neon-orange); padding-bottom: 5px;">AUDITORIAS PAUSADAS (REGISTROS)</h4>
-                    <div id="list-tickets"></div>
+                <div id="box-tickets" style="margin-top: 30px; display: none;">
+                    <h4 style="color: var(--brand-red); border-bottom: 2px solid var(--brand-red); padding-bottom: 8px; font-size: 1rem; font-weight:bold;">Pendências em Aberto</h4>
+                    <div id="list-tickets" style="margin-top: 15px;"></div>
                 </div>
             </div>
 
-            <div class="glass-card" id="reserva-step-2" style="max-width: 700px; margin: 0 auto; border-color: var(--neon-purple); display: none;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 8px;">
+            <div class="theme-card" id="reserva-step-2" style="max-width: 600px; margin: 0 auto; display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: var(--brand-blue); color: #fff; padding: 15px; border-radius: 4px;">
                     <div>
-                        <span style="color: #aaa; font-size: 0.9rem;">Registro: <span id="reserva-lbl-ticket" style="color: #fff;"></span></span><br>
-                        <b style="font-size: 1.5rem; color: var(--neon-purple);" id="reserva-lbl-loc">---</b>
+                        <span style="font-size: 0.8rem; text-transform: uppercase; color: var(--brand-blue-light);">Protocolo: <span id="reserva-lbl-ticket" style="font-weight: bold; color: #fff;"></span></span><br>
+                        <b style="font-size: 1.5rem; color: #fff;" id="reserva-lbl-loc">---</b>
                     </div>
-                    <div style="text-align: right;">
-                        <span style="color: #aaa; font-size: 0.9rem;">No Sistema: <b id="reserva-lbl-exp" style="color: var(--neon-blue);">0</b></span><br>
-                        <span style="color: #aaa; font-size: 0.9rem;">Bipadas: <b id="reserva-lbl-scan" style="color: var(--neon-green);">0</b></span>
+                    <div style="text-align: right; border-left: 1px solid rgba(255,255,255,0.3); padding-left: 15px;">
+                        <span style="font-size: 0.85rem; color: var(--brand-blue-light);">Sistema: <b id="reserva-lbl-exp" style="color: #fff;">0</b> un</span><br>
+                        <span style="font-size: 0.85rem; color: var(--brand-blue-light);">Contagem: <b id="reserva-lbl-scan" style="color: #fff; font-size: 1.3rem;">0</b> un</span>
                     </div>
                 </div>
 
-                <div class="input-group">
-                    <label style="color: var(--neon-purple);">BIPAR CÓDIGO DO PRODUTO OU LV</label>
-                    <div class="input-row">
-                        <input type="text" id="item-reserva" class="tech-input" placeholder="Bipe a caixa..." onkeypress="handleEnter(event, 'btn-bipar-reserva')">
-                        <button class="cam-btn" style="color:var(--neon-purple); border-color:var(--neon-purple);" onclick="openScanner('item-reserva')"><i class="fas fa-camera" style="font-size:1.5rem;"></i></button>
+                <div style="background: var(--brand-bg); padding: 15px; border-radius: 4px; border: 1px solid var(--border-light); margin-bottom: 20px;">
+                    <div class="input-group">
+                        <label style="color: var(--brand-red);">Código do Volume / LV</label>
+                        <div class="input-row">
+                            <input type="text" id="item-reserva" class="theme-input" placeholder="Bipe a etiqueta..." onkeypress="handleEnter(event, 'qtd-caixas')">
+                            <button class="cam-btn" onclick="openScanner('item-reserva')"><i class="fas fa-camera"></i></button>
+                        </div>
                     </div>
+
+                    <div style="display: flex; gap: 10px;">
+                        <div class="input-group" style="flex: 1; margin-bottom: 0;">
+                            <label>Multiplicador (Caixas)</label>
+                            <input type="number" id="qtd-caixas" class="theme-input" value="1" min="1" style="font-weight: bold; color: var(--brand-blue); text-align: center;" onkeypress="handleEnter(event, 'qtd-unidades')">
+                        </div>
+                        <div class="input-group" style="flex: 1; margin-bottom: 0;">
+                            <label>Qtd. por Caixa</label>
+                            <input type="number" id="qtd-unidades" class="theme-input" value="1" min="1" style="font-weight: bold; text-align: center;" onkeypress="handleEnter(event, 'btn-bipar-reserva-vis')">
+                        </div>
+                    </div>
+                    
+                    <button id="btn-bipar-reserva-vis" class="btn-primary" style="width: 100%; margin-top: 15px; background: var(--brand-red); color: white;" onclick="biparReserva()">
+                        <i class="fas fa-plus"></i> Adicionar Volume
+                    </button>
                     <button id="btn-bipar-reserva" style="display:none;" onclick="biparReserva()"></button>
                 </div>
 
-                <div style="max-height: 250px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 8px; margin-bottom: 20px;" id="reserva-lista-bips">
+                <div style="max-height: 250px; overflow-y: auto; border: 1px solid var(--border-light); border-radius: 4px; margin-bottom: 20px; background: #fff;" id="reserva-lista-bips">
                     </div>
 
-                <button class="btn-neon" style="width: 100%; border-color: var(--neon-green); color: var(--neon-green);" onclick="finalizarReserva()"><i class="fas fa-check"></i> Finalizar Auditoria</button>
-                <button class="btn-neon" style="width: 100%; border-color: var(--neon-orange); color: var(--neon-orange);" onclick="pausarReserva()"><i class="fas fa-pause"></i> Pausar Auditoria (Continuar Depois)</button>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn-primary btn-secondary" style="flex: 1;" onclick="pausarReserva()">Pausar</button>
+                    <button class="btn-primary" style="flex: 2;" onclick="finalizarReserva()">Concluir Contagem</button>
+                </div>
             </div>
 
             <div id="reserva-step-3" style="display: none;">
-                <h2 class="font-tech" style="text-align: center; margin-bottom: 20px;">RESULTADO DA AUDITORIA</h2>
+                <h3 class="theme-card-title" style="text-align: center; font-size: 1.3rem;">Análise de Divergências</h3>
                 
-                <div class="dash-grid">
-                    <div class="glass-card" style="border-top: 4px solid var(--neon-green);">
-                        <h3 class="font-tech" style="color: var(--neon-green); font-size: 1.1rem;"><i class="fas fa-check-circle"></i> CONFORMES</h3>
-                        <div id="reserva-list-ok" style="max-height: 200px; overflow-y: auto; margin-top: 10px;"></div>
+                <div class="dash-grid" style="margin-top: 10px;">
+                    <div class="theme-card" style="border-top: 4px solid var(--brand-blue); margin-bottom: 0;">
+                        <h4 style="color: var(--brand-blue); font-weight: bold;"><i class="fas fa-check-circle"></i> Físico = Sistema (Bateu)</h4>
+                        <div id="reserva-list-ok" style="max-height: 250px; overflow-y: auto; font-size: 0.9rem;"></div>
                     </div>
                     
-                    <div class="glass-card" style="border-top: 4px solid var(--neon-red);">
-                        <h3 class="font-tech" style="color: var(--neon-red); font-size: 1.1rem;"><i class="fas fa-times-circle"></i> FALTANTES</h3>
-                        <div id="reserva-list-missing" style="max-height: 200px; overflow-y: auto; margin-top: 10px;"></div>
+                    <div class="theme-card" style="border-top: 4px solid var(--brand-red); margin-bottom: 0;">
+                        <h4 style="color: var(--brand-red); font-weight: bold;"><i class="fas fa-arrow-down"></i> Faltas no Físico</h4>
+                        <div id="reserva-list-missing" style="max-height: 250px; overflow-y: auto; font-size: 0.9rem;"></div>
                     </div>
 
-                    <div class="glass-card" style="border-top: 4px solid var(--neon-orange);">
-                        <h3 class="font-tech" style="color: var(--neon-orange); font-size: 1.1rem;"><i class="fas fa-exclamation-triangle"></i> SOBRAS</h3>
-                        <div id="reserva-list-extra" style="max-height: 200px; overflow-y: auto; margin-top: 10px;"></div>
+                    <div class="theme-card" style="border-top: 4px solid #FF8C00; margin-bottom: 0;">
+                        <h4 style="color: #FF8C00; font-weight: bold;"><i class="fas fa-arrow-up"></i> Sobras no Físico</h4>
+                        <div id="reserva-list-extra" style="max-height: 250px; overflow-y: auto; font-size: 0.9rem;"></div>
                     </div>
                 </div>
 
-                <button class="btn-neon" style="width: 100%; margin-top: 20px; font-size: 1.2rem; padding: 15px;" onclick="salvarReservaNuvem()"><i class="fas fa-cloud-upload-alt"></i> Salvar na Nuvem e Liberar</button>
+                <button class="btn-primary" style="width: 100%; margin-top: 20px; padding: 15px; font-size: 1.1rem;" onclick="salvarReservaNuvem()"><i class="fas fa-cloud-upload-alt"></i> Salvar e Liberar Endereço</button>
             </div>
         </div>
 
         <div id="view-dashboard" class="view">
-            <div class="glass-card" style="display: flex; flex-wrap: wrap; gap: 15px; align-items: center; border-color: var(--neon-blue); padding: 15px;">
-                <label style="margin:0; color: var(--neon-blue); font-weight: bold;"><i class="fas fa-calendar-alt"></i> Data Relatório:</label>
-                <input type="date" id="filter-date" class="tech-input" style="width: auto; padding: 8px; margin: 0;">
+            
+            <div class="theme-card" style="display: flex; flex-wrap: wrap; gap: 15px; align-items: center; padding: 15px; background: var(--brand-blue); color: white;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <label style="margin:0; font-weight: bold; font-size: 0.9rem; color: white;"><i class="fas fa-calendar-alt"></i> Competência:</label>
+                    <input type="date" id="filter-date" class="theme-input" style="width: auto; padding: 8px; font-weight: bold;">
+                </div>
                 
-                <button class="btn-neon" style="border-color: var(--neon-blue); color: var(--neon-blue); padding: 8px 15px;" onclick="window.carregarDadosDaNuvem()">
-                    <i class="fas fa-cloud-download-alt"></i> Buscar na Nuvem
+                <button class="btn-primary" style="padding: 8px 15px; background: white; color: var(--brand-blue);" onclick="window.carregarDadosDaNuvem()">
+                    <i class="fas fa-sync"></i> Gerar Dados
                 </button>
                 
                 <div style="display: flex; gap: 10px; margin-left: auto;">
-                    <button class="btn-neon btn-export" style="margin: 0; padding: 8px 15px;" onclick="exportAuditData()">
-                        <i class="fas fa-file-excel"></i> Exportar Picking
+                    <button class="btn-primary" style="padding: 8px 15px; background: var(--brand-red); color: white;" onclick="exportAuditData()">
+                        XLS Picking
                     </button>
-                    <button class="btn-neon btn-export-reserva" style="margin: 0; padding: 8px 15px;" onclick="exportAuditReservaData()">
-                        <i class="fas fa-file-excel"></i> Exportar Reserva
+                    <button class="btn-primary" style="padding: 8px 15px; background: var(--brand-red); color: white;" onclick="exportAuditReservaData()">
+                        XLS Reserva
                     </button>
                 </div>
             </div>
             
             <div class="dash-grid">
-                <div class="glass-card stat-box" style="border-top: 4px solid var(--neon-red);">
-                    <h3 class="font-tech" style="font-size: 1rem; color: #aaa;">Pior Setor (Picking)</h3>
-                    <span id="worst-sector" class="stat-val" style="color: var(--neon-red); font-size: 1.8rem;">---</span>
+                <div class="theme-card stat-box" style="border-left-color: var(--text-muted);">
+                    <span class="stat-title">Endereços Auditados</span>
+                    <span id="stat-total" class="stat-val">0</span>
                 </div>
-                <div class="glass-card stat-box" style="border-top: 4px solid var(--neon-blue);">
-                    <h3 class="font-tech" style="font-size: 1rem; color: #aaa;">Endereços Auditados</h3>
-                    <span id="stat-total" class="stat-val" style="color: var(--neon-blue);">0</span>
+                <div class="theme-card stat-box" style="border-left-color: var(--brand-blue);">
+                    <span class="stat-title">Nível de Acurácia</span>
+                    <span id="stat-accuracy" class="stat-val" style="color: var(--brand-blue);">0%</span>
                 </div>
-                <div class="glass-card stat-box" style="border-top: 4px solid var(--neon-green);">
-                    <h3 class="font-tech" style="font-size: 1rem; color: #aaa;">Acuracidade</h3>
-                    <span id="stat-accuracy" class="stat-val" style="color: var(--neon-green);">0%</span>
+                <div class="theme-card stat-box" style="border-left-color: var(--brand-red);">
+                    <span class="stat-title">Setor Crítico (Foco)</span>
+                    <span id="worst-sector" class="stat-val" style="color: var(--brand-red); font-size: 1.5rem; margin-top: 15px;">---</span>
                 </div>
             </div>
             
             <div class="dash-grid">
-                <div class="glass-card">
-                    <h3 class="font-tech">Qualidade por Setor</h3>
+                <div class="theme-card">
+                    <h3 class="theme-card-title">Desempenho por Setor</h3>
                     <table>
                         <thead><tr><th>Setor</th><th>Erros</th><th>Acurácia</th></tr></thead>
-                        <tbody id="table-sectors"><tr><td colspan="3" style="text-align: center;">Sem dados</td></tr></tbody>
+                        <tbody id="table-sectors"><tr><td colspan="3" style="text-align: center;">Vazio</td></tr></tbody>
                     </table>
                 </div>
-                <div class="glass-card">
-                    <h3 class="font-tech">Produtividade</h3>
+                <div class="theme-card">
+                    <h3 class="theme-card-title">Ranking Operacional</h3>
                     <table>
-                        <thead><tr><th>Colaborador</th><th style="text-align: right;">Bips</th></tr></thead>
-                        <tbody id="table-auditors"><tr><td colspan="2" style="text-align: center;">Sem dados</td></tr></tbody>
+                        <thead><tr><th>Colaborador</th><th style="text-align: right;">Leituras</th></tr></thead>
+                        <tbody id="table-auditors"><tr><td colspan="2" style="text-align: center;">Vazio</td></tr></tbody>
                     </table>
                 </div>
             </div>
+
+            <div class="theme-card" style="margin-top: 20px; border-top: 4px solid var(--brand-red);">
+                <h3 class="theme-card-title" style="color: var(--brand-red);"><i class="fas fa-search-dollar"></i> Auditoria de Divergências (Picking)</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Listagem exata das falhas apontadas no piso.</p>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr style="background: var(--brand-red-light);">
+                                <th style="color: var(--brand-red); border-bottom: 2px solid var(--brand-red);">Hora</th>
+                                <th style="color: var(--brand-red); border-bottom: 2px solid var(--brand-red);">Colaborador</th>
+                                <th style="color: var(--brand-red); border-bottom: 2px solid var(--brand-red);">Endereço</th>
+                                <th style="color: var(--brand-red); border-bottom: 2px solid var(--brand-red);">Produto (Cadastro)</th>
+                                <th style="color: var(--brand-red); border-bottom: 2px solid var(--brand-red);">Bipado (Real)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-divergences-log">
+                            <tr><td colspan="5" style="text-align: center;">Gere o relatório acima.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -360,8 +523,8 @@
             window.dbSetDoc = setDoc;
             window.dbGetDoc = getDoc;
             
-            document.getElementById('status-firebase').style.color = 'var(--neon-green)';
-            document.getElementById('status-firebase').innerHTML = `<i class="fas fa-wifi"></i> Nuvem: Conectada`;
+            document.getElementById('status-firebase').style.color = '#FFFFFF';
+            document.getElementById('status-firebase').innerHTML = `<i class="fas fa-check-circle"></i> Nuvem Online`;
         } catch(e) {
             console.error("Erro Firebase: ", e);
         }
@@ -392,11 +555,11 @@
             return `${String(hoje.getDate()).padStart(2, '0')}/${String(hoje.getMonth() + 1).padStart(2, '0')}/${hoje.getFullYear()}`;
         }
 
-        // Variáveis Picking
+        // Variáveis de Estado
         let inventoryDB = {}; let productMap = {}; let barcodeDB = {}; let auditLog = []; 
         let dashboardStats = { total: 0, correct: 0, wrong: 0, sectors: {}, auditors: {} };
+        let divergenciasLogData = []; 
         
-        // Variáveis Reserva e Registros
         let reservaDB = {}; 
         let reservaCurrentLoc = ''; 
         let reservaScanned = [];
@@ -414,24 +577,23 @@
         // ==========================================
         // SINCRONIZAÇÃO NUVEM
         // ==========================================
-        
         function setTelaCarregamento(mostrar, titulo, desc, icon) {
             document.getElementById('loading-overlay').style.display = mostrar ? 'flex' : 'none';
             if(mostrar) {
                 document.getElementById('loading-title').innerText = titulo;
                 document.getElementById('loading-desc').innerText = desc;
-                document.getElementById('loading-icon').className = "fas fa-beat " + icon;
+                document.getElementById('loading-icon').className = "fas " + icon + " fa-spin"; 
             }
         }
 
         async function enviarBasesParaNuvem() {
-            if (!window.db) { alert("Aguarde a conexão com a nuvem."); return; }
+            if (!window.db) { alert("Aguarde a conexão com o banco de dados."); return; }
             if (Object.keys(inventoryDB).length === 0 && Object.keys(reservaDB).length === 0) {
-                alert("Não tem bases carregadas no computador para enviar."); return;
+                alert("Nenhuma base em memória para transmitir."); return;
             }
 
             try {
-                setTelaCarregamento(true, "ENVIANDO PARA A NUVEM", "Sincronizando as planilhas para o celular puxar...", "fa-cloud-upload-alt");
+                setTelaCarregamento(true, "Transmitindo Dados", "Enviando dados para o servidor central...", "fa-cloud-upload-alt");
 
                 const uploadEmLotes = async (nome, arrayObj) => {
                     const TAMANHO_LOTE = 1500;
@@ -452,19 +614,19 @@
                 let rArray = []; for(let key in reservaDB) { rArray.push({loc: key, items: reservaDB[key]}); }
                 await uploadEmLotes("reserva", rArray);
 
-                alert("Sucesso! Bases enviadas para a Nuvem. Agora você pode ir ao celular e clicar em 'Baixar da Nuvem'.");
+                alert("Transmissão concluída! A operação pode baixar os dados no coletor/celular.");
             } catch(e) {
                 console.error(e);
-                alert("Erro ao enviar. Verifique a internet.");
+                alert("Erro de comunicação com o servidor.");
             } finally {
                 setTelaCarregamento(false);
             }
         }
 
         async function baixarBasesDaNuvem() {
-            if (!window.db) { alert("Aguarde a conexão com a nuvem."); return; }
+            if (!window.db) { alert("Aguarde a conexão com o banco de dados."); return; }
             try {
-                setTelaCarregamento(true, "BAIXANDO DA NUVEM", "Puxando as planilhas. Só demora uns segundos...", "fa-cloud-download-alt");
+                setTelaCarregamento(true, "Recebendo Dados", "Puxando informações mais recentes...", "fa-cloud-download-alt");
 
                 const baixarLotes = async (nome) => {
                     const metaSnap = await window.dbGetDoc(window.dbDoc(window.db, "bases_config", nome + "_meta"));
@@ -485,12 +647,11 @@
                 const arrReserva = await baixarLotes("reserva");
 
                 if(arrPicking.length === 0 && arrReserva.length === 0) {
-                    alert("A nuvem está vazia. Precisa clicar em 'Enviar para Nuvem' usando o computador primeiro.");
+                    alert("O servidor não possui bases ativas. A gerência deve enviar pelo PC primeiro.");
                     setTelaCarregamento(false);
                     return;
                 }
 
-                // Reconstrói Memória Picking
                 inventoryDB = {}; productMap = {};
                 arrPicking.forEach(item => {
                     inventoryDB[item.loc] = item;
@@ -499,51 +660,49 @@
                     if(!productMap[item.prod].locs.includes(item.loc)) productMap[item.prod].locs.push(item.loc);
                 });
                 if(arrPicking.length > 0) {
-                    document.getElementById('info-picking').innerHTML = `<i class="fas fa-check"></i> ${arrPicking.length} ativos (Da Nuvem)`;
-                    document.getElementById('info-picking').style.color = 'var(--neon-blue)';
+                    document.getElementById('info-picking').innerHTML = `<i class="fas fa-check"></i> ${arrPicking.length} posições recebidas`;
+                    document.getElementById('info-picking').style.color = 'var(--brand-blue)';
                     if(typeof localforage !== 'undefined') {
                         await localforage.setItem('vena_base_picking_obj', inventoryDB);
                         await localforage.setItem('vena_base_picking_map', productMap);
                     }
                 }
 
-                // Reconstrói Memória EAN
                 barcodeDB = {};
                 arrEan.forEach(item => { barcodeDB[item.b] = item.p; });
                 if(arrEan.length > 0) {
-                    document.getElementById('info-barcodes').innerHTML = `<i class="fas fa-check"></i> ${arrEan.length} EANs (Da Nuvem)`;
-                    document.getElementById('info-barcodes').style.color = 'var(--neon-blue)';
+                    document.getElementById('info-barcodes').innerHTML = `<i class="fas fa-check"></i> ${arrEan.length} códigos EAN`;
+                    document.getElementById('info-barcodes').style.color = 'var(--brand-blue)';
                     if(typeof localforage !== 'undefined') await localforage.setItem('vena_base_ean_obj', barcodeDB);
                 }
 
-                // Reconstrói Memória Reserva
                 reservaDB = {}; let countReserva = 0;
                 arrReserva.forEach(item => {
                     reservaDB[item.loc] = item.items;
                     countReserva += item.items.length;
                 });
                 if(arrReserva.length > 0) {
-                    document.getElementById('info-reserva').innerHTML = `<i class="fas fa-check"></i> ${countReserva} caixas (Da Nuvem)`;
-                    document.getElementById('info-reserva').style.color = 'var(--neon-blue)';
+                    document.getElementById('info-reserva').innerHTML = `<i class="fas fa-check"></i> ${countReserva} pallets em reserva`;
+                    document.getElementById('info-reserva').style.color = 'var(--brand-blue)';
                     if(typeof localforage !== 'undefined') await localforage.setItem('vena_base_reserva_obj', reservaDB);
                 }
 
                 if(typeof localforage !== 'undefined') await localforage.setItem('vena_bases_nuvem_sync', true);
-                alert("Bases atualizadas da Nuvem com sucesso e salvas neste celular!");
+                alert("Carga efetuada com sucesso. Aparelho pronto.");
 
             } catch(e) {
                 console.error(e);
-                alert("Erro ao puxar da nuvem. Verifique a internet.");
+                alert("Falha na sincronização. Verifique o Wi-Fi ou 4G.");
             } finally {
                 setTelaCarregamento(false);
             }
         }
 
         // ==========================================
-        // CARREGAMENTO LOCAL / ANTIGO
+        // CARREGAMENTO LOCAL / EXCEL
         // ==========================================
         async function salvarComOverlay(type, jsonData) {
-            setTelaCarregamento(true, "PROCESSANDO...", "Lendo a planilha Excel...", "fa-save");
+            setTelaCarregamento(true, "Lendo Planilha", "Estruturando banco de dados...", "fa-cog");
             await new Promise(resolve => setTimeout(resolve, 300));
             try {
                 if (type === 'picking') {
@@ -558,31 +717,29 @@
                 }
                 setTimeout(() => { 
                     setTelaCarregamento(false);
-                    alert("Importado no PC com sucesso! Agora clique em 'Enviar para a Nuvem'."); 
+                    alert("Importação finalizada. Clique em Enviar para a Nuvem."); 
                 }, 500);
             } catch (e) {
                 setTelaCarregamento(false);
-                alert("Erro ao gravar. A memória do navegador pode estar cheia.");
+                alert("Erro ao ler o arquivo Excel.");
             }
         }
 
         async function carregarBasesDaMemoriaLocal() {
             try {
                 if (typeof localforage !== 'undefined') {
-                    // 1. Tenta carregar objetos já formatados da Nuvem (MUITO MAIS RÁPIDO NO MOBILE)
                     const isCloudSync = await localforage.getItem('vena_bases_nuvem_sync');
                     if (isCloudSync) {
                         const pObj = await localforage.getItem('vena_base_picking_obj');
                         const pMap = await localforage.getItem('vena_base_picking_map');
-                        if(pObj && pMap) { inventoryDB = pObj; productMap = pMap; document.getElementById('info-picking').innerHTML = `<i class="fas fa-check"></i> Pronta (Memória)`; document.getElementById('info-picking').style.color = 'var(--neon-green)'; }
+                        if(pObj && pMap) { inventoryDB = pObj; productMap = pMap; document.getElementById('info-picking').innerHTML = `<i class="fas fa-check"></i> Memória Local OK`; document.getElementById('info-picking').style.color = 'var(--brand-blue)'; }
 
                         const eObj = await localforage.getItem('vena_base_ean_obj');
-                        if(eObj) { barcodeDB = eObj; document.getElementById('info-barcodes').innerHTML = `<i class="fas fa-check"></i> EANs Prontos`; document.getElementById('info-barcodes').style.color = 'var(--neon-green)'; }
+                        if(eObj) { barcodeDB = eObj; document.getElementById('info-barcodes').innerHTML = `<i class="fas fa-check"></i> Memória Local OK`; document.getElementById('info-barcodes').style.color = 'var(--brand-blue)'; }
 
                         const rObj = await localforage.getItem('vena_base_reserva_obj');
-                        if(rObj) { reservaDB = rObj; document.getElementById('info-reserva').innerHTML = `<i class="fas fa-check"></i> Pronta (Memória)`; document.getElementById('info-reserva').style.color = 'var(--neon-green)'; }
+                        if(rObj) { reservaDB = rObj; document.getElementById('info-reserva').innerHTML = `<i class="fas fa-check"></i> Memória Local OK`; document.getElementById('info-reserva').style.color = 'var(--brand-blue)'; }
                     } else {
-                        // 2. Se for PC, carrega do raw JSON original
                         const pickingSalvo = await localforage.getItem('vena_base_picking');
                         if (pickingSalvo) processPickingData(pickingSalvo, false);
                         const eanSalvo = await localforage.getItem('vena_base_ean');
@@ -591,7 +748,6 @@
                         if (reservaSalva) processReservaData(reservaSalva, false);
                     }
 
-                    // Carrega os Registros Pausados
                     const ticketsSalvos = await localforage.getItem('vena_tickets_reserva');
                     if (ticketsSalvos) { ticketsPendentes = ticketsSalvos; renderTicketsPendentes(); }
                 }
@@ -599,18 +755,15 @@
         }
 
         async function limparMemoriaLocal() {
-            if(confirm("ATENÇÃO: Isto vai apagar as bases guardadas neste celular/PC. Terá de baixar da nuvem novamente. Continuar?")) {
+            if(confirm("CUIDADO: Isso irá apagar a memória deste dispositivo. Continuar?")) {
                 if (typeof localforage !== 'undefined') {
                     await localforage.clear();
                 }
-                alert("Memória limpa! Reiniciando...");
+                alert("Limpeza concluída.");
                 location.reload();
             }
         }
 
-        // ==========================================
-        // LÓGICA EXCEL
-        // ==========================================
         document.getElementById('filePicking').addEventListener('change', e => handleExcelUpload(e, 'picking'));
         document.getElementById('fileBarcodes').addEventListener('change', e => handleExcelUpload(e, 'barcodes'));
         document.getElementById('fileReserva').addEventListener('change', e => handleExcelUpload(e, 'reserva'));
@@ -638,7 +791,7 @@
         function handleExcelUpload(e, type) {
             const file = e.target.files[0];
             if (!file) return;
-            setTelaCarregamento(true, "PROCESSANDO...", "Lendo arquivo...", "fa-save");
+            setTelaCarregamento(true, "Aguarde", "Processando arquivo...", "fa-cog");
             const reader = new FileReader();
             if (file.name.toLowerCase().endsWith('.csv')) {
                 reader.onload = async function(evt) {
@@ -663,29 +816,41 @@
         function formatCode(val) { if(!val) return null; let str = String(val).trim(); if(str.endsWith('.0')) str = str.replace('.0', ''); return str.toUpperCase(); }
 
         // ==========================================
-        // LÓGICA DE AUDITORIA DE RESERVA E REGISTROS
+        // AUDITORIA RESERVA 
         // ==========================================
         function processReservaData(data, salvarMemoria = true) {
             reservaDB = {}; let count = 0;
             data.forEach(row => {
-                let loc = '', prod = '', lv = '', desc = '';
+                let loc = '', prod = '', lv = '', desc = '', qtd = 0;
                 for (let k in row) {
                     const ck = cleanKey(k);
                     if (ck === 'LOCALIZADOR' || ck === 'ENDERECO') loc = row[k];
                     if (ck === 'PRODUTO') prod = row[k];
                     if (ck.includes('CODIGOLV') || ck.includes('CODIGOL')) lv = row[k];
                     if (ck.includes('DESCRICAO')) desc = row[k];
+                    if (ck === 'SALDO' || ck === 'QTD' || ck === 'QUANTIDADE') {
+                        qtd = parseFloat(row[k]) || 0;
+                    }
                 }
+                
                 if (loc && (prod || lv)) {
                     loc = formatCode(loc); prod = formatCode(prod); lv = formatCode(lv);
                     if (!reservaDB[loc]) reservaDB[loc] = [];
-                    reservaDB[loc].push({ prod: prod, lv: lv, desc: desc });
-                    count++;
+                    
+                    if (qtd === 0 && row['SALDO'] === undefined && row['Saldo'] === undefined) qtd = 1;
+                    
+                    let existing = reservaDB[loc].find(e => (lv && e.lv === lv) || (!lv && prod && e.prod === prod));
+                    if (existing) {
+                        existing.expectedQtd += Math.max(0, qtd);
+                    } else {
+                        reservaDB[loc].push({ prod: prod, lv: lv, desc: desc, expectedQtd: Math.max(0, qtd) });
+                        count++;
+                    }
                 }
             });
             if (count > 0) {
-                document.getElementById('info-reserva').innerHTML = `<i class="fas fa-check"></i> ${count} caixas na memória`;
-                document.getElementById('info-reserva').style.color = 'var(--neon-green)';
+                document.getElementById('info-reserva').innerHTML = `<i class="fas fa-check"></i> ${count} itens alocados`;
+                document.getElementById('info-reserva').style.color = 'var(--brand-blue)';
             }
         }
 
@@ -703,16 +868,18 @@
 
             keys.forEach(tkId => {
                 const data = ticketsPendentes[tkId];
+                let scannedQtd = data.scanned.reduce((acc, curr) => acc + curr.totalQtd, 0);
+
                 list.innerHTML += `
                     <div class="ticket-box">
-                        <div class="ticket-info">
-                            <span style="color:var(--neon-orange); font-weight:bold;">${tkId}</span><br>
-                            Local: <b>${data.loc}</b> | Bips: ${data.scanned.length}<br>
-                            <small>Auditor: ${data.auditor} | ${data.date}</small>
-                        </div>
                         <div>
-                            <button class="ticket-btn" onclick="retomarReserva('${tkId}')"><i class="fas fa-play"></i> Retomar</button>
-                            <button class="ticket-btn" style="background:var(--neon-red);" onclick="deletarTicket('${tkId}')"><i class="fas fa-trash"></i></button>
+                            <span class="theme-badge badge-error" style="margin-bottom: 5px;">INCOMPLETO</span><br>
+                            Doc: <span style="font-weight:bold; color:var(--brand-blue);">${tkId}</span><br>
+                            <small>Endereço: <b>${data.loc}</b> | Lido: ${scannedQtd} un</small>
+                        </div>
+                        <div style="display: flex; gap: 5px;">
+                            <button class="btn-primary btn-secondary" style="padding: 8px 12px;" onclick="retomarReserva('${tkId}')"><i class="fas fa-play"></i></button>
+                            <button class="btn-danger" style="padding: 8px 12px; border-radius: 4px; cursor:pointer;" onclick="deletarTicket('${tkId}')"><i class="fas fa-trash"></i></button>
                         </div>
                     </div>
                 `;
@@ -720,15 +887,15 @@
         }
 
         function iniciarReserva() {
-            if(Object.keys(reservaDB).length === 0) { alert("Atenção: A base está vazia. Clique em Baixar da Nuvem primeiro!"); return; }
+            if(Object.keys(reservaDB).length === 0) { alert("Sem dados no terminal. Baixe da nuvem."); return; }
             const auditor = document.getElementById('auditor-reserva').value.trim();
             let loc = formatCode(document.getElementById('loc-reserva').value);
             
-            if(!auditor) { alert("Informe o nome do auditor!"); return; }
-            if(!loc) { alert("Bipe o localizador!"); return; }
+            if(!auditor) { alert("Obrigatório: Identificação do Operador."); return; }
+            if(!loc) { alert("Obrigatório: Endereço a auditar."); return; }
 
             const randomStr = Math.random().toString(36).substring(2, 6).toUpperCase();
-            activeTicket = `REG-${randomStr}`;
+            activeTicket = `INV-${randomStr}`;
             reservaCurrentLoc = loc;
             reservaScanned = [];
             
@@ -746,7 +913,7 @@
         }
 
         async function deletarTicket(tkId) {
-            if(confirm("Excluir este registro pausado?")) {
+            if(confirm("Deseja apagar permanentemente esta contagem pausada?")) {
                 delete ticketsPendentes[tkId];
                 if(typeof localforage !== 'undefined') await localforage.setItem('vena_tickets_reserva', ticketsPendentes);
                 renderTicketsPendentes();
@@ -754,14 +921,17 @@
         }
 
         function abrirTelaBipagemReserva() {
-            let expected = reservaDB[reservaCurrentLoc] ? reservaDB[reservaCurrentLoc].length : 0;
+            let expectedUnits = 0;
+            if(reservaDB[reservaCurrentLoc]) {
+                expectedUnits = reservaDB[reservaCurrentLoc].reduce((acc, curr) => acc + curr.expectedQtd, 0);
+            }
             
             document.getElementById('reserva-step-1').style.display = 'none';
             document.getElementById('reserva-step-2').style.display = 'block';
             
             document.getElementById('reserva-lbl-ticket').innerText = activeTicket;
             document.getElementById('reserva-lbl-loc').innerText = reservaCurrentLoc;
-            document.getElementById('reserva-lbl-exp').innerText = expected;
+            document.getElementById('reserva-lbl-exp').innerText = expectedUnits;
             
             renderListaBips(); 
             
@@ -770,11 +940,14 @@
 
         function biparReserva() {
             let val = formatCode(document.getElementById('item-reserva').value);
+            let cx = parseInt(document.getElementById('qtd-caixas').value) || 1;
+            let un = parseInt(document.getElementById('qtd-unidades').value) || 1;
+            let totalQtd = cx * un;
+
             if(!val) return;
+            if(totalQtd <= 0) { alert("Quantidade deve ser maior que zero."); return; }
             
-            let desc = 'Produto Desconhecido';
-            
-            // NOVIDADE: Limpa a etiqueta tirando o V e zeros iniciais (ex: V000001420146 vira 1420146)
+            let desc = 'Material não reconhecido (Risco de Sobra)';
             let cleanScan = val.replace(/^V0+/, ''); 
 
             if(reservaDB[reservaCurrentLoc]) {
@@ -782,33 +955,52 @@
                 if(found) desc = found.desc;
             }
             
-            reservaScanned.push({ code: val, desc: desc });
+            let existingScan = reservaScanned.find(e => e.code === val || e.cleanCode === cleanScan);
+            if(existingScan) {
+                existingScan.totalQtd += totalQtd;
+                existingScan.history.push(`${cx}cx de ${un}`);
+            } else {
+                reservaScanned.push({ 
+                    code: val, 
+                    cleanCode: cleanScan, 
+                    desc: desc, 
+                    totalQtd: totalQtd,
+                    history: [`${cx}cx de ${un}`]
+                });
+            }
             
             renderListaBips(); 
             
             document.getElementById('item-reserva').value = '';
+            document.getElementById('qtd-caixas').value = '1';
+            document.getElementById('qtd-unidades').value = '1';
             document.getElementById('item-reserva').focus();
         }
 
         function renderListaBips() {
-            document.getElementById('reserva-lbl-scan').innerText = reservaScanned.length;
+            let scannedUnits = reservaScanned.reduce((acc, curr) => acc + curr.totalQtd, 0);
+            document.getElementById('reserva-lbl-scan').innerText = scannedUnits;
+            
             const container = document.getElementById('reserva-lista-bips');
             container.innerHTML = '';
             
             for (let i = reservaScanned.length - 1; i >= 0; i--) {
                 let scan = reservaScanned[i];
                 let li = document.createElement('div');
-                li.style.padding = '10px'; 
-                li.style.borderBottom = '1px solid rgba(255,255,255,0.05)'; 
+                li.style.padding = '12px 15px'; 
+                li.style.borderBottom = '1px solid var(--border-light)'; 
                 li.style.display = 'flex'; 
                 li.style.justifyContent = 'space-between'; 
                 li.style.alignItems = 'center';
                 
                 li.innerHTML = `
-                    <div style="color: var(--neon-blue);">
-                        <i class="fas fa-box"></i> <b>${scan.code}</b> <br><small style="color:#aaa;">${scan.desc}</small>
+                    <div style="color: var(--text-dark);">
+                        <i class="fas fa-box" style="color: var(--brand-red);"></i> <b style="font-size: 1.1rem;">${scan.code}</b> 
+                        <span class="theme-badge badge-success" style="margin-left:8px; font-size: 0.85rem; background: var(--brand-blue); color: white; border:none;">${scan.totalQtd} un</span>
+                        <br><small style="color:var(--text-muted);">${scan.desc}</small>
+                        <br><small style="color:#aaa;">Somatória: ${scan.history.join(' + ')}</small>
                     </div>
-                    <button style="background:transparent; border:none; color:var(--neon-red); font-size:1.4rem; cursor:pointer;" onclick="removerBipDaReserva(${i})">
+                    <button class="btn-danger" style="padding: 8px 12px; border-radius: 4px; cursor: pointer;" onclick="removerBipDaReserva(${i})">
                         <i class="fas fa-trash-alt"></i>
                     </button>
                 `;
@@ -838,34 +1030,43 @@
         }
 
         function finalizarReserva() {
-            if(reservaScanned.length === 0 && !confirm("Nenhuma caixa foi bipada. Finalizar vazio?")) return;
+            if(reservaScanned.length === 0 && !confirm("O endereço encontra-se zerado. Finalizar mesmo assim?")) return;
 
             document.getElementById('reserva-step-2').style.display = 'none';
             document.getElementById('reserva-step-3').style.display = 'block';
             
-            let expected = reservaDB[reservaCurrentLoc] || [];
-            let toMatch = expected.map(e => ({ prod: e.prod, lv: e.lv, desc: e.desc, matched: false }));
-            let extras = [];
-            let matches = [];
+            let expectedArr = reservaDB[reservaCurrentLoc] ? JSON.parse(JSON.stringify(reservaDB[reservaCurrentLoc])) : []; 
+            let scannedArr = JSON.parse(JSON.stringify(reservaScanned));
 
-            reservaScanned.forEach(scan => {
-                // Limpa a etiqueta na hora de dar baixa tbm
-                let cleanScan = scan.code.replace(/^V0+/, ''); 
+            let matches = [];
+            let missing = [];
+            let extras = [];
+
+            expectedArr.forEach(exp => {
+                let foundIndex = scannedArr.findIndex(scan => scan.code === exp.prod || scan.cleanCode === exp.prod || scan.code === exp.lv || scan.cleanCode === exp.lv);
                 
-                let foundIndex = toMatch.findIndex(e => !e.matched && (e.prod === scan.code || e.lv === scan.code || e.lv === cleanScan));
                 if (foundIndex >= 0) {
-                    toMatch[foundIndex].matched = true;
-                    matches.push({ code: scan.code, desc: toMatch[foundIndex].desc, prod: toMatch[foundIndex].prod, lv: toMatch[foundIndex].lv });
+                    let scan = scannedArr[foundIndex];
+                    if (scan.totalQtd === exp.expectedQtd) {
+                        matches.push({ code: scan.code, desc: exp.desc, prod: exp.prod, lv: exp.lv, qtd: exp.expectedQtd });
+                    } else if (scan.totalQtd < exp.expectedQtd) {
+                        missing.push({ code: scan.code, desc: exp.desc, prod: exp.prod, lv: exp.lv, expected: exp.expectedQtd, scanned: scan.totalQtd, diff: exp.expectedQtd - scan.totalQtd });
+                    } else if (scan.totalQtd > exp.expectedQtd) {
+                        extras.push({ code: scan.code, desc: exp.desc, prod: exp.prod, lv: exp.lv, expected: exp.expectedQtd, scanned: scan.totalQtd, diff: scan.totalQtd - exp.expectedQtd });
+                    }
+                    scannedArr.splice(foundIndex, 1); 
                 } else {
-                    extras.push({code: scan.code, desc: scan.desc, lv: scan.code}); 
+                    missing.push({ code: exp.lv || exp.prod, desc: exp.desc, prod: exp.prod, lv: exp.lv, expected: exp.expectedQtd, scanned: 0, diff: exp.expectedQtd });
                 }
             });
 
-            let missing = toMatch.filter(e => !e.matched);
+            scannedArr.forEach(scan => {
+                extras.push({ code: scan.code, desc: scan.desc, prod: scan.code, lv: scan.cleanCode, expected: 0, scanned: scan.totalQtd, diff: scan.totalQtd });
+            });
 
-            renderReservaList('reserva-list-ok', matches, 'var(--neon-green)', 'fas fa-check-circle');
-            renderReservaList('reserva-list-missing', missing, 'var(--neon-red)', 'fas fa-times-circle');
-            renderReservaList('reserva-list-extra', extras, 'var(--neon-orange)', 'fas fa-exclamation-triangle');
+            renderReservaQtdList('reserva-list-ok', matches, 'var(--brand-blue)', 'fas fa-check-circle', false);
+            renderReservaQtdList('reserva-list-missing', missing, 'var(--brand-red)', 'fas fa-arrow-down', true);
+            renderReservaQtdList('reserva-list-extra', extras, '#FF8C00', 'fas fa-arrow-up', true);
             
             window.reservaResult = {
                 ticket: activeTicket,
@@ -877,22 +1078,30 @@
             };
         }
 
-        function renderReservaList(elementId, arr, color, icon) {
+        function renderReservaQtdList(elementId, arr, color, icon, isDiff) {
             let el = document.getElementById(elementId);
             el.innerHTML = '';
             if(arr.length === 0) {
-                el.innerHTML = `<div style="padding:10px; color:#666; text-align:center;">Nenhum item</div>`;
+                el.innerHTML = `<div style="padding:10px; color:var(--text-muted); text-align:center;">Nenhuma divergência apurada</div>`;
                 return;
             }
             arr.forEach(item => {
                 let code = item.code || item.lv || item.prod;
-                el.innerHTML += `<div style="padding:10px; border-bottom:1px solid rgba(255,255,255,0.05); color:${color};"><i class="${icon}"></i> <b>${code}</b> <br><small style="color:#ccc;">${item.desc}</small></div>`;
+                let textQtd = isDiff 
+                    ? `Físico Lançado: <b>${item.scanned}</b> | Previsto: <b>${item.expected}</b> <br><span style="color:${color}; font-weight:bold;">Ajustar: ${item.diff} un</span>` 
+                    : `Quantidade: <b>${item.qtd} un</b>`;
+                
+                el.innerHTML += `<div style="padding:10px; border-bottom:1px solid var(--border-light); color:var(--text-dark);">
+                    <i class="${icon}" style="color:${color}"></i> <b style="color:${color}; font-size:1.05rem;">${code}</b> 
+                    <br><small style="color:var(--text-muted);">${item.desc}</small>
+                    <div style="margin-top: 5px; font-size: 0.9rem; background: var(--brand-bg); padding: 5px 10px; border-radius: 4px; border-left: 3px solid ${color};">${textQtd}</div>
+                </div>`;
             });
         }
 
         async function salvarReservaNuvem() {
-            if (!window.db) { alert("Sem conexão com a nuvem."); return; }
-            setTelaCarregamento(true, "SALVANDO AUDITORIA", "Gravando o registro final...", "fa-cloud-upload-alt");
+            if (!window.db) { alert("Sistema de nuvem indisponível."); return; }
+            setTelaCarregamento(true, "Finalizando", "Salvando documento no banco...", "fa-sync");
             
             let statusFinal = (window.reservaResult.missingList.length === 0 && window.reservaResult.extrasList.length === 0) ? 'conforme' : 'divergente';
 
@@ -903,9 +1112,9 @@
                 nome_colaborador: window.reservaResult.auditor,
                 endereco_id: window.reservaResult.loc,
                 tipo_auditoria: 'reserva',
-                conformes_lv: window.reservaResult.matchesList.map(m => `Prod:${m.prod}|LV:${m.lv}`),
-                faltantes_lv: window.reservaResult.missingList.map(m => `Prod:${m.prod}|LV:${m.lv}`),
-                sobras_lv: window.reservaResult.extrasList.map(x => x.code),
+                conformes_lv: window.reservaResult.matchesList.map(m => `${m.code} (Qtd: ${m.qtd})`),
+                faltantes_lv: window.reservaResult.missingList.map(m => `${m.code} (Lido: ${m.scanned} / Sist: ${m.expected})`),
+                sobras_lv: window.reservaResult.extrasList.map(x => `${x.code} (Lido: ${x.scanned} / Sist: ${x.expected})`),
                 status: statusFinal
             };
 
@@ -918,7 +1127,7 @@
                     if(typeof localforage !== 'undefined') await localforage.setItem('vena_tickets_reserva', ticketsPendentes);
                 }
                 
-                alert("Registro " + activeTicket + " finalizado e salvo na nuvem!");
+                alert("Protocolo " + activeTicket + " submetido com sucesso.");
                 
                 document.getElementById('reserva-step-3').style.display = 'none';
                 document.getElementById('reserva-step-1').style.display = 'block';
@@ -928,14 +1137,14 @@
                 
             } catch(e) {
                 console.error(e);
-                alert("Erro ao gravar.");
+                alert("Erro ao gravar documento na nuvem.");
             } finally {
                 setTelaCarregamento(false);
             }
         }
 
         // ==========================================
-        // LÓGICA DO PICKING
+        // AUDITORIA PICKING
         // ==========================================
         function processPickingData(data) {
             inventoryDB = {}; productMap = {}; let count = 0;
@@ -951,7 +1160,7 @@
                 }
                 if (loc && prod) {
                     const strLoc = formatCode(loc), strCodLoc = formatCode(codLoc), strProd = formatCode(prod);
-                    const mappedSector = rawSector ? String(rawSector).toUpperCase() : 'Geral';
+                    const mappedSector = rawSector ? String(rawSector).toUpperCase() : 'GERAL';
                     const item = { loc: strLoc, codLoc: strCodLoc, prod: strProd, desc: desc, sector: mappedSector };
                     inventoryDB[strLoc] = item; if (strCodLoc) inventoryDB[strCodLoc] = item;
                     if (!productMap[strProd]) productMap[strProd] = { desc: desc, locs: [], sector: mappedSector };
@@ -960,8 +1169,8 @@
                 }
             });
             if (count > 0) {
-                document.getElementById('info-picking').innerHTML = `<i class="fas fa-check"></i> ${count} ativos carregados.`;
-                document.getElementById('info-picking').style.color = 'var(--neon-green)';
+                document.getElementById('info-picking').innerHTML = `<i class="fas fa-check"></i> ${count} registros ok.`;
+                document.getElementById('info-picking').style.color = 'var(--brand-blue)';
             }
         }
 
@@ -976,27 +1185,27 @@
                 }
                 if (barCodeVal && prodCodeVal) barcodeDB[barCodeVal] = prodCodeVal;
             });
-            document.getElementById('info-barcodes').innerHTML = `${Object.keys(barcodeDB).length} EANs prontos.`;
-            document.getElementById('info-barcodes').style.color = 'var(--neon-orange)';
+            document.getElementById('info-barcodes').innerHTML = `${Object.keys(barcodeDB).length} vínculos ok.`;
+            document.getElementById('info-barcodes').style.color = 'var(--brand-blue)';
         }
 
         function executeConsult() {
-            if (Object.keys(inventoryDB).length === 0) { alert("Base vazia. Baixe da nuvem primeiro."); return; }
+            if (Object.keys(inventoryDB).length === 0) { alert("Necessário Sincronização inicial."); return; }
             const rawScan = formatCode(document.getElementById('consult-prod').value);
             if (!rawScan) return;
             let internalCode = barcodeDB[rawScan] ? barcodeDB[rawScan] : rawScan;
             const productData = productMap[internalCode];
 
             if (productData && productData.locs.length > 0) {
-                showFeedback('consult-feedback', 'success', `<i class="fas fa-map-marker-alt" style="font-size:3rem; margin-bottom:10px;"></i><br><strong>GUARDE EM:</strong><br><strong style="color:var(--neon-green); font-size:1.6rem;">${productData.locs.join(' ou ')}</strong><br><small>${productData.desc}</small>`);
+                showFeedback('consult-feedback', 'success', `<i class="fas fa-map-marker-alt" style="font-size:2rem; margin-bottom:10px;"></i><br><strong>ALOCAÇÃO DO SISTEMA:</strong><br><strong style="font-size:1.5rem;">${productData.locs.join(' ou ')}</strong><br><small style="color:var(--brand-blue);">${productData.desc}</small>`);
             } else {
-                showFeedback('consult-feedback', 'error', `<i class="fas fa-times-circle" style="font-size:3rem; margin-bottom:10px;"></i><br><strong>NÃO ENCONTRADO</strong>`);
+                showFeedback('consult-feedback', 'error', `<i class="fas fa-times-circle" style="font-size:2rem; margin-bottom:10px;"></i><br><strong>SKU NÃO LOCALIZADO</strong>`);
             }
             document.getElementById('consult-prod').value = ''; document.getElementById('consult-prod').focus();
         }
 
         async function executeAudit() {
-            if (Object.keys(inventoryDB).length === 0) { alert("Base vazia. Baixe da nuvem primeiro."); return; }
+            if (Object.keys(inventoryDB).length === 0) { alert("Necessário Sincronização inicial."); return; }
             const auditorInput = document.getElementById('auditor-name').value.trim();
             const locInput = formatCode(document.getElementById('scan-loc').value);
             const rawScan = formatCode(document.getElementById('scan-prod').value);
@@ -1004,7 +1213,7 @@
 
             const baseItem = inventoryDB[locInput];
             if (!baseItem) {
-                showFeedback('audit-feedback', 'error', `<i class="fas fa-bomb" style="font-size:2.5rem;"></i><br><strong>ENDEREÇO INEXISTENTE</strong><br>O localizador ${locInput} não existe.`);
+                showFeedback('audit-feedback', 'error', `<strong>ALERTA:</strong> Endereço ${locInput} desconhecido.`);
                 document.getElementById('scan-loc').value = ''; document.getElementById('scan-loc').focus();
                 return;
             }
@@ -1045,10 +1254,10 @@
             dashboardStats.auditors[auditorInput]++;
 
             if (isCorrect) {
-                showFeedback('audit-feedback', 'success', `<i class="fas fa-check-circle" style="font-size:3rem;"></i><br><strong>OK!</strong><br><small>${baseItem.desc}</small>`);
+                showFeedback('audit-feedback', 'success', `<strong>BATEU (OK)</strong><br><small style="color:var(--brand-blue);">${baseItem.desc}</small>`);
             } else {
-                const correctLocs = productMap[productCodeToValidate] ? productMap[productCodeToValidate].locs.join(' / ') : "N/D";
-                showFeedback('audit-feedback', 'error', `<i class="fas fa-exclamation-triangle" style="font-size:3rem;"></i><br><strong>DIVERGÊNCIA!</strong><br><div style="font-size: 0.9rem; text-align: left; margin-top: 10px;">Esperado: <b>${baseItem.prod}</b><br>Bipado: <b style="color:var(--neon-red)">${productCodeToValidate}</b><br><span style="color: var(--neon-blue);">Esse produto é do endereço: <b>${correctLocs}</b></span></div>`);
+                const correctLocs = productMap[productCodeToValidate] ? productMap[productCodeToValidate].locs.join(' / ') : "Sem Alocação";
+                showFeedback('audit-feedback', 'error', `<strong>DIVERGÊNCIA FÍSICA</strong><br><div style="font-size: 0.9rem; text-align: left; margin-top: 10px; background:white; padding:10px; border-radius:4px; border:1px solid var(--brand-red);">Previsto (Sistema): <b>${baseItem.prod}</b><br>Lido no Local: <b style="color:var(--brand-red)">${productCodeToValidate}</b><br><span style="color: var(--text-muted);">Endereço original do produto lido: <b>${correctLocs}</b></span></div>`);
             }
             document.getElementById('scan-loc').value = ''; document.getElementById('scan-prod').value = '';
             document.getElementById('scan-loc').focus();
@@ -1056,22 +1265,22 @@
         }
 
         // ==========================================
-        // RELATÓRIOS
+        // RELATÓRIOS 
         // ==========================================
         window.carregarDadosDaNuvem = async function() {
-            if (!window.db) { alert("Nuvem desconectada."); return; }
+            if (!window.db) { alert("Sem conexão online."); return; }
             const dateInput = document.getElementById('filter-date').value; 
-            if(!dateInput) { alert("Selecione uma data!"); return; }
+            if(!dateInput) { alert("Informe a data para puxar os dados."); return; }
             const [ano, mes, dia] = dateInput.split('-');
             const dataAlvoUniversal = `${dia}/${mes}/${ano}`; 
             
             const btn = document.querySelector('button[onclick="window.carregarDadosDaNuvem()"]');
             const originalText = btn.innerHTML;
-            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Buscando...`;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Baixando...`;
             
             try {
                 const querySnapshot = await window.dbGetDocs(window.dbCollection(window.db, "auditorias"));
-                auditLog = []; dashboardStats = { total: 0, correct: 0, wrong: 0, sectors: {}, auditors: {} };
+                auditLog = []; divergenciasLogData = []; dashboardStats = { total: 0, correct: 0, wrong: 0, sectors: {}, auditors: {} };
                 let countPicking = 0;
 
                 querySnapshot.forEach((doc) => {
@@ -1081,15 +1290,28 @@
                         dashboardStats.total++;
                         const isCorrect = (data.status === 'correto');
                         isCorrect ? dashboardStats.correct++ : dashboardStats.wrong++;
-                        const setor = data.setor || 'Geral'; const auditor = data.nome_colaborador || 'Desconhecido';
+                        const setor = data.setor || 'GERAL'; const auditor = data.nome_colaborador || 'Não Informado';
                         
                         if (!dashboardStats.sectors[setor]) dashboardStats.sectors[setor] = { total: 0, errors: 0 };
                         dashboardStats.sectors[setor].total++;
-                        if (!isCorrect) dashboardStats.sectors[setor].errors++;
+                        
+                        if (!isCorrect) {
+                            dashboardStats.sectors[setor].errors++;
+                            divergenciasLogData.push({
+                                hora: data.data_auditoria.split(' ')[1] || '-',
+                                auditor: auditor,
+                                loc: data.endereco_id,
+                                esperado: data.produto_esperado,
+                                bipado: data.produto_bipado
+                            });
+                        }
+
                         if (!dashboardStats.auditors[auditor]) dashboardStats.auditors[auditor] = 0;
                         dashboardStats.auditors[auditor]++;
                     }
                 });
+                
+                divergenciasLogData.sort((a,b) => b.hora.localeCompare(a.hora));
                 updateDashboard();
 
                 const queryReserva = await window.dbGetDocs(window.dbCollection(window.db, "auditorias_reserva"));
@@ -1103,51 +1325,43 @@
                     }
                 });
 
-                alert(`Relatórios Puxados!\nPicking encontrados: ${countPicking}\nReservas (Registros) encontrados: ${countReserva}`);
+                alert(`Extração Concluída!\nPicking Extraídos: ${countPicking}\nDocumentos Reserva: ${countReserva}`);
             } catch(e) {
-                console.error(e); alert("Erro ao buscar dados.");
+                console.error(e); alert("Falha na consulta ao servidor.");
             } finally {
                 btn.innerHTML = originalText;
             }
         }
 
         async function exportAuditData() {
-            if (auditLog.length === 0) { 
-                alert("Procurando dados automaticamente da nuvem...");
-                await window.carregarDadosDaNuvem();
-                if (auditLog.length === 0) return; 
-            }
+            if (auditLog.length === 0) { alert("Carregue os dados da nuvem primeiro."); return; }
             const exportData = auditLog.map(({timestamp, ...rest}) => rest);
             const worksheet = XLSX.utils.json_to_sheet(exportData);
             const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Picking");
-            XLSX.writeFile(workbook, `Relatorio_Picking_${document.getElementById('filter-date').value}.xlsx`);
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Ranking");
+            XLSX.writeFile(workbook, `Resultados_Picking_${document.getElementById('filter-date').value}.xlsx`);
         }
 
         async function exportAuditReservaData() {
-            if (auditReservaLog.length === 0) { 
-                alert("Procurando dados automaticamente da nuvem...");
-                await window.carregarDadosDaNuvem();
-                if (auditReservaLog.length === 0) return; 
-            }
+            if (auditReservaLog.length === 0) { alert("Carregue os dados da nuvem primeiro."); return; }
             
             const exportData = auditReservaLog.map(item => {
                 return {
-                    Registro: item.ticket || "-",
-                    Data: item.data_auditoria,
-                    Auditor: item.nome_colaborador,
-                    Localizador: item.endereco_id,
-                    Status: String(item.status).toUpperCase(),
-                    Conformes_LV: item.conformes_lv ? item.conformes_lv.join(", ") : "-",
-                    Faltantes_LV: item.faltantes_lv ? item.faltantes_lv.join(", ") : "-",
-                    Sobras_LV: item.sobras_lv ? item.sobras_lv.join(", ") : "-"
+                    Documento: item.ticket || "-",
+                    Data_Hora: item.data_auditoria,
+                    Operador: item.nome_colaborador,
+                    Local_Reserva: item.endereco_id,
+                    Status_Final: String(item.status).toUpperCase(),
+                    Itens_Bateram: item.conformes_lv ? item.conformes_lv.join(" | ") : "-",
+                    Itens_Faltaram: item.faltantes_lv ? item.faltantes_lv.join(" | ") : "-",
+                    Itens_Sobra: item.sobras_lv ? item.sobras_lv.join(" | ") : "-"
                 }
             });
 
             const worksheet = XLSX.utils.json_to_sheet(exportData);
             const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Reserva_Registros");
-            XLSX.writeFile(workbook, `Relatorio_Reserva_${document.getElementById('filter-date').value}.xlsx`);
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Inventarios");
+            XLSX.writeFile(workbook, `Resultados_Reserva_${document.getElementById('filter-date').value}.xlsx`);
         }
 
         function showFeedback(elementId, type, message) {
@@ -1158,23 +1372,45 @@
         function updateDashboard() {
             const acc = dashboardStats.total > 0 ? ((dashboardStats.correct / dashboardStats.total) * 100).toFixed(1) : 0;
             document.getElementById('stat-accuracy').innerText = acc + '%';
+            if(acc < 95) document.getElementById('stat-accuracy').style.color = 'var(--brand-red)';
+            else document.getElementById('stat-accuracy').style.color = 'var(--brand-blue)';
+
             document.getElementById('stat-total').innerText = dashboardStats.total;
-            let worstSectorName = '---', maxErrors = -1;
+            let worstSectorName = 'Sem Desvios', maxErrors = -1;
             
             const tbodySectors = document.getElementById('table-sectors'); tbodySectors.innerHTML = '';
             Object.keys(dashboardStats.sectors).forEach(sector => {
                 const data = dashboardStats.sectors[sector];
                 const sAcc = (( (data.total - data.errors) / data.total) * 100).toFixed(0);
-                if(data.errors > maxErrors) { maxErrors = data.errors; worstSectorName = sector; }
-                tbodySectors.innerHTML += `<tr><td style="font-weight: bold; color: #fff;">${sector}</td><td style="color: ${data.errors > 0 ? 'var(--neon-red)' : '#fff'};">${data.errors}</td><td><div class="progress-bar"><div class="progress-fill" style="width: ${sAcc}%; background: ${sAcc > 90 ? 'var(--neon-green)' : 'var(--neon-red)'};"></div></div><small>${sAcc}%</small></td></tr>`;
+                if(data.errors > maxErrors && data.errors > 0) { maxErrors = data.errors; worstSectorName = sector; }
+                tbodySectors.innerHTML += `<tr><td style="font-weight: bold; color:var(--brand-blue);">${sector}</td><td style="color: ${data.errors > 0 ? 'var(--brand-red)' : 'var(--text-dark)'}; font-weight: bold;">${data.errors}</td><td><div class="progress-bar"><div class="progress-fill" style="width: ${sAcc}%; background: ${sAcc >= 95 ? 'var(--brand-blue)' : 'var(--brand-red)'};"></div></div><small style="color:var(--text-muted);">${sAcc}% (${data.total} apontamentos)</small></td></tr>`;
             });
             document.getElementById('worst-sector').innerText = maxErrors > 0 ? worstSectorName : "---";
+            if(maxErrors <= 0) tbodySectors.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-muted);">Sem dados</td></tr>`;
 
             const tbodyAuditors = document.getElementById('table-auditors'); tbodyAuditors.innerHTML = '';
             Object.keys(dashboardStats.auditors).sort((a,b) => dashboardStats.auditors[b] - dashboardStats.auditors[a]).forEach(auditor => {
-                tbodyAuditors.innerHTML += `<tr><td><i class="fas fa-user-check"></i> ${auditor}</td><td style="text-align:right; font-weight:bold; color:var(--neon-blue);">${dashboardStats.auditors[auditor]}</td></tr>`;
+                tbodyAuditors.innerHTML += `<tr><td><i class="fas fa-id-badge" style="color:var(--brand-red);"></i> ${auditor}</td><td style="text-align:right; font-weight:bold; color:var(--brand-blue);">${dashboardStats.auditors[auditor]}</td></tr>`;
             });
-            if(Object.keys(dashboardStats.auditors).length === 0) tbodyAuditors.innerHTML = `<tr><td colspan="2" style="text-align: center;">Sem dados</td></tr>`;
+            if(Object.keys(dashboardStats.auditors).length === 0) tbodyAuditors.innerHTML = `<tr><td colspan="2" style="text-align: center; color: var(--text-muted);">Sem dados</td></tr>`;
+
+            const tbodyDivergences = document.getElementById('table-divergences-log');
+            tbodyDivergences.innerHTML = '';
+            if(divergenciasLogData.length === 0) {
+                tbodyDivergences.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--brand-blue); font-weight: bold;"><i class="fas fa-thumbs-up"></i> Sistema operando sem erros na data atual.</td></tr>`;
+            } else {
+                divergenciasLogData.forEach(div => {
+                    tbodyDivergences.innerHTML += `
+                        <tr>
+                            <td style="color: var(--text-muted);">${div.hora}</td>
+                            <td style="color: var(--text-dark);">${div.auditor}</td>
+                            <td style="font-weight: bold; color: var(--brand-blue);">${div.loc}</td>
+                            <td style="color: var(--text-dark);">${div.esperado}</td>
+                            <td style="color: var(--brand-red); font-weight: bold;">${div.bipado}</td>
+                        </tr>
+                    `;
+                });
+            }
         }
 
         function showTab(tabId, btn) {
