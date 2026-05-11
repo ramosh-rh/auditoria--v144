@@ -27,7 +27,7 @@
             --text-muted: #666666;        
             --border-light: #D1D9E6;      
             
-            --dash-bg: #0B1121; /* Fundo escuro Premium para o Dashboard */
+            --dash-bg: #0B1121; /* Fundo escuro Premium para a Visão Executiva */
         }
 
         * { box-sizing: border-box; }
@@ -167,7 +167,7 @@
         }
 
         /* ==================================================
-           ESTILOS PREMIUM (GLASSMORPHISM) PARA O DASHBOARD
+           ESTILOS PREMIUM (GLASSMORPHISM) PARA A VISÃO EXECUTIVA
            ================================================== */
         .dash-container {
             background: var(--dash-bg);
@@ -226,7 +226,7 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* TICKER DO ROBOZINHO */
+        /* TICKER DO ROBOZINHO (I.A.) */
         .ai-ticker-wrap {
             width: 100%; background: rgba(0, 0, 0, 0.5); padding: 10px 0;
             border-left: 4px solid #00C6FF; border-radius: 4px; overflow: hidden;
@@ -262,7 +262,7 @@
 
     <div id="loading-overlay" class="full-overlay" style="z-index: 10001; background: rgba(255,255,255,0.95);">
         <i class="fas fa-spinner fa-spin" id="loading-icon" style="font-size: 4rem; color: var(--brand-blue); margin-bottom: 20px;"></i>
-        <h2 id="loading-title" style="color: var(--brand-blue); text-align: center; font-weight: bold;">PROCESSANDO</h2>
+        <h2 id="loading-title" style="color: var(--brand-blue); text-align: center; font-weight: bold;">A PROCESSAR</h2>
         <p id="loading-desc" style="color: var(--text-muted); text-align: center;">Por favor, aguarde a operação.</p>
     </div>
 
@@ -272,7 +272,7 @@
             <span>Vena144 <small style="font-weight: normal; font-size: 0.7rem; color: #E6F0FA;">| CORP</small></span>
         </div>
         <div class="status-panel">
-            <div id="status-firebase" style="color: #ffcccc;"><i class="fas fa-wifi"></i> Conectando à Nuvem...</div>
+            <div id="status-firebase" style="color: #ffcccc;"><i class="fas fa-wifi"></i> A ligar à Nuvem...</div>
         </div>
     </nav>
 
@@ -303,8 +303,8 @@
             <div class="theme-card" style="border-left: 5px solid var(--brand-blue);">
                 <h3 class="theme-card-title"><i class="fas fa-cloud"></i> Distribuição em Nuvem</h3>
                 <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.95rem;">
-                    <strong>Equipe de Controle (PC):</strong> Após carregar os Excel novos, clique em "1. Enviar para Nuvem".<br>
-                    <strong>Operadores (Celulares):</strong> O sistema baixa atualizações automaticamente. Use o botão 2 só se precisar forçar.
+                    <strong>Equipa de Controlo (PC):</strong> Após carregar os ficheiros Excel, clique em "1. Enviar para Nuvem".<br>
+                    <strong>Operadores (Terminais):</strong> O sistema descarrega atualizações automaticamente. Use o botão 2 só se precisar forçar.
                 </p>
                 <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                     <button class="btn-primary btn-secondary" style="flex-grow: 1;" onclick="enviarBasesParaNuvem()">
@@ -472,7 +472,7 @@
                 
                 <div class="dash-grid" style="margin-top: 10px;">
                     <div class="theme-card" style="border-top: 4px solid var(--brand-blue); margin-bottom: 0;">
-                        <h4 style="color: var(--brand-blue); font-weight: bold;"><i class="fas fa-check-circle"></i> Físico = Sistema (Bateu)</h4>
+                        <h4 style="color: var(--brand-blue); font-weight: bold;"><i class="fas fa-check-circle"></i> Físico = Sistema</h4>
                         <div id="reserva-list-ok" style="max-height: 250px; overflow-y: auto; font-size: 0.9rem;"></div>
                     </div>
                     
@@ -505,7 +505,7 @@
                 <div style="display: flex; flex-wrap: wrap; gap: 15px; align-items: center; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px;">
                     <h2 style="margin:0; font-size: 1.5rem; font-weight:bold; color: #FFF;">Torre de Controlo C-Level</h2>
                     <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
-                        <input type="date" id="filter-date" class="theme-input" style="width: auto; padding: 8px; font-weight: bold; background: rgba(255,255,255,0.1); color: #FFF; border: 1px solid rgba(255,255,255,0.3);">
+                        <input type="date" id="filter-date" class="theme-input" style="width: auto; padding: 8px; font-weight: bold; background: rgba(255,255,255,0.1); color: #FFF; border: 1px solid rgba(255,255,255,0.3); color-scheme: dark; border-radius: 4px;">
                         <button class="btn-primary" style="padding: 8px 15px; background: #00C6FF; color: #000;" onclick="window.carregarDadosDaNuvem()">
                             <i class="fas fa-sync"></i> Gerar
                         </button>
@@ -545,7 +545,6 @@
                         <table>
                             <thead><tr><th>Colaborador</th><th style="text-align: right;">Leituras OK</th></tr></thead>
                             <tbody id="table-auditors">
-                                <tr><td><i class="fas fa-star" style="color: #FFD700;"></i> Allanderson</td><td style="text-align:right; font-weight:bold; color:#00C6FF;">100%</td></tr>
                                 <tr><td colspan="2" style="text-align: center; font-size: 0.8rem; color: #888;">Gere o relatório para dados reais.</td></tr>
                             </tbody>
                         </table>
@@ -724,7 +723,7 @@
             }
 
             try {
-                setTelaCarregamento(true, "Transmitindo Dados", "Enviando dados para o servidor central...", "fa-cloud-upload-alt");
+                setTelaCarregamento(true, "A Transmitir Dados", "A enviar dados para o servidor central...", "fa-cloud-upload-alt");
                 const timestampISO = new Date().toISOString(); 
 
                 const uploadEmLotes = async (nome, arrayObj) => {
@@ -758,7 +757,7 @@
         window.baixarBasesDaNuvem = async function(isAuto = false) {
             if (!window.db) { if(!isAuto) alert("Aguarde a conexão."); return; }
             try {
-                if(!isAuto) setTelaCarregamento(true, "Recebendo Dados", "Puxando informações...", "fa-cloud-download-alt");
+                if(!isAuto) setTelaCarregamento(true, "A Receber Dados", "A extrair informações...", "fa-cloud-download-alt");
                 const baixarLotes = async (nome) => {
                     const metaSnap = await window.dbGetDoc(window.dbDoc(window.db, "bases_config", nome + "_meta"));
                     if (!metaSnap.exists()) return [];
@@ -802,7 +801,7 @@
                     await localforage.setItem('vena_base_reserva_obj', reservaDB);
                     await localforage.setItem('vena_bases_nuvem_sync', true);
                 }
-                if(!isAuto) alert("Carga efetuada!");
+                if(!isAuto) alert("Carga efetuada com sucesso!");
             } catch(e) {
             } finally {
                 setTelaCarregamento(false);
@@ -872,7 +871,7 @@
         }
 
         async function salvarComOverlay(type, jsonData) {
-            setTelaCarregamento(true, "Lendo Planilha", "Estruturando banco de dados...", "fa-cog");
+            setTelaCarregamento(true, "A Ler Planilha", "A estruturar a malha de dados...", "fa-cog");
             await new Promise(resolve => setTimeout(resolve, 300));
             try {
                 if (type === 'picking') {
@@ -952,7 +951,7 @@
         }
 
         async function limparMemoriaLocal() {
-            if(confirm("CUIDADO: Isso irá apagar toda a memória deste dispositivo. Continuar?")) {
+            if(confirm("CUIDADO: Isto irá apagar toda a memória deste dispositivo. Continuar?")) {
                 if (typeof localforage !== 'undefined') await localforage.clear();
                 location.reload();
             }
@@ -965,7 +964,7 @@
         function handleExcelUpload(e, type) {
             const file = e.target.files[0];
             if (!file) return;
-            setTelaCarregamento(true, "Aguarde", "Processando com motor anti-erros...", "fa-cog");
+            setTelaCarregamento(true, "Aguarde", "A utilizar motor anti-erros...", "fa-cog");
             
             const reader = new FileReader();
             if (file.name.toLowerCase().endsWith('.csv')) {
@@ -1109,7 +1108,7 @@
         }
 
         function iniciarReserva() {
-            if(Object.keys(reservaDB).length === 0) { alert("Sem dados. Baixe da nuvem."); return; }
+            if(Object.keys(reservaDB).length === 0) { alert("Sem dados no terminal. Descarregue da nuvem."); return; }
             const auditor = document.getElementById('auditor-reserva').value.trim();
             let loc = formatCode(document.getElementById('loc-reserva').value);
             
@@ -1134,7 +1133,7 @@
         }
 
         async function deletarTicket(tkId) {
-            if(confirm("Apagar permanentemente esta contagem pausada?")) {
+            if(confirm("Deseja apagar permanentemente esta contagem pausada?")) {
                 delete ticketsPendentes[tkId];
                 if(typeof localforage !== 'undefined') await localforage.setItem('vena_tickets_reserva', ticketsPendentes);
                 renderTicketsPendentes();
@@ -1186,7 +1185,8 @@
             }
             
             renderListaBips(); 
-            document.getElementById('item-reserva').value = ''; document.getElementById('item-reserva').focus();
+            document.getElementById('item-reserva').value = '';
+            document.getElementById('item-reserva').focus();
         }
 
         function renderListaBips() {
@@ -1212,19 +1212,24 @@
         }
 
         window.removerBipDaReserva = function(index) {
-            reservaScanned.splice(index, 1); renderListaBips(); document.getElementById('item-reserva').focus();
+            reservaScanned.splice(index, 1);
+            renderListaBips();
+            document.getElementById('item-reserva').focus();
         };
 
         async function pausarReserva() {
             ticketsPendentes[activeTicket] = {
-                loc: reservaCurrentLoc, auditor: document.getElementById('auditor-reserva').value,
-                scanned: reservaScanned, date: new Date().toLocaleTimeString('pt-BR')
+                loc: reservaCurrentLoc,
+                auditor: document.getElementById('auditor-reserva').value,
+                scanned: reservaScanned,
+                date: new Date().toLocaleTimeString('pt-BR')
             };
             if(typeof localforage !== 'undefined') await localforage.setItem('vena_tickets_reserva', ticketsPendentes);
             
             document.getElementById('reserva-step-2').style.display = 'none';
             document.getElementById('reserva-step-1').style.display = 'block';
-            document.getElementById('loc-reserva').value = ''; renderTicketsPendentes();
+            document.getElementById('loc-reserva').value = '';
+            renderTicketsPendentes();
         }
 
         function finalizarReserva() {
@@ -1236,7 +1241,9 @@
             let expectedArr = reservaDB[reservaCurrentLoc] ? JSON.parse(JSON.stringify(reservaDB[reservaCurrentLoc])) : []; 
             let scannedArr = JSON.parse(JSON.stringify(reservaScanned));
 
-            let matches = []; let missing = []; let extras = [];
+            let matches = [];
+            let missing = [];
+            let extras = [];
 
             expectedArr.forEach(exp => {
                 let foundIndex = scannedArr.findIndex(scan => scan.code === exp.prod || scan.cleanCode === exp.prod || scan.code === exp.lv || scan.cleanCode === exp.lv);
@@ -1264,7 +1271,14 @@
             renderReservaQtdList('reserva-list-missing', missing, 'var(--brand-red)', 'fas fa-arrow-down', true);
             renderReservaQtdList('reserva-list-extra', extras, '#FF8C00', 'fas fa-arrow-up', true);
             
-            window.reservaResult = { ticket: activeTicket, auditor: document.getElementById('auditor-reserva').value, loc: reservaCurrentLoc, matchesList: matches, missingList: missing, extrasList: extras };
+            window.reservaResult = {
+                ticket: activeTicket,
+                auditor: document.getElementById('auditor-reserva').value,
+                loc: reservaCurrentLoc,
+                matchesList: matches,
+                missingList: missing,
+                extrasList: extras
+            };
         }
 
         function renderReservaQtdList(elementId, arr, color, icon, isDiff) {
@@ -1274,40 +1288,49 @@
             arr.forEach(item => {
                 let code = item.code || item.lv || item.prod;
                 let desc = item.desc;
+                
                 let locsData = buscarEnderecosSaldos(code).filter(l => l.loc !== reservaCurrentLoc);
                 let outrosEnderecos = "";
 
                 if(locsData.length > 0) {
                     let tags = locsData.map(l => `<span class="loc-tag" style="border-left: 3px solid ${l.tipo === 'Picking' ? 'var(--brand-blue)' : 'var(--brand-red)'};"><i class="${l.tipo === 'Picking' ? 'fas fa-map-marker-alt' : 'fas fa-pallet'}"></i> ${l.loc} (<b>Saldo: ${l.saldo}</b>)</span>`).join("");
+                    
                     outrosEnderecos = `<div style="margin-top:10px; border-top:1px dashed #ccc; padding-top:10px;">
                         <small style="color: var(--text-muted);"><b><i class="fas fa-search-location"></i> Consta também nos endereços:</b></small><br>
-                        <div style="margin-top: 5px;">${tags}</div></div>`;
+                        <div style="margin-top: 5px;">${tags}</div>
+                    </div>`;
                 } else {
                     outrosEnderecos = `<div style="margin-top:10px; border-top:1px dashed #ccc; padding-top:10px;">
-                        <small style="color: var(--brand-red);"><b><i class="fas fa-exclamation-triangle"></i> Único endereço sistêmico.</b></small></div>`;
+                        <small style="color: var(--brand-red);"><b><i class="fas fa-exclamation-triangle"></i> Único endereço sistémico.</b></small>
+                    </div>`;
                 }
 
                 let textQtd = isDiff 
-                    ? `Físico Contado: <b>${item.scanned}</b> | Saldo do Sistema: <b>${item.expected}</b> <br><span style="color:${color}; font-weight:bold; font-size:1rem;">Ajuste Sistêmico: ${item.diff} un</span>` 
+                    ? `Físico Contado: <b>${item.scanned}</b> | Saldo do Sistema: <b>${item.expected}</b> <br><span style="color:${color}; font-weight:bold; font-size:1rem;">Ajuste Sistémico: ${item.diff} un</span>` 
                     : `Saldo Confirmado: <b>${item.qtd} un</b>`;
                 
                 el.innerHTML += `<div style="padding:15px; border-bottom:1px solid var(--border-light); color:var(--text-dark);">
                     <i class="${icon}" style="color:${color}"></i> <b style="color:${color}; font-size:1.15rem;">${code}</b> 
                     <br><b style="font-size: 0.9rem;">${desc}</b>
                     <div style="margin-top: 8px; font-size: 0.9rem; background: var(--brand-bg); padding: 8px 12px; border-radius: 4px; border-left: 4px solid ${color};">${textQtd}</div>
-                    ${outrosEnderecos}</div>`;
+                    ${outrosEnderecos}
+                </div>`;
             });
         }
 
         async function salvarReservaNuvem() {
             if (!window.db) return;
-            setTelaCarregamento(true, "Finalizando", "Salvando documento no banco...", "fa-sync");
+            setTelaCarregamento(true, "A Finalizar", "A gravar documento no banco de dados...", "fa-sync");
+            
             let statusFinal = (window.reservaResult.missingList.length === 0 && window.reservaResult.extrasList.length === 0) ? 'conforme' : 'divergente';
 
             const registro = {
-                ticket: window.reservaResult.ticket, data_auditoria: new Date().toLocaleString('pt-BR'),
-                data_filtro: obterDataUniversal(), nome_colaborador: window.reservaResult.auditor,
-                endereco_id: window.reservaResult.loc, tipo_auditoria: 'reserva',
+                ticket: window.reservaResult.ticket,
+                data_auditoria: new Date().toLocaleString('pt-BR'),
+                data_filtro: obterDataUniversal(), 
+                nome_colaborador: window.reservaResult.auditor,
+                endereco_id: window.reservaResult.loc,
+                tipo_auditoria: 'reserva',
                 conformes_lv: window.reservaResult.matchesList.map(m => `${m.code} (Saldo Confirmado: ${m.qtd})`),
                 faltantes_lv: window.reservaResult.missingList.map(m => `${m.code} (Físico: ${m.scanned} / Sist: ${m.expected})`),
                 sobras_lv: window.reservaResult.extrasList.map(x => `${x.code} (Físico: ${x.scanned} / Sist: ${x.expected})`),
@@ -1317,13 +1340,17 @@
             try {
                 registro.timestamp = window.dbServerTimestamp(); 
                 await window.dbAddDoc(window.dbCollection(window.db, "auditorias_reserva"), registro);
+                
                 if (ticketsPendentes[activeTicket]) {
                     delete ticketsPendentes[activeTicket];
                     if(typeof localforage !== 'undefined') await localforage.setItem('vena_tickets_reserva', ticketsPendentes);
                 }
+                
                 document.getElementById('reserva-step-3').style.display = 'none';
                 document.getElementById('reserva-step-1').style.display = 'block';
-                document.getElementById('loc-reserva').value = ''; renderTicketsPendentes();
+                document.getElementById('loc-reserva').value = '';
+                renderTicketsPendentes();
+                
             } catch(e) {
             } finally {
                 setTelaCarregamento(false);
@@ -1343,7 +1370,10 @@
                     if (ck === 'PRODUTO') prod = row[k];
                     if (ck.includes('DESCRICAO')) desc = row[k];
                     if (ck === 'SECAO' || ck === 'SETOR') rawSector = row[k];
-                    if (ck.includes('SALDO') || ck === 'QTD' || ck.includes('QUANTIDADE') || ck === 'ESTOQUE') saldo = parseNumberBR(row[k]);
+                    
+                    if (ck.includes('SALDO') || ck === 'QTD' || ck.includes('QUANTIDADE') || ck === 'ESTOQUE') {
+                        saldo = parseNumberBR(row[k]);
+                    }
                 }
                 if (loc && prod) {
                     const strLoc = formatCode(loc), strCodLoc = formatCode(codLoc), strProd = formatCode(prod);
@@ -1390,11 +1420,12 @@
 
             if (locsData.length > 0) {
                 let desc = productData ? productData.desc : (reservaScanned.find(e => e.code===internalCode)?.desc || "Produto localizado");
+                
                 let totalSaldo = locsData.reduce((acc, curr) => acc + curr.saldo, 0);
                 
                 let tagsHtml = locsData.map(l => `<span class="loc-tag" style="border-left: 3px solid ${l.tipo === 'Picking' ? 'var(--brand-blue)' : 'var(--brand-red)'}; font-size:1.1rem; padding: 6px 12px; margin-bottom:10px; display:inline-block;"><i class="${l.tipo === 'Picking' ? 'fas fa-map-marker-alt' : 'fas fa-pallet'}"></i> ${l.loc} (<b>Saldo: ${l.saldo} un</b>)</span><br>`).join("");
                 
-                showFeedback('consult-feedback', 'success', `<i class="fas fa-search-location" style="font-size:2rem; margin-bottom:10px;"></i><br><strong>MAPA DE ALOCAÇÃO:</strong><br><small style="color:var(--brand-blue); display:block; margin-bottom:10px; font-size:1.1rem;">${desc}</small><div style="font-size:1.1rem; font-weight:bold; color:var(--brand-white); margin-bottom:15px; background:var(--brand-blue); padding:8px; border-radius:4px;">Saldo Total Sistêmico: ${totalSaldo} un</div>${tagsHtml}`);
+                showFeedback('consult-feedback', 'success', `<i class="fas fa-search-location" style="font-size:2rem; margin-bottom:10px;"></i><br><strong>MAPA DE ALOCAÇÃO:</strong><br><small style="color:var(--brand-blue); display:block; margin-bottom:10px; font-size:1.1rem;">${desc}</small><div style="font-size:1.1rem; font-weight:bold; color:var(--brand-white); margin-bottom:15px; background:var(--brand-blue); padding:8px; border-radius:4px;">Saldo Total Sistémico: ${totalSaldo} un</div>${tagsHtml}`);
             } else {
                 showFeedback('consult-feedback', 'error', `<i class="fas fa-times-circle" style="font-size:2rem; margin-bottom:10px;"></i><br><strong>SKU NÃO LOCALIZADO</strong>`);
             }
@@ -1422,9 +1453,13 @@
             }
             
             const registroAuditoria = {
-                data_auditoria: new Date().toLocaleString('pt-BR'), data_filtro: obterDataUniversal(),
-                nome_colaborador: auditorInput, setor: baseItem.sector, endereco_id: baseItem.loc,
-                produto_esperado: baseItem.prod, produto_bipado: productCodeToValidate,
+                data_auditoria: new Date().toLocaleString('pt-BR'),
+                data_filtro: obterDataUniversal(),
+                nome_colaborador: auditorInput,
+                setor: baseItem.sector,
+                endereco_id: baseItem.loc,
+                produto_esperado: baseItem.prod,
+                produto_bipado: productCodeToValidate,
                 status: isCorrect ? 'correto' : 'problema'
             };
 
@@ -1450,9 +1485,9 @@
         }
 
         window.deletarRegistroDashboard = async function(colecao, docId) {
-            if(!confirm("⚠️ Remover auditoria da base de dados?")) return;
+            if(!confirm("⚠️ AVISO: Tem a certeza que deseja excluir permanentemente este registo do servidor? Esta ação não pode ser desfeita.")) return;
             try {
-                setTelaCarregamento(true, "Excluindo", "A remover registo...", "fa-trash-alt");
+                setTelaCarregamento(true, "A Excluir", "A remover auditoria da base de dados...", "fa-trash-alt");
                 await window.dbDeleteDoc(window.dbDoc(window.db, colecao, docId));
                 window.carregarDadosDaNuvem(); 
             } catch(e) {
@@ -1461,64 +1496,126 @@
             }
         }
 
+        // ==========================================
+        // MOTOR DE FILTRO C-LEVEL BLINDADO
+        // ==========================================
         window.carregarDadosDaNuvem = async function() {
-            if (!window.db) return;
+            if (!window.db) { 
+                alert("Aguarde a ligação à Nuvem."); 
+                return; 
+            }
+            
             const dateInput = document.getElementById('filter-date').value; 
-            if(!dateInput) return;
+            if(!dateInput) { 
+                alert("Por favor, seleccione uma data válida."); 
+                return; 
+            }
+            
+            setTelaCarregamento(true, "A Analisar Malha Logística", "A construir Torre de Controlo Executiva...", "fa-sync");
+
             const [ano, mes, dia] = dateInput.split('-');
             const dataAlvoUniversal = `${dia}/${mes}/${ano}`; 
+            const dataAlvoSemZero = `${parseInt(dia)}/${parseInt(mes)}/${ano}`;
             
             try {
                 const querySnapshot = await window.dbGetDocs(window.dbCollection(window.db, "auditorias"));
-                auditLog = []; divergenciasLogData = []; dashboardStats = { total: 0, correct: 0, wrong: 0, sectors: {}, auditors: {} };
+                
+                auditLog = []; 
+                divergenciasLogData = []; 
+                dashboardStats = { total: 0, correct: 0, wrong: 0, sectors: {}, auditors: {} };
                 let countPicking = 0;
 
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
-                    if (data.data_filtro === dataAlvoUniversal || (data.data_auditoria && data.data_auditoria.includes(dataAlvoUniversal))) {
-                        auditLog.push(data); countPicking++;
+                    
+                    let isMatch = false;
+                    if (data.data_filtro === dataAlvoUniversal) {
+                        isMatch = true;
+                    } else if (data.data_auditoria && (data.data_auditoria.includes(dataAlvoUniversal) || data.data_auditoria.includes(dataAlvoSemZero))) {
+                        isMatch = true;
+                    } else if (data.timestamp && typeof data.timestamp.toDate === 'function') {
+                        const d = data.timestamp.toDate();
+                        const ds = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+                        if(ds === dataAlvoUniversal) isMatch = true;
+                    }
+
+                    if (isMatch) {
+                        auditLog.push(data); 
+                        countPicking++; 
                         dashboardStats.total++;
+                        
                         const isCorrect = (data.status === 'correto');
                         isCorrect ? dashboardStats.correct++ : dashboardStats.wrong++;
                         
-                        let setor = data.setor || 'GERAL'; 
-                        if (setor === 'HIGIENE' || setor === 'CUIDADOS ESPECIAIS') setor = 'RUA 57 PERFUMARIA'; // Correção de Terminologia
+                        let setor = data.setor ? data.setor.toUpperCase() : 'GERAL'; 
+                        if (setor === 'HIGIENE' || setor === 'CUIDADOS ESPECIAIS') {
+                            setor = 'RUA 57 PERFUMARIA'; 
+                        }
                         
                         const auditor = data.nome_colaborador || 'Não Informado';
                         
-                        if (!dashboardStats.sectors[setor]) dashboardStats.sectors[setor] = { total: 0, errors: 0 };
+                        if (!dashboardStats.sectors[setor]) {
+                            dashboardStats.sectors[setor] = { total: 0, errors: 0 };
+                        }
+                        
                         dashboardStats.sectors[setor].total++;
                         
                         if (!isCorrect) {
                             dashboardStats.sectors[setor].errors++;
-                            divergenciasLogData.push({
-                                id: doc.id, hora: data.data_auditoria.split(' ')[1] || '-',
-                                auditor: auditor, loc: data.endereco_id, esperado: data.produto_esperado, bipado: data.produto_bipado
+                            divergenciasLogData.push({ 
+                                id: doc.id, 
+                                hora: data.data_auditoria ? data.data_auditoria.split(' ')[1] : '-', 
+                                auditor: auditor, 
+                                loc: data.endereco_id, 
+                                esperado: data.produto_esperado, 
+                                bipado: data.produto_bipado 
                             });
                         }
-
-                        if (!dashboardStats.auditors[auditor]) dashboardStats.auditors[auditor] = 0;
+                        
+                        if (!dashboardStats.auditors[auditor]) {
+                            dashboardStats.auditors[auditor] = 0;
+                        }
                         dashboardStats.auditors[auditor]++;
                     }
                 });
                 
                 const queryReserva = await window.dbGetDocs(window.dbCollection(window.db, "auditorias_reserva"));
-                auditReservaLog = [];
+                auditReservaLog = []; 
                 let countReserva = 0;
+                
                 queryReserva.forEach((doc) => {
                     const data = doc.data();
-                    if (data.data_filtro === dataAlvoUniversal || (data.data_auditoria && data.data_auditoria.includes(dataAlvoUniversal))) {
-                        auditReservaLog.push({ id: doc.id, ...data });
+                    
+                    let isMatch = false;
+                    if (data.data_filtro === dataAlvoUniversal) {
+                        isMatch = true;
+                    } else if (data.data_auditoria && (data.data_auditoria.includes(dataAlvoUniversal) || data.data_auditoria.includes(dataAlvoSemZero))) {
+                        isMatch = true;
+                    } else if (data.timestamp && typeof data.timestamp.toDate === 'function') {
+                        const d = data.timestamp.toDate();
+                        const ds = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+                        if(ds === dataAlvoUniversal) isMatch = true;
+                    }
+
+                    if (isMatch) {
+                        auditReservaLog.push({ id: doc.id, ...data }); 
                         countReserva++;
+                        
                         const auditor = data.nome_colaborador || 'Não Informado';
-                        if (!dashboardStats.auditors[auditor]) dashboardStats.auditors[auditor] = 0;
+                        if (!dashboardStats.auditors[auditor]) {
+                            dashboardStats.auditors[auditor] = 0;
+                        }
                         dashboardStats.auditors[auditor]++; 
                     }
                 });
 
                 updateDashboardPremium();
 
-            } catch(e) {} 
+            } catch(e) {
+                alert("Falha de comunicação com os servidores. Verifique a ligação.");
+            } finally {
+                setTelaCarregamento(false);
+            }
         }
 
         async function exportAuditData() {
@@ -1533,8 +1630,18 @@
         async function exportAuditReservaData() {
             if (auditReservaLog.length === 0) return;
             const exportData = auditReservaLog.map(item => {
-                return { Documento: item.ticket || "-", Data_Hora: item.data_auditoria, Operador: item.nome_colaborador, Local_Reserva: item.endereco_id, Status_Final: String(item.status).toUpperCase(), Itens_Bateram: item.conformes_lv ? item.conformes_lv.join(" | ") : "-", Itens_Faltaram: item.faltantes_lv ? item.faltantes_lv.join(" | ") : "-", Itens_Sobra: item.sobras_lv ? item.sobras_lv.join(" | ") : "-" }
+                return {
+                    Documento: item.ticket || "-",
+                    Data_Hora: item.data_auditoria,
+                    Operador: item.nome_colaborador,
+                    Local_Reserva: item.endereco_id,
+                    Status_Final: String(item.status).toUpperCase(),
+                    Itens_Bateram: item.conformes_lv ? item.conformes_lv.join(" | ") : "-",
+                    Itens_Faltaram: item.faltantes_lv ? item.faltantes_lv.join(" | ") : "-",
+                    Itens_Sobra: item.sobras_lv ? item.sobras_lv.join(" | ") : "-"
+                }
             });
+
             const worksheet = XLSX.utils.json_to_sheet(exportData);
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, "Inventarios");
@@ -1570,7 +1677,7 @@
                     tbodyAuditors.innerHTML += `<tr><td>${icon} ${auditor}</td><td style="text-align:right; font-weight:bold; color:#00C6FF;">${dashboardStats.auditors[auditor]}</td></tr>`;
                 });
             } else {
-                tbodyAuditors.innerHTML = `<tr><td><i class="fas fa-star" style="color: #FFD700;"></i> Allanderson</td><td style="text-align:right; font-weight:bold; color:#00C6FF;">Modelo</td></tr><tr><td colspan="2" style="text-align: center; font-size: 0.8rem; color: #888;">Aguardando dados...</td></tr>`;
+                tbodyAuditors.innerHTML = `<tr><td colspan="2" style="text-align: center; font-size: 0.8rem; color: #888;">A aguardar dados...</td></tr>`;
             }
 
             const tbodyDivergences = document.getElementById('table-divergences-log');
@@ -1589,10 +1696,10 @@
 
                     if(prodDataInfo && prodDataInfo.locs && prodDataInfo.locs.length > 0) {
                         analiseRobo = `<div class="ai-insight"><i class="fas fa-robot"></i><b>Inversão Evitada:</b> Alocação bloqueada na Rua ${prodDataInfo.locs.join(', ')}.</div>`;
-                        tickerMotivos.push(`🔴 Inversão detectada na Rua ${prodDataInfo.locs.join(', ')} e bloqueada.`);
+                        tickerMotivos.push(`🔴 Inversão detetada na Rua ${prodDataInfo.locs.join(', ')} e bloqueada.`);
                     } else {
                         analiseRobo = `<div class="ai-insight" style="background:rgba(255, 65, 108, 0.1); border-left-color:#FF416C;"><i class="fas fa-robot" style="color:#FF416C;"></i><b>Alerta Sistémico:</b> SKU sem espelho físico.</div>`;
-                        tickerMotivos.push(`🔴 Produto sem alocação detectado no picking.`);
+                        tickerMotivos.push(`🔴 Produto sem alocação detetado no picking.`);
                     }
 
                     tbodyDivergences.innerHTML += `
@@ -1614,7 +1721,7 @@
             tbodyReserva.innerHTML = '';
             
             if(auditReservaLog.length === 0) {
-                tbodyReserva.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #00C6FF; font-weight: bold;"><i class="fas fa-info-circle"></i> Sem inventários.</td></tr>`;
+                tbodyReserva.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #00C6FF; font-weight: bold;"><i class="fas fa-info-circle"></i> Nenhum inventário de reserva no período.</td></tr>`;
             } else {
                 auditReservaLog.sort((a,b) => {
                     let horaA = a.data_auditoria ? a.data_auditoria.split(' ')[1] : '';
@@ -1631,7 +1738,7 @@
                     
                     todosItens.forEach(itemStr => {
                         let code = itemStr.split(' ')[0].replace(/[()]/g, '');
-                        let pData = productMap[code] || { desc: "Desconhecido", locs: [] };
+                        let pData = productMap[code] || { desc: "Produto não identificado", locs: [] };
                         
                         let corLinha = "transparent"; let bordaLinha = "rgba(255,255,255,0.1)";
                         if(res.faltantes_lv && res.faltantes_lv.some(f => f.includes(code))) { corLinha = "rgba(255,65,108,0.1)"; bordaLinha = "#FF416C"; }
@@ -1668,10 +1775,9 @@
                 });
             }
 
-            // Atualiza o Ticker
             let ticker = document.getElementById('live-ticker');
             if (tickerMotivos.length > 0) {
-                ticker.innerText = tickerMotivos.join(" | ") + " | 🟢 Monitorização Activa de Força Operacional.";
+                ticker.innerText = tickerMotivos.join(" | ") + " | 🟢 Monitorização Ativa de Força Operacional.";
             } else {
                 ticker.innerText = "🟢 Sistema Estável. Nenhuma divergência operacional registada. A acompanhar a performance da equipa em tempo real.";
             }
