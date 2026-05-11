@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -324,7 +324,7 @@
                         <i class="fas fa-file-excel" style="font-size: 2.5rem; color: var(--brand-blue); margin-bottom: 10px;"></i>
                         <input type="file" id="filePicking" hidden accept=".xlsx, .xls, .csv">
                     </div>
-                    <div id="info-picking" style="margin-top: 10px; color: var(--brand-red); text-align: center; font-size: 0.85rem; font-weight: bold;">Status: Aguardando Arquivo</div>
+                    <div id="info-picking" style="margin-top: 10px; color: var(--brand-red); text-align: center; font-size: 0.85rem; font-weight: bold;">Status: A aguardar Ficheiro</div>
                 </div>
 
                 <div class="theme-card" style="margin-bottom: 0;">
@@ -333,7 +333,7 @@
                         <i class="fas fa-file-excel" style="font-size: 2.5rem; color: var(--brand-blue); margin-bottom: 10px;"></i>
                         <input type="file" id="fileBarcodes" hidden accept=".xlsx, .xls, .csv">
                     </div>
-                    <div id="info-barcodes" style="margin-top: 10px; color: var(--brand-red); text-align: center; font-size: 0.85rem; font-weight: bold;">Status: Aguardando Arquivo</div>
+                    <div id="info-barcodes" style="margin-top: 10px; color: var(--brand-red); text-align: center; font-size: 0.85rem; font-weight: bold;">Status: A aguardar Ficheiro</div>
                 </div>
 
                 <div class="theme-card" style="margin-bottom: 0;">
@@ -342,7 +342,7 @@
                         <i class="fas fa-file-excel" style="font-size: 2.5rem; color: var(--brand-blue); margin-bottom: 10px;"></i>
                         <input type="file" id="fileReserva" hidden accept=".xlsx, .xls, .csv">
                     </div>
-                    <div id="info-reserva" style="margin-top: 10px; color: var(--brand-red); text-align: center; font-size: 0.85rem; font-weight: bold;">Status: Aguardando Arquivo</div>
+                    <div id="info-reserva" style="margin-top: 10px; color: var(--brand-red); text-align: center; font-size: 0.85rem; font-weight: bold;">Status: A aguardar Ficheiro</div>
                 </div>
             </div>
             
@@ -545,7 +545,7 @@
                         <table>
                             <thead><tr><th>Colaborador</th><th style="text-align: right;">Leituras OK</th></tr></thead>
                             <tbody id="table-auditors">
-                                <tr><td colspan="2" style="text-align: center; font-size: 0.8rem; color: #888;">Gere o relatório para dados reais.</td></tr>
+                                <tr><td colspan="2" style="text-align: center; font-size: 0.8rem; color: #888;">A aguardar dados...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -681,8 +681,15 @@
 
         document.addEventListener("DOMContentLoaded", async () => {
             checkAuth(); 
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('filter-date').value = today;
+            
+            // CORREÇÃO DO FUSO HORÁRIO: Forçar a extração exata da hora local
+            const hojeLocal = new Date();
+            const ano = hojeLocal.getFullYear();
+            const mes = String(hojeLocal.getMonth() + 1).padStart(2, '0');
+            const dia = String(hojeLocal.getDate()).padStart(2, '0');
+            
+            // Agora o calendário carrega sempre o dia correto
+            document.getElementById('filter-date').value = `${ano}-${mes}-${dia}`;
             
             const hasDataLoaded = await carregarBasesDaMemoriaLocal();
             if(hasDataLoaded) {
@@ -717,7 +724,7 @@
         }
 
         window.enviarBasesParaNuvem = async function() {
-            if (!window.db) { alert("Aguarde a conexão com o banco de dados."); return; }
+            if (!window.db) { alert("Aguarde a ligação com o banco de dados."); return; }
             if (Object.keys(inventoryDB).length === 0 && Object.keys(reservaDB).length === 0) {
                 alert("Nenhuma base em memória para transmitir."); return;
             }
@@ -755,7 +762,7 @@
         }
 
         window.baixarBasesDaNuvem = async function(isAuto = false) {
-            if (!window.db) { if(!isAuto) alert("Aguarde a conexão."); return; }
+            if (!window.db) { if(!isAuto) alert("Aguarde a ligação."); return; }
             try {
                 if(!isAuto) setTelaCarregamento(true, "A Receber Dados", "A extrair informações...", "fa-cloud-download-alt");
                 const baixarLotes = async (nome) => {
@@ -1497,7 +1504,7 @@
         }
 
         // ==========================================
-        // MOTOR DE FILTRO C-LEVEL BLINDADO
+        // MOTOR DE FILTRO C-LEVEL BLINDADO (V3)
         // ==========================================
         window.carregarDadosDaNuvem = async function() {
             if (!window.db) { 
@@ -1513,9 +1520,36 @@
             
             setTelaCarregamento(true, "A Analisar Malha Logística", "A construir Torre de Controlo Executiva...", "fa-sync");
 
-            const [ano, mes, dia] = dateInput.split('-');
-            const dataAlvoUniversal = `${dia}/${mes}/${ano}`; 
-            const dataAlvoSemZero = `${parseInt(dia)}/${parseInt(mes)}/${ano}`;
+            // Isolar componentes para não sofrerem mutação de fuso
+            const [anoInp, mesInp, diaInp] = dateInput.split('-');
+            const tAno = parseInt(anoInp);
+            const tMes = parseInt(mesInp);
+            const tDia = parseInt(diaInp);
+            
+            const padDia = String(tDia).padStart(2, '0');
+            const padMes = String(tMes).padStart(2, '0');
+
+            // Mapeia todas as permutações de data possíveis no banco de dados
+            const varsData = [
+                `${padDia}/${padMes}/${tAno}`, 
+                `${tDia}/${tMes}/${tAno}`,     
+                `${tAno}-${padMes}-${padDia}`
+            ];
+
+            function checkMatch(dataObj) {
+                // 1. Timestamp oficial (à prova de fusos)
+                if (dataObj.timestamp && typeof dataObj.timestamp.toDate === 'function') {
+                    const d = dataObj.timestamp.toDate();
+                    if (d.getFullYear() === tAno && (d.getMonth() + 1) === tMes && d.getDate() === tDia) return true;
+                }
+                
+                // 2. Busca de redundância nas strings salvas
+                const strBusca = (dataObj.data_auditoria || '') + ' | ' + (dataObj.data_filtro || '');
+                for(let formato of varsData) {
+                    if(strBusca.includes(formato)) return true;
+                }
+                return false;
+            }
             
             try {
                 const querySnapshot = await window.dbGetDocs(window.dbCollection(window.db, "auditorias"));
@@ -1523,30 +1557,18 @@
                 auditLog = []; 
                 divergenciasLogData = []; 
                 dashboardStats = { total: 0, correct: 0, wrong: 0, sectors: {}, auditors: {} };
-                let countPicking = 0;
 
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
                     
-                    let isMatch = false;
-                    if (data.data_filtro === dataAlvoUniversal) {
-                        isMatch = true;
-                    } else if (data.data_auditoria && (data.data_auditoria.includes(dataAlvoUniversal) || data.data_auditoria.includes(dataAlvoSemZero))) {
-                        isMatch = true;
-                    } else if (data.timestamp && typeof data.timestamp.toDate === 'function') {
-                        const d = data.timestamp.toDate();
-                        const ds = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
-                        if(ds === dataAlvoUniversal) isMatch = true;
-                    }
-
-                    if (isMatch) {
+                    if (checkMatch(data)) {
                         auditLog.push(data); 
-                        countPicking++; 
                         dashboardStats.total++;
                         
                         const isCorrect = (data.status === 'correto');
                         isCorrect ? dashboardStats.correct++ : dashboardStats.wrong++;
                         
+                        // Atualizado com a Nomenclatura Corporativa Correta
                         let setor = data.setor ? data.setor.toUpperCase() : 'GERAL'; 
                         if (setor === 'HIGIENE' || setor === 'CUIDADOS ESPECIAIS') {
                             setor = 'RUA 57 PERFUMARIA'; 
@@ -1554,10 +1576,7 @@
                         
                         const auditor = data.nome_colaborador || 'Não Informado';
                         
-                        if (!dashboardStats.sectors[setor]) {
-                            dashboardStats.sectors[setor] = { total: 0, errors: 0 };
-                        }
-                        
+                        if (!dashboardStats.sectors[setor]) dashboardStats.sectors[setor] = { total: 0, errors: 0 };
                         dashboardStats.sectors[setor].total++;
                         
                         if (!isCorrect) {
@@ -1572,39 +1591,20 @@
                             });
                         }
                         
-                        if (!dashboardStats.auditors[auditor]) {
-                            dashboardStats.auditors[auditor] = 0;
-                        }
+                        if (!dashboardStats.auditors[auditor]) dashboardStats.auditors[auditor] = 0;
                         dashboardStats.auditors[auditor]++;
                     }
                 });
                 
                 const queryReserva = await window.dbGetDocs(window.dbCollection(window.db, "auditorias_reserva"));
                 auditReservaLog = []; 
-                let countReserva = 0;
                 
                 queryReserva.forEach((doc) => {
                     const data = doc.data();
-                    
-                    let isMatch = false;
-                    if (data.data_filtro === dataAlvoUniversal) {
-                        isMatch = true;
-                    } else if (data.data_auditoria && (data.data_auditoria.includes(dataAlvoUniversal) || data.data_auditoria.includes(dataAlvoSemZero))) {
-                        isMatch = true;
-                    } else if (data.timestamp && typeof data.timestamp.toDate === 'function') {
-                        const d = data.timestamp.toDate();
-                        const ds = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
-                        if(ds === dataAlvoUniversal) isMatch = true;
-                    }
-
-                    if (isMatch) {
+                    if (checkMatch(data)) {
                         auditReservaLog.push({ id: doc.id, ...data }); 
-                        countReserva++;
-                        
                         const auditor = data.nome_colaborador || 'Não Informado';
-                        if (!dashboardStats.auditors[auditor]) {
-                            dashboardStats.auditors[auditor] = 0;
-                        }
+                        if (!dashboardStats.auditors[auditor]) dashboardStats.auditors[auditor] = 0;
                         dashboardStats.auditors[auditor]++; 
                     }
                 });
@@ -1612,6 +1612,7 @@
                 updateDashboardPremium();
 
             } catch(e) {
+                console.error("Falha no diagnóstico:", e);
                 alert("Falha de comunicação com os servidores. Verifique a ligação.");
             } finally {
                 setTelaCarregamento(false);
