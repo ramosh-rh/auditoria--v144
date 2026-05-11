@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vena144 - Blue & Red Corporate</title>
+    <title>Vena144 - Visão Executiva</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <style>
-        /* PALETA DE CORES: AZUL, VERMELHO E BRANCO */
+        /* PALETA DE CORES BASE */
         :root {
             --brand-blue: #0033A0;        
             --brand-blue-hover: #002277;  
@@ -26,6 +26,8 @@
             --text-dark: #1A1A1A;         
             --text-muted: #666666;        
             --border-light: #D1D9E6;      
+            
+            --dash-bg: #0B1121; /* Fundo escuro Premium para o Dashboard */
         }
 
         * { box-sizing: border-box; }
@@ -131,12 +133,8 @@
             gap: 8px;
         }
         .btn-primary:hover { background: var(--brand-blue-hover); box-shadow: 0 4px 8px rgba(0,51,160,0.2); }
-        
         .btn-secondary { background: var(--brand-white); color: var(--brand-blue); border: 1px solid var(--brand-blue); }
-        .btn-secondary:hover { background: var(--brand-blue-light); }
-        
         .btn-danger { background: var(--brand-red); color: var(--brand-white); border: none; }
-        .btn-danger:hover { background: var(--brand-red-hover); box-shadow: 0 4px 8px rgba(218,41,28,0.2); }
 
         .cam-btn { background: var(--brand-bg); border: 1px solid #A0B0C0; color: var(--text-dark); border-radius: 4px; padding: 0 15px; cursor: pointer; transition: 0.2s; }
         .cam-btn:hover { background: #D1D9E6; color: var(--brand-blue); }
@@ -147,22 +145,11 @@
 
         .upload-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
         .upload-zone { border: 2px dashed var(--brand-blue); padding: 20px; text-align: center; border-radius: 4px; cursor: pointer; transition: 0.2s; background: var(--brand-white); }
-        .upload-zone:hover { background: var(--brand-blue-light); }
         
         .input-row { display: flex; gap: 10px; }
-        
         table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem;}
         th { text-align: left; color: var(--brand-blue); padding: 12px 8px; border-bottom: 2px solid var(--brand-blue); font-weight: bold; background: var(--brand-bg);}
         td { padding: 12px 8px; border-bottom: 1px solid var(--border-light); color: var(--text-dark);}
-        tr:hover td { background: var(--brand-blue-light); }
-
-        .progress-bar { height: 6px; background: var(--border-light); border-radius: 3px; overflow: hidden; margin-top: 5px; }
-        .progress-fill { height: 100%; transition: width 1s; }
-
-        .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
-        .stat-box { text-align: left; padding: 20px; border-radius: 4px; border-left: 5px solid var(--brand-blue); }
-        .stat-title { font-size: 0.85rem; color: var(--text-muted); font-weight: bold; text-transform: uppercase;}
-        .stat-val { font-size: 2.2rem; font-weight: bold; color: var(--text-dark); display: block; margin-top: 5px;}
 
         .full-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 51, 160, 0.9); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; }
         #reader { width: 100%; max-width: 400px; border: 4px solid var(--brand-white); border-radius: 8px; overflow: hidden; background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.5);}
@@ -171,19 +158,91 @@
         .badge-error { background: var(--brand-red-light); color: var(--brand-red); border: 1px solid var(--brand-red); }
         .badge-success { background: var(--brand-blue-light); color: var(--brand-blue); border: 1px solid var(--brand-blue); }
 
-        .ticket-box { border: 1px solid var(--border-light); border-radius: 4px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; background: var(--brand-white); border-left: 4px solid var(--brand-red);}
-        
         .loc-tag { background: #fff; padding: 4px 8px; border-radius: 4px; font-size: 0.9rem; margin-right: 6px; margin-bottom: 6px; color: var(--text-dark); border: 1px solid var(--border-light); display: inline-block; box-shadow: 0 2px 4px rgba(0,0,0,0.05);}
         .loc-tag b { color: var(--brand-red); font-size: 1rem;}
-        .loc-tag i { color: var(--text-muted); font-size: 0.8rem; margin-right: 4px;}
         
         .alert-saved {
             background: #E8F5E9; color: #2E7D32; border: 1px solid #A5D6A7; padding: 15px; border-radius: 8px;
             margin-bottom: 20px; display: flex; align-items: center; gap: 15px; font-weight: bold;
         }
 
+        /* ==================================================
+           ESTILOS PREMIUM (GLASSMORPHISM) PARA O DASHBOARD
+           ================================================== */
+        .dash-container {
+            background: var(--dash-bg);
+            border-radius: 12px;
+            padding: 25px;
+            color: white;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dash-container::before {
+            content: ''; position: absolute; top: -50px; right: -50px;
+            width: 300px; height: 300px; background: rgba(0, 51, 160, 0.4);
+            border-radius: 50%; filter: blur(80px); z-index: 0;
+        }
+
+        .premium-glass {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        .premium-glass h3 { color: #A0C0FF; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 15px;}
+        .premium-glass table { color: white; }
+        .premium-glass th { background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255,255,255,0.2); color: #A0C0FF;}
+        .premium-glass td { border-bottom: 1px solid rgba(255,255,255,0.05); color: #E6E6E6;}
+        .premium-glass tr:hover td { background: rgba(255,255,255,0.05); }
+
+        .dash-grid-premium { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-top: 20px; }
+
+        .stat-box-premium {
+            text-align: center;
+            border-top: 4px solid var(--brand-blue);
+        }
+        
+        .stat-title-premium { font-size: 0.9rem; color: #A0C0FF; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;}
+        .stat-val-premium { 
+            font-size: 3.5rem; 
+            font-weight: 900; 
+            display: block; 
+            margin-top: 10px;
+            background: -webkit-linear-gradient(#00C6FF, #0072FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .stat-val-red {
+            background: -webkit-linear-gradient(#FF4B2B, #FF416C);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* TICKER DO ROBOZINHO */
+        .ai-ticker-wrap {
+            width: 100%; background: rgba(0, 0, 0, 0.5); padding: 10px 0;
+            border-left: 4px solid #00C6FF; border-radius: 4px; overflow: hidden;
+            display: flex; align-items: center; margin-bottom: 25px; position: relative; z-index: 1;
+        }
+        .ai-ticker-label {
+            background: #00C6FF; color: #000; font-weight: bold; padding: 5px 15px; margin-left: 10px;
+            border-radius: 4px; display: inline-flex; align-items: center; gap: 8px; z-index: 2; white-space: nowrap;
+        }
+        .ai-ticker-move {
+            white-space: nowrap; animation: ticker 25s linear infinite; padding-left: 20px; color: #E6E6E6; font-size: 0.95rem; font-weight: 500;
+        }
+        @keyframes ticker { 0% { transform: translate3d(100%, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
+
         .ai-insight {
-            background: #FFF8E1; border-left: 4px solid #FFC107; padding: 8px 12px; border-radius: 4px; font-size: 0.85rem; color: #424242; margin-top: 5px;
+            background: rgba(255, 193, 7, 0.1); border-left: 4px solid #FFC107; padding: 10px; border-radius: 4px; font-size: 0.85rem; color: #FFF; margin-top: 5px;
         }
         .ai-insight i { color: #FFC107; margin-right: 5px; font-size: 1rem;}
     </style>
@@ -228,25 +287,24 @@
         <button class="tab-btn" id="btn-tab-consult" onclick="showTab('consult', this)"><i class="fas fa-search"></i> Busca Ativa</button>
         <button class="tab-btn" onclick="showTab('audit', this)"><i class="fas fa-dolly-flatbed"></i> Auditar Picking</button>
         <button class="tab-btn" onclick="showTab('reserva', this)"><i class="fas fa-pallet"></i> Auditar Reserva</button>
-        <button class="tab-btn" onclick="showTab('dashboard', this)"><i class="fas fa-chart-pie"></i> Painel de Desempenho</button>
+        <button class="tab-btn" onclick="showTab('dashboard', this)"><i class="fas fa-chart-pie"></i> Visão Executiva</button>
     </div>
 
     <div class="container">
         <div id="view-import" class="view active">
-            
             <div class="alert-saved">
                 <i class="fas fa-save" style="font-size: 2rem;"></i>
                 <div>
                     Os dados já ficam salvos no aparelho de forma automática!<br>
-                    <span style="font-weight: normal; font-size: 0.9rem; color: var(--text-dark);">Só utilize esta tela quando necessitar importar planilhas novas (Actualizar o sistema) ou forçar download da Nuvem.</span>
+                    <span style="font-weight: normal; font-size: 0.9rem; color: var(--text-dark);">Só utilize esta tela quando você precisar importar planilhas novas (Atualizar o sistema) ou forçar download da Nuvem.</span>
                 </div>
             </div>
 
             <div class="theme-card" style="border-left: 5px solid var(--brand-blue);">
                 <h3 class="theme-card-title"><i class="fas fa-cloud"></i> Distribuição em Nuvem</h3>
                 <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.95rem;">
-                    <strong>Equipa de Controlo (PC):</strong> Após carregar os Excel novos, clique em "1. Enviar para Nuvem".<br>
-                    <strong>Operadores (Telemóveis):</strong> O sistema baixa actualizações automaticamente. Use o botão 2 só se precisar forçar.
+                    <strong>Equipe de Controle (PC):</strong> Após carregar os Excel novos, clique em "1. Enviar para Nuvem".<br>
+                    <strong>Operadores (Celulares):</strong> O sistema baixa atualizações automaticamente. Use o botão 2 só se precisar forçar.
                 </p>
                 <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                     <button class="btn-primary btn-secondary" style="flex-grow: 1;" onclick="enviarBasesParaNuvem()">
@@ -258,7 +316,7 @@
                 </div>
             </div>
 
-            <h4 style="color: var(--brand-blue); margin-top: 30px; margin-bottom: 15px; font-weight: bold;"><i class="fas fa-desktop"></i> Carga Local / Actualização das Planilhas</h4>
+            <h4 style="color: var(--brand-blue); margin-top: 30px; margin-bottom: 15px; font-weight: bold;"><i class="fas fa-desktop"></i> Carga Local / Atualização das Planilhas</h4>
             <div class="upload-grid">
                 <div class="theme-card" style="margin-bottom: 0;">
                     <div style="color: var(--text-dark); font-weight: bold; margin-bottom: 10px;"><i class="fas fa-map-marker-alt" style="color:var(--brand-red);"></i> Tabela Picking</div>
@@ -266,7 +324,7 @@
                         <i class="fas fa-file-excel" style="font-size: 2.5rem; color: var(--brand-blue); margin-bottom: 10px;"></i>
                         <input type="file" id="filePicking" hidden accept=".xlsx, .xls, .csv">
                     </div>
-                    <div id="info-picking" style="margin-top: 10px; color: var(--brand-red); text-align: center; font-size: 0.85rem; font-weight: bold;">Status: A aguardar Ficheiro</div>
+                    <div id="info-picking" style="margin-top: 10px; color: var(--brand-red); text-align: center; font-size: 0.85rem; font-weight: bold;">Status: Aguardando Arquivo</div>
                 </div>
 
                 <div class="theme-card" style="margin-bottom: 0;">
@@ -275,7 +333,7 @@
                         <i class="fas fa-file-excel" style="font-size: 2.5rem; color: var(--brand-blue); margin-bottom: 10px;"></i>
                         <input type="file" id="fileBarcodes" hidden accept=".xlsx, .xls, .csv">
                     </div>
-                    <div id="info-barcodes" style="margin-top: 10px; color: var(--brand-red); text-align: center; font-size: 0.85rem; font-weight: bold;">Status: A aguardar Ficheiro</div>
+                    <div id="info-barcodes" style="margin-top: 10px; color: var(--brand-red); text-align: center; font-size: 0.85rem; font-weight: bold;">Status: Aguardando Arquivo</div>
                 </div>
 
                 <div class="theme-card" style="margin-bottom: 0;">
@@ -284,7 +342,7 @@
                         <i class="fas fa-file-excel" style="font-size: 2.5rem; color: var(--brand-blue); margin-bottom: 10px;"></i>
                         <input type="file" id="fileReserva" hidden accept=".xlsx, .xls, .csv">
                     </div>
-                    <div id="info-reserva" style="margin-top: 10px; color: var(--brand-red); text-align: center; font-size: 0.85rem; font-weight: bold;">Status: A aguardar Ficheiro</div>
+                    <div id="info-reserva" style="margin-top: 10px; color: var(--brand-red); text-align: center; font-size: 0.85rem; font-weight: bold;">Status: Aguardando Arquivo</div>
                 </div>
             </div>
             
@@ -341,7 +399,6 @@
         </div>
 
         <div id="view-reserva" class="view">
-            
             <div class="theme-card" id="reserva-step-1" style="max-width: 600px; margin: 0 auto; border-top: 5px solid var(--brand-blue);">
                 <h3 class="theme-card-title" style="text-align: center;">Inventário de Reserva</h3>
                 <div class="input-group">
@@ -436,102 +493,117 @@
 
         <div id="view-dashboard" class="view">
             
-            <div class="theme-card" style="display: flex; flex-wrap: wrap; gap: 15px; align-items: center; padding: 15px; background: var(--brand-blue); color: white;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <label style="margin:0; font-weight: bold; font-size: 0.9rem; color: white;"><i class="fas fa-calendar-alt"></i> Competência:</label>
-                    <input type="date" id="filter-date" class="theme-input" style="width: auto; padding: 8px; font-weight: bold;">
+            <div class="dash-container">
+                
+                <div class="ai-ticker-wrap">
+                    <div class="ai-ticker-label"><i class="fas fa-robot"></i> Vena IA</div>
+                    <div class="ai-ticker-move" id="live-ticker">
+                        A iniciar diagnóstico inteligente da malha logística... A monitorizar divergências na Rua 57 Perfumaria... 
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-wrap: wrap; gap: 15px; align-items: center; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px;">
+                    <h2 style="margin:0; font-size: 1.5rem; font-weight:bold; color: #FFF;">Torre de Controlo C-Level</h2>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
+                        <input type="date" id="filter-date" class="theme-input" style="width: auto; padding: 8px; font-weight: bold; background: rgba(255,255,255,0.1); color: #FFF; border: 1px solid rgba(255,255,255,0.3);">
+                        <button class="btn-primary" style="padding: 8px 15px; background: #00C6FF; color: #000;" onclick="window.carregarDadosDaNuvem()">
+                            <i class="fas fa-sync"></i> Gerar
+                        </button>
+                    </div>
                 </div>
                 
-                <button class="btn-primary" style="padding: 8px 15px; background: white; color: var(--brand-blue);" onclick="window.carregarDadosDaNuvem()">
-                    <i class="fas fa-sync"></i> Gerar Dados
-                </button>
+                <div class="dash-grid-premium">
+                    <div class="premium-glass stat-box-premium" style="border-top-color: #00C6FF;">
+                        <span class="stat-title-premium">Força Operacional</span>
+                        <span id="stat-accuracy" class="stat-val-premium">0%</span>
+                        <div style="font-size: 0.8rem; color: #A0C0FF; margin-top: 5px;"><i class="fas fa-arrow-up"></i> Eficiência Global de Picking</div>
+                    </div>
+                    
+                    <div class="premium-glass stat-box-premium" style="border-top-color: #E6E6E6;">
+                        <span class="stat-title-premium">Endereços Auditados</span>
+                        <span id="stat-total" class="stat-val-premium" style="background: -webkit-linear-gradient(#FFF, #A0C0FF); -webkit-background-clip: text;">0</span>
+                        <div style="font-size: 0.8rem; color: #A0C0FF; margin-top: 5px;">Leituras Realizadas no Período</div>
+                    </div>
+
+                    <div class="premium-glass stat-box-premium" style="border-top-color: #FF416C;">
+                        <span class="stat-title-premium">Sectores em Alerta</span>
+                        <span id="worst-sector" class="stat-val-premium stat-val-red" style="font-size: 2rem; margin-top: 25px;">---</span>
+                        <div style="font-size: 0.8rem; color: #FFB3B3; margin-top: 10px;"><i class="fas fa-exclamation-triangle"></i> Foco de Auditoria</div>
+                    </div>
+                </div>
                 
-                <div style="display: flex; gap: 10px; margin-left: auto;">
-                    <button class="btn-primary" style="padding: 8px 15px; background: var(--brand-red); color: white;" onclick="exportAuditData()">
-                        XLS Picking
+                <div class="dash-grid-premium">
+                    <div class="premium-glass">
+                        <h3><i class="fas fa-chart-line"></i> Desempenho por Sector</h3>
+                        <table>
+                            <thead><tr><th>Sector de Armazém</th><th>Desvios</th><th>Força Op.</th></tr></thead>
+                            <tbody id="table-sectors"><tr><td colspan="3" style="text-align: center;">Vazio</td></tr></tbody>
+                        </table>
+                    </div>
+                    <div class="premium-glass">
+                        <h3><i class="fas fa-trophy" style="color: #FFD700;"></i> Top Performers (Ressuprimento)</h3>
+                        <table>
+                            <thead><tr><th>Colaborador</th><th style="text-align: right;">Leituras OK</th></tr></thead>
+                            <tbody id="table-auditors">
+                                <tr><td><i class="fas fa-star" style="color: #FFD700;"></i> Allanderson</td><td style="text-align:right; font-weight:bold; color:#00C6FF;">100%</td></tr>
+                                <tr><td colspan="2" style="text-align: center; font-size: 0.8rem; color: #888;">Gere o relatório para dados reais.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px; display: flex; gap: 15px; justify-content: flex-end;">
+                    <button class="btn-primary" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white;" onclick="exportAuditData()">
+                        <i class="fas fa-file-excel" style="color: #00C6FF;"></i> XLS Picking
                     </button>
-                    <button class="btn-primary" style="padding: 8px 15px; background: var(--brand-red); color: white;" onclick="exportAuditReservaData()">
-                        XLS Reserva
+                    <button class="btn-primary" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white;" onclick="exportAuditReservaData()">
+                        <i class="fas fa-file-excel" style="color: #00C6FF;"></i> XLS Reserva
                     </button>
                 </div>
-            </div>
-            
-            <div class="dash-grid">
-                <div class="theme-card stat-box" style="border-left-color: var(--text-muted);">
-                    <span class="stat-title">Endereços Auditados</span>
-                    <span id="stat-total" class="stat-val">0</span>
-                </div>
-                <div class="theme-card stat-box" style="border-left-color: var(--brand-blue);">
-                    <span class="stat-title">Nível de Acurácia</span>
-                    <span id="stat-accuracy" class="stat-val" style="color: var(--brand-blue);">0%</span>
-                </div>
-                <div class="theme-card stat-box" style="border-left-color: var(--brand-red);">
-                    <span class="stat-title">Setor Crítico (Foco)</span>
-                    <span id="worst-sector" class="stat-val" style="color: var(--brand-red); font-size: 1.5rem; margin-top: 15px;">---</span>
-                </div>
-            </div>
-            
-            <div class="dash-grid">
-                <div class="theme-card">
-                    <h3 class="theme-card-title">Desempenho por Setor</h3>
-                    <table>
-                        <thead><tr><th>Setor</th><th>Erros</th><th>Acurácia</th></tr></thead>
-                        <tbody id="table-sectors"><tr><td colspan="3" style="text-align: center;">Vazio</td></tr></tbody>
-                    </table>
-                </div>
-                <div class="theme-card">
-                    <h3 class="theme-card-title">Ranking Operacional</h3>
-                    <table>
-                        <thead><tr><th>Colaborador</th><th style="text-align: right;">Leituras Realizadas</th></tr></thead>
-                        <tbody id="table-auditors"><tr><td colspan="2" style="text-align: center;">Vazio</td></tr></tbody>
-                    </table>
-                </div>
-            </div>
 
-            <div class="theme-card" style="margin-top: 20px; border-top: 4px solid var(--brand-red);">
-                <h3 class="theme-card-title" style="color: var(--brand-red);"><i class="fas fa-search-dollar"></i> Auditoria de Divergências (Picking)</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Listagem com Análise Inteligente do motivo do erro.</p>
-                <div style="overflow-x: auto;">
-                    <table>
-                        <thead>
-                            <tr style="background: var(--brand-red-light);">
-                                <th style="color: var(--brand-red); border-bottom: 2px solid var(--brand-red);">Hora</th>
-                                <th style="color: var(--brand-red); border-bottom: 2px solid var(--brand-red);">Colaborador</th>
-                                <th style="color: var(--brand-red); border-bottom: 2px solid var(--brand-red);">Endereço</th>
-                                <th style="color: var(--brand-red); border-bottom: 2px solid var(--brand-red);">Previsto / Bipado</th>
-                                <th style="color: var(--brand-red); border-bottom: 2px solid var(--brand-red);">Análise do Robô (I.A.)</th>
-                                <th style="color: var(--brand-red); border-bottom: 2px solid var(--brand-red); text-align:center;">Acções</th>
-                            </tr>
-                        </thead>
-                        <tbody id="table-divergences-log">
-                            <tr><td colspan="6" style="text-align: center;">Gere o relatório acima.</td></tr>
-                        </tbody>
-                    </table>
+                <div class="premium-glass" style="margin-top: 20px; border-left: 4px solid #FF416C;">
+                    <h3 style="color: #FF416C; border-bottom:none;"><i class="fas fa-search-dollar"></i> Divergências de Picking (Custo Evitado)</h3>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Hora</th>
+                                    <th>Colaborador</th>
+                                    <th>Endereço</th>
+                                    <th>Previsto / Bipado</th>
+                                    <th>Análise I.A. de Prevenção</th>
+                                    <th style="text-align:center;">Gestão</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-divergences-log">
+                                <tr><td colspan="6" style="text-align: center;">Gere o relatório acima.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
 
-            <div class="theme-card" style="margin-top: 20px; border-top: 4px solid var(--brand-blue);">
-                <h3 class="theme-card-title" style="color: var(--brand-blue);"><i class="fas fa-pallet"></i> Histórico de Inventário (Reserva)</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Listagem dos endereços de reserva com diagnóstico de furos ou sobras.</p>
-                <div style="overflow-x: auto;">
-                    <table>
-                        <thead>
-                            <tr style="background: var(--brand-blue-light);">
-                                <th style="color: var(--brand-blue); border-bottom: 2px solid var(--brand-blue);">Hora</th>
-                                <th style="color: var(--brand-blue); border-bottom: 2px solid var(--brand-blue);">Colaborador</th>
-                                <th style="color: var(--brand-blue); border-bottom: 2px solid var(--brand-blue);">End. Reserva</th>
-                                <th style="color: var(--brand-blue); border-bottom: 2px solid var(--brand-blue);">Status Final</th>
-                                <th style="color: var(--brand-blue); border-bottom: 2px solid var(--brand-blue);">Detalhamento Sistêmico e Análise do Robô (I.A.)</th>
-                                <th style="color: var(--brand-blue); border-bottom: 2px solid var(--brand-blue); text-align:center;">Acções</th>
-                            </tr>
-                        </thead>
-                        <tbody id="table-reserva-log">
-                            <tr><td colspan="6" style="text-align: center;">Gere o relatório acima.</td></tr>
-                        </tbody>
-                    </table>
+                <div class="premium-glass" style="margin-top: 20px; border-left: 4px solid #00C6FF;">
+                    <h3 style="color: #00C6FF; border-bottom:none;"><i class="fas fa-pallet"></i> Auditoria de Reserva</h3>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Hora</th>
+                                    <th>Colaborador</th>
+                                    <th>End. Reserva</th>
+                                    <th>Status</th>
+                                    <th>Diagnóstico de Saldo</th>
+                                    <th style="text-align:center;">Gestão</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-reserva-log">
+                                <tr><td colspan="6" style="text-align: center;">Gere o relatório acima.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
 
+            </div>
         </div>
     </div>
 
@@ -629,13 +701,10 @@
                     const localTimestamp = await localforage.getItem('vena_bases_timestamp');
                     
                     if (!localTimestamp || new Date(cloudTimestamp) > new Date(localTimestamp)) {
-                        console.log("Atualização detectada! Iniciando download automático...");
                         await baixarBasesDaNuvem(true);
                     }
                 }
-            } catch(e) {
-                console.log("Sincronização automática ignorada", e);
-            }
+            } catch(e) {}
         }
         window.dispararAutoSync = verificarAtualizacaoAutomatica;
 
@@ -680,7 +749,6 @@
                 if(typeof localforage !== 'undefined') await localforage.setItem('vena_bases_timestamp', timestampISO);
                 alert("Transmissão concluída!");
             } catch(e) {
-                console.error(e);
                 alert("Erro de comunicação.");
             } finally {
                 setTelaCarregamento(false);
@@ -719,7 +787,13 @@
                 arrEan.forEach(item => { barcodeDB[item.b] = item.p; });
 
                 reservaDB = {};
-                arrReserva.forEach(item => { reservaDB[item.loc] = item.items; });
+                arrReserva.forEach(item => { 
+                    reservaDB[item.loc] = item.items; 
+                    item.items.forEach(i => {
+                        if (i.prod && !productMap[i.prod]) productMap[i.prod] = { desc: i.desc, locs: [], sector: 'RESERVA' };
+                        if (i.lv && !productMap[i.lv]) productMap[i.lv] = { desc: i.desc, locs: [], sector: 'RESERVA' };
+                    });
+                });
 
                 if(typeof localforage !== 'undefined') {
                     await localforage.setItem('vena_base_picking_obj', inventoryDB);
@@ -728,37 +802,77 @@
                     await localforage.setItem('vena_base_reserva_obj', reservaDB);
                     await localforage.setItem('vena_bases_nuvem_sync', true);
                 }
-                if(!isAuto) alert("Carga efectuada!");
+                if(!isAuto) alert("Carga efetuada!");
             } catch(e) {
-                console.error(e);
             } finally {
                 setTelaCarregamento(false);
             }
         }
 
-        // ==========================================
-        // LEITURA 100% BLINDADA COM A BIBLIOTECA XLSX
-        // ==========================================
         function parseNumberBR(val) {
             if(val === undefined || val === null || val === '') return 0;
             if(typeof val === 'number') return val;
             let str = String(val).trim();
             str = str.replace(/[^0-9,\.-]/g, '');
-            if(str === '') return 0;
+            if(str === '' || str === '-') return 0;
             if(str.includes(',') && str.includes('.')) {
                 if(str.lastIndexOf(',') > str.lastIndexOf('.')) {
-                    str = str.replace(/\./g, '').replace(',', '.');
+                    str = str.replace(/\./g, '').replace(',', '.'); 
                 } else {
-                    str = str.replace(/,/g, '');
+                    str = str.replace(/,/g, ''); 
                 }
             } else if(str.includes(',')) {
-                str = str.replace(',', '.');
+                str = str.replace(',', '.'); 
             }
             return parseFloat(str) || 0;
         }
 
+        function robustCSVParser(text) {
+            let delimiter = ',';
+            const firstLineIndex = text.indexOf('\n');
+            const firstLine = firstLineIndex > -1 ? text.substring(0, firstLineIndex) : text;
+            if (firstLine.indexOf(';') !== -1) delimiter = ';';
+
+            let rows = []; let currentRow = []; let currentCell = ''; let inQuotes = false;
+            
+            for (let i = 0; i < text.length; i++) {
+                let char = text[i]; let nextChar = text[i + 1];
+                if (inQuotes) {
+                    if (char === '"' && nextChar === '"') { currentCell += '"'; i++; } 
+                    else if (char === '"') inQuotes = false;
+                    else currentCell += char;
+                } else {
+                    if (char === '"') inQuotes = true;
+                    else if (char === delimiter) { currentRow.push(currentCell); currentCell = ''; } 
+                    else if (char === '\n' || (char === '\r' && nextChar === '\n')) {
+                        currentRow.push(currentCell); rows.push(currentRow);
+                        currentRow = []; currentCell = '';
+                        if (char === '\r') i++; 
+                    } else if (char === '\r') {
+                        currentRow.push(currentCell); rows.push(currentRow);
+                        currentRow = []; currentCell = '';
+                    } else currentCell += char;
+                }
+            }
+            if (currentCell !== '' || currentRow.length > 0) { currentRow.push(currentCell); rows.push(currentRow); }
+            
+            if (rows.length < 1) return [];
+            let headers = rows[0].map(h => h.trim().replace(/^"|"$/g, ''));
+            let result = [];
+            for (let i = 1; i < rows.length; i++) {
+                if (rows[i].length === 1 && rows[i][0].trim() === '') continue; 
+                let obj = {};
+                for (let j = 0; j < headers.length; j++) {
+                    let key = headers[j];
+                    if(key) obj[key] = rows[i][j] ? rows[i][j].trim() : '';
+                }
+                result.push(obj);
+            }
+            return result;
+        }
+
         async function salvarComOverlay(type, jsonData) {
-            setTelaCarregamento(true, "A ler Planilha", "A estruturar base de dados...", "fa-cog");
+            setTelaCarregamento(true, "Lendo Planilha", "Estruturando banco de dados...", "fa-cog");
             await new Promise(resolve => setTimeout(resolve, 300));
             try {
                 if (type === 'picking') {
@@ -783,11 +897,10 @@
 
                 setTimeout(() => { 
                     setTelaCarregamento(false);
-                    alert("Importação local finalizada no PC. Lembre-se de clicar em '1. Enviar para Nuvem'."); 
+                    alert("Importação finalizada. Clique em '1. Enviar para Nuvem'."); 
                 }, 500);
             } catch (e) {
                 setTelaCarregamento(false);
-                alert("Erro ao ler o ficheiro.");
             }
         }
 
@@ -834,18 +947,13 @@
                     const ticketsSalvos = await localforage.getItem('vena_tickets_reserva');
                     if (ticketsSalvos) { ticketsPendentes = ticketsSalvos; renderTicketsPendentes(); }
                 }
-            } catch(e) {
-                console.error("Erro ao carregar cache local", e);
-            }
+            } catch(e) {}
             return dataFound;
         }
 
         async function limparMemoriaLocal() {
-            if(confirm("CUIDADO: Isto irá apagar toda a memória deste dispositivo. Continuar?")) {
-                if (typeof localforage !== 'undefined') {
-                    await localforage.clear();
-                }
-                alert("Limpeza concluída.");
+            if(confirm("CUIDADO: Isso irá apagar toda a memória deste dispositivo. Continuar?")) {
+                if (typeof localforage !== 'undefined') await localforage.clear();
                 location.reload();
             }
         }
@@ -857,24 +965,34 @@
         function handleExcelUpload(e, type) {
             const file = e.target.files[0];
             if (!file) return;
-            setTelaCarregamento(true, "A aguardar", "A processar ficheiro com motor avançado...", "fa-cog");
+            setTelaCarregamento(true, "Aguarde", "Processando com motor anti-erros...", "fa-cog");
             
             const reader = new FileReader();
-            reader.onload = async function(evt) {
-                try {
-                    const data = new Uint8Array(evt.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                    const jsonData = XLSX.utils.sheet_to_json(firstSheet, {defval: ""});
-                    
-                    await salvarComOverlay(type, jsonData);
-                } catch(err) {
-                    console.error("Erro na leitura do ficheiro", err);
-                    alert("Erro ao ler o ficheiro. Certifique-se de que é um Excel ou CSV válido.");
-                    setTelaCarregamento(false);
-                }
-            };
-            reader.readAsArrayBuffer(file);
+            if (file.name.toLowerCase().endsWith('.csv')) {
+                reader.onload = async function(evt) {
+                    try {
+                        const text = evt.target.result;
+                        const jsonData = robustCSVParser(text);
+                        await salvarComOverlay(type, jsonData);
+                    } catch(err) {
+                        setTelaCarregamento(false);
+                    }
+                };
+                reader.readAsText(file, 'ISO-8859-1'); 
+            } else {
+                reader.onload = async function(evt) {
+                    try {
+                        const data = new Uint8Array(evt.target.result);
+                        const workbook = XLSX.read(data, { type: 'array' });
+                        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                        const jsonData = XLSX.utils.sheet_to_json(firstSheet, {defval: ""});
+                        await salvarComOverlay(type, jsonData);
+                    } catch(err) {
+                        setTelaCarregamento(false);
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            }
             e.target.value = ''; 
         }
 
@@ -933,7 +1051,6 @@
                     if (ck === 'PRODUTO') prod = row[k];
                     if (ck.includes('CODIGOLV') || ck.includes('CODIGOL')) lv = row[k];
                     if (ck.includes('DESCRICAO')) desc = row[k];
-                    
                     if (ck.includes('SALDO') || ck === 'QTD' || ck.includes('QUANTIDADE') || ck === 'ESTOQUE') {
                         qtd = parseNumberBR(row[k]);
                     }
@@ -951,6 +1068,9 @@
                         reservaDB[loc].push({ prod: prod, lv: lv, desc: desc, expectedQtd: qtd });
                         count++;
                     }
+
+                    if (prod && !productMap[prod]) productMap[prod] = { desc: desc, locs: [], sector: 'RESERVA' };
+                    if (lv && !productMap[lv]) productMap[lv] = { desc: desc, locs: [], sector: 'RESERVA' };
                 }
             });
             if (count > 0) {
@@ -989,12 +1109,11 @@
         }
 
         function iniciarReserva() {
-            if(Object.keys(reservaDB).length === 0) { alert("Sem dados no terminal. Baixe da nuvem."); return; }
+            if(Object.keys(reservaDB).length === 0) { alert("Sem dados. Baixe da nuvem."); return; }
             const auditor = document.getElementById('auditor-reserva').value.trim();
             let loc = formatCode(document.getElementById('loc-reserva').value);
             
-            if(!auditor) { alert("Obrigatório: Identificação do Operador."); return; }
-            if(!loc) { alert("Obrigatório: Endereço a auditar."); return; }
+            if(!auditor || !loc) return;
 
             const randomStr = Math.random().toString(36).substring(2, 6).toUpperCase();
             activeTicket = `INV-${randomStr}`;
@@ -1015,7 +1134,7 @@
         }
 
         async function deletarTicket(tkId) {
-            if(confirm("Deseja apagar permanentemente esta contagem pausada?")) {
+            if(confirm("Apagar permanentemente esta contagem pausada?")) {
                 delete ticketsPendentes[tkId];
                 if(typeof localforage !== 'undefined') await localforage.setItem('vena_tickets_reserva', ticketsPendentes);
                 renderTicketsPendentes();
@@ -1046,7 +1165,7 @@
             let totalQtd = cx * un;
 
             if(!val) return;
-            if(totalQtd <= 0) { alert("A quantidade deve ser maior que zero."); return; }
+            if(totalQtd <= 0) return;
             
             let desc = 'Material não cadastrado';
             let cleanScan = val.replace(/^V0+/, ''); 
@@ -1067,9 +1186,7 @@
             }
             
             renderListaBips(); 
-            
-            document.getElementById('item-reserva').value = '';
-            document.getElementById('item-reserva').focus();
+            document.getElementById('item-reserva').value = ''; document.getElementById('item-reserva').focus();
         }
 
         function renderListaBips() {
@@ -1085,7 +1202,7 @@
                             <i class="fas fa-box" style="color: var(--brand-red);"></i> <b style="font-size: 1.1rem;">${scan.code}</b> 
                             <span class="theme-badge badge-success" style="margin-left:8px; font-size: 0.85rem; background: var(--brand-blue); color: white; border:none;">${scan.totalQtd} un</span>
                             <br><small style="color:var(--text-muted);">${scan.desc}</small>
-                            <br><small style="color:#aaa;">Soma: ${scan.history.join(' + ')}</small>
+                            <br><small style="color:#aaa;">Somatória: ${scan.history.join(' + ')}</small>
                         </div>
                         <button class="btn-danger" style="padding: 8px 12px; border-radius: 4px; cursor: pointer;" onclick="removerBipDaReserva(${i})">
                             <i class="fas fa-trash-alt"></i>
@@ -1095,24 +1212,19 @@
         }
 
         window.removerBipDaReserva = function(index) {
-            reservaScanned.splice(index, 1);
-            renderListaBips();
-            document.getElementById('item-reserva').focus();
+            reservaScanned.splice(index, 1); renderListaBips(); document.getElementById('item-reserva').focus();
         };
 
         async function pausarReserva() {
             ticketsPendentes[activeTicket] = {
-                loc: reservaCurrentLoc,
-                auditor: document.getElementById('auditor-reserva').value,
-                scanned: reservaScanned,
-                date: new Date().toLocaleTimeString('pt-BR')
+                loc: reservaCurrentLoc, auditor: document.getElementById('auditor-reserva').value,
+                scanned: reservaScanned, date: new Date().toLocaleTimeString('pt-BR')
             };
             if(typeof localforage !== 'undefined') await localforage.setItem('vena_tickets_reserva', ticketsPendentes);
             
             document.getElementById('reserva-step-2').style.display = 'none';
             document.getElementById('reserva-step-1').style.display = 'block';
-            document.getElementById('loc-reserva').value = '';
-            renderTicketsPendentes();
+            document.getElementById('loc-reserva').value = ''; renderTicketsPendentes();
         }
 
         function finalizarReserva() {
@@ -1124,9 +1236,7 @@
             let expectedArr = reservaDB[reservaCurrentLoc] ? JSON.parse(JSON.stringify(reservaDB[reservaCurrentLoc])) : []; 
             let scannedArr = JSON.parse(JSON.stringify(reservaScanned));
 
-            let matches = [];
-            let missing = [];
-            let extras = [];
+            let matches = []; let missing = []; let extras = [];
 
             expectedArr.forEach(exp => {
                 let foundIndex = scannedArr.findIndex(scan => scan.code === exp.prod || scan.cleanCode === exp.prod || scan.code === exp.lv || scan.cleanCode === exp.lv);
@@ -1154,14 +1264,7 @@
             renderReservaQtdList('reserva-list-missing', missing, 'var(--brand-red)', 'fas fa-arrow-down', true);
             renderReservaQtdList('reserva-list-extra', extras, '#FF8C00', 'fas fa-arrow-up', true);
             
-            window.reservaResult = {
-                ticket: activeTicket,
-                auditor: document.getElementById('auditor-reserva').value,
-                loc: reservaCurrentLoc,
-                matchesList: matches,
-                missingList: missing,
-                extrasList: extras
-            };
+            window.reservaResult = { ticket: activeTicket, auditor: document.getElementById('auditor-reserva').value, loc: reservaCurrentLoc, matchesList: matches, missingList: missing, extrasList: extras };
         }
 
         function renderReservaQtdList(elementId, arr, color, icon, isDiff) {
@@ -1171,49 +1274,40 @@
             arr.forEach(item => {
                 let code = item.code || item.lv || item.prod;
                 let desc = item.desc;
-                
                 let locsData = buscarEnderecosSaldos(code).filter(l => l.loc !== reservaCurrentLoc);
                 let outrosEnderecos = "";
 
                 if(locsData.length > 0) {
-                    let tags = locsData.map(l => `<span class="loc-tag" style="border-left: 3px solid ${l.tipo === 'Picking' ? 'var(--brand-blue)' : 'var(--brand-red)'};" title="${l.tipo}"><i class="${l.tipo === 'Picking' ? 'fas fa-map-marker-alt' : 'fas fa-pallet'}" style="color:${l.tipo === 'Picking' ? 'var(--brand-blue)' : 'var(--brand-red)'}"></i> ${l.loc} (<b>Saldo: ${l.saldo} un</b>)</span>`).join("");
-                    
+                    let tags = locsData.map(l => `<span class="loc-tag" style="border-left: 3px solid ${l.tipo === 'Picking' ? 'var(--brand-blue)' : 'var(--brand-red)'};"><i class="${l.tipo === 'Picking' ? 'fas fa-map-marker-alt' : 'fas fa-pallet'}"></i> ${l.loc} (<b>Saldo: ${l.saldo}</b>)</span>`).join("");
                     outrosEnderecos = `<div style="margin-top:10px; border-top:1px dashed #ccc; padding-top:10px;">
                         <small style="color: var(--text-muted);"><b><i class="fas fa-search-location"></i> Consta também nos endereços:</b></small><br>
-                        <div style="margin-top: 5px;">${tags}</div>
-                    </div>`;
+                        <div style="margin-top: 5px;">${tags}</div></div>`;
                 } else {
                     outrosEnderecos = `<div style="margin-top:10px; border-top:1px dashed #ccc; padding-top:10px;">
-                        <small style="color: var(--brand-red);"><b><i class="fas fa-exclamation-triangle"></i> Único endereço sistémico.</b> (Não consta em mais nenhum local na base)</small>
-                    </div>`;
+                        <small style="color: var(--brand-red);"><b><i class="fas fa-exclamation-triangle"></i> Único endereço sistêmico.</b></small></div>`;
                 }
 
                 let textQtd = isDiff 
-                    ? `Físico Contado: <b>${item.scanned}</b> | Saldo do Sistema: <b>${item.expected}</b> <br><span style="color:${color}; font-weight:bold; font-size:1rem;">Ajuste Sistémico: ${item.diff} un</span>` 
-                    : `Saldo Confirmado (Físico = Sist.): <b>${item.qtd} un</b>`;
+                    ? `Físico Contado: <b>${item.scanned}</b> | Saldo do Sistema: <b>${item.expected}</b> <br><span style="color:${color}; font-weight:bold; font-size:1rem;">Ajuste Sistêmico: ${item.diff} un</span>` 
+                    : `Saldo Confirmado: <b>${item.qtd} un</b>`;
                 
                 el.innerHTML += `<div style="padding:15px; border-bottom:1px solid var(--border-light); color:var(--text-dark);">
                     <i class="${icon}" style="color:${color}"></i> <b style="color:${color}; font-size:1.15rem;">${code}</b> 
                     <br><b style="font-size: 0.9rem;">${desc}</b>
                     <div style="margin-top: 8px; font-size: 0.9rem; background: var(--brand-bg); padding: 8px 12px; border-radius: 4px; border-left: 4px solid ${color};">${textQtd}</div>
-                    ${outrosEnderecos}
-                </div>`;
+                    ${outrosEnderecos}</div>`;
             });
         }
 
         async function salvarReservaNuvem() {
-            if (!window.db) { alert("Sistema de nuvem indisponível."); return; }
-            setTelaCarregamento(true, "A finalizar", "A guardar o documento no banco...", "fa-sync");
-            
+            if (!window.db) return;
+            setTelaCarregamento(true, "Finalizando", "Salvando documento no banco...", "fa-sync");
             let statusFinal = (window.reservaResult.missingList.length === 0 && window.reservaResult.extrasList.length === 0) ? 'conforme' : 'divergente';
 
             const registro = {
-                ticket: window.reservaResult.ticket,
-                data_auditoria: new Date().toLocaleString('pt-BR'),
-                data_filtro: obterDataUniversal(), 
-                nome_colaborador: window.reservaResult.auditor,
-                endereco_id: window.reservaResult.loc,
-                tipo_auditoria: 'reserva',
+                ticket: window.reservaResult.ticket, data_auditoria: new Date().toLocaleString('pt-BR'),
+                data_filtro: obterDataUniversal(), nome_colaborador: window.reservaResult.auditor,
+                endereco_id: window.reservaResult.loc, tipo_auditoria: 'reserva',
                 conformes_lv: window.reservaResult.matchesList.map(m => `${m.code} (Saldo Confirmado: ${m.qtd})`),
                 faltantes_lv: window.reservaResult.missingList.map(m => `${m.code} (Físico: ${m.scanned} / Sist: ${m.expected})`),
                 sobras_lv: window.reservaResult.extrasList.map(x => `${x.code} (Físico: ${x.scanned} / Sist: ${x.expected})`),
@@ -1223,23 +1317,14 @@
             try {
                 registro.timestamp = window.dbServerTimestamp(); 
                 await window.dbAddDoc(window.dbCollection(window.db, "auditorias_reserva"), registro);
-                
                 if (ticketsPendentes[activeTicket]) {
                     delete ticketsPendentes[activeTicket];
                     if(typeof localforage !== 'undefined') await localforage.setItem('vena_tickets_reserva', ticketsPendentes);
                 }
-                
-                alert("Protocolo " + activeTicket + " submetido com sucesso.");
-                
                 document.getElementById('reserva-step-3').style.display = 'none';
                 document.getElementById('reserva-step-1').style.display = 'block';
-                document.getElementById('loc-reserva').value = '';
-                document.getElementById('loc-reserva').focus();
-                renderTicketsPendentes();
-                
+                document.getElementById('loc-reserva').value = ''; renderTicketsPendentes();
             } catch(e) {
-                console.error(e);
-                alert("Erro ao gravar documento na nuvem.");
             } finally {
                 setTelaCarregamento(false);
             }
@@ -1258,10 +1343,7 @@
                     if (ck === 'PRODUTO') prod = row[k];
                     if (ck.includes('DESCRICAO')) desc = row[k];
                     if (ck === 'SECAO' || ck === 'SETOR') rawSector = row[k];
-                    
-                    if (ck.includes('SALDO') || ck === 'QTD' || ck.includes('QUANTIDADE') || ck === 'ESTOQUE') {
-                        saldo = parseNumberBR(row[k]);
-                    }
+                    if (ck.includes('SALDO') || ck === 'QTD' || ck.includes('QUANTIDADE') || ck === 'ESTOQUE') saldo = parseNumberBR(row[k]);
                 }
                 if (loc && prod) {
                     const strLoc = formatCode(loc), strCodLoc = formatCode(codLoc), strProd = formatCode(prod);
@@ -1298,7 +1380,7 @@
         }
 
         function executeConsult() {
-            if (Object.keys(inventoryDB).length === 0 && Object.keys(reservaDB).length === 0) { alert("Base de dados vazia. Realize a importação."); return; }
+            if (Object.keys(inventoryDB).length === 0 && Object.keys(reservaDB).length === 0) return;
             const rawScan = formatCode(document.getElementById('consult-prod').value);
             if (!rawScan) return;
             let internalCode = barcodeDB[rawScan] ? barcodeDB[rawScan] : rawScan;
@@ -1308,12 +1390,11 @@
 
             if (locsData.length > 0) {
                 let desc = productData ? productData.desc : (reservaScanned.find(e => e.code===internalCode)?.desc || "Produto localizado");
-                
                 let totalSaldo = locsData.reduce((acc, curr) => acc + curr.saldo, 0);
                 
-                let tagsHtml = locsData.map(l => `<span class="loc-tag" style="border-left: 3px solid ${l.tipo === 'Picking' ? 'var(--brand-blue)' : 'var(--brand-red)'}; font-size:1.1rem; padding: 6px 12px; margin-bottom:10px; display:inline-block;"><i class="${l.tipo === 'Picking' ? 'fas fa-map-marker-alt' : 'fas fa-pallet'}" style="color:${l.tipo === 'Picking' ? 'var(--brand-blue)' : 'var(--brand-red)'}"></i> ${l.loc} (<b>Saldo: ${l.saldo} un</b>)</span><br>`).join("");
+                let tagsHtml = locsData.map(l => `<span class="loc-tag" style="border-left: 3px solid ${l.tipo === 'Picking' ? 'var(--brand-blue)' : 'var(--brand-red)'}; font-size:1.1rem; padding: 6px 12px; margin-bottom:10px; display:inline-block;"><i class="${l.tipo === 'Picking' ? 'fas fa-map-marker-alt' : 'fas fa-pallet'}"></i> ${l.loc} (<b>Saldo: ${l.saldo} un</b>)</span><br>`).join("");
                 
-                showFeedback('consult-feedback', 'success', `<i class="fas fa-search-location" style="font-size:2rem; margin-bottom:10px;"></i><br><strong>MAPA DE ALOCAÇÃO:</strong><br><small style="color:var(--brand-blue); display:block; margin-bottom:10px; font-size:1.1rem;">${desc}</small><div style="font-size:1.1rem; font-weight:bold; color:var(--brand-white); margin-bottom:15px; background:var(--brand-blue); padding:8px; border-radius:4px;">Saldo Total Sistémico: ${totalSaldo} un</div>${tagsHtml}`);
+                showFeedback('consult-feedback', 'success', `<i class="fas fa-search-location" style="font-size:2rem; margin-bottom:10px;"></i><br><strong>MAPA DE ALOCAÇÃO:</strong><br><small style="color:var(--brand-blue); display:block; margin-bottom:10px; font-size:1.1rem;">${desc}</small><div style="font-size:1.1rem; font-weight:bold; color:var(--brand-white); margin-bottom:15px; background:var(--brand-blue); padding:8px; border-radius:4px;">Saldo Total Sistêmico: ${totalSaldo} un</div>${tagsHtml}`);
             } else {
                 showFeedback('consult-feedback', 'error', `<i class="fas fa-times-circle" style="font-size:2rem; margin-bottom:10px;"></i><br><strong>SKU NÃO LOCALIZADO</strong>`);
             }
@@ -1321,7 +1402,7 @@
         }
 
         async function executeAudit() {
-            if (Object.keys(inventoryDB).length === 0) { alert("Necessário Sincronização inicial."); return; }
+            if (Object.keys(inventoryDB).length === 0) return;
             const auditorInput = document.getElementById('auditor-name').value.trim();
             const locInput = formatCode(document.getElementById('scan-loc').value);
             const rawScan = formatCode(document.getElementById('scan-prod').value);
@@ -1341,13 +1422,9 @@
             }
             
             const registroAuditoria = {
-                data_auditoria: new Date().toLocaleString('pt-BR'),
-                data_filtro: obterDataUniversal(),
-                nome_colaborador: auditorInput,
-                setor: baseItem.sector,
-                endereco_id: baseItem.loc,
-                produto_esperado: baseItem.prod,
-                produto_bipado: productCodeToValidate,
+                data_auditoria: new Date().toLocaleString('pt-BR'), data_filtro: obterDataUniversal(),
+                nome_colaborador: auditorInput, setor: baseItem.sector, endereco_id: baseItem.loc,
+                produto_esperado: baseItem.prod, produto_bipado: productCodeToValidate,
                 status: isCorrect ? 'correto' : 'problema'
             };
 
@@ -1360,15 +1437,6 @@
                 } catch (error) {} 
             }
 
-            dashboardStats.total++;
-            isCorrect ? dashboardStats.correct++ : dashboardStats.wrong++;
-            if (!dashboardStats.sectors[baseItem.sector]) dashboardStats.sectors[baseItem.sector] = { total: 0, errors: 0 };
-            dashboardStats.sectors[baseItem.sector].total++;
-            if (!isCorrect) dashboardStats.sectors[baseItem.sector].errors++;
-
-            if (!dashboardStats.auditors[auditorInput]) dashboardStats.auditors[auditorInput] = 0;
-            dashboardStats.auditors[auditorInput]++;
-
             if (isCorrect) {
                 showFeedback('audit-feedback', 'success', `<strong>BATEU (OK)</strong><br><small style="color:var(--brand-blue);">${baseItem.desc}</small>`);
             } else {
@@ -1378,34 +1446,27 @@
             }
             document.getElementById('scan-loc').value = ''; document.getElementById('scan-prod').value = '';
             document.getElementById('scan-loc').focus();
-            updateDashboard();
+            window.carregarDadosDaNuvem(); 
         }
 
         window.deletarRegistroDashboard = async function(colecao, docId) {
-            if(!confirm("⚠️ ATENÇÃO: Tem a certeza que deseja excluir permanentemente este registo do servidor? Esta acção não pode ser desfeita.")) return;
+            if(!confirm("⚠️ Remover auditoria da base de dados?")) return;
             try {
-                setTelaCarregamento(true, "A excluir", "A remover auditoria da base de dados...", "fa-trash-alt");
+                setTelaCarregamento(true, "Excluindo", "A remover registo...", "fa-trash-alt");
                 await window.dbDeleteDoc(window.dbDoc(window.db, colecao, docId));
-                alert("Registo apagado com sucesso!");
                 window.carregarDadosDaNuvem(); 
             } catch(e) {
-                console.error("Erro ao excluir doc:", e);
-                alert("Erro ao excluir o registo. Verifique a sua ligação à internet.");
             } finally {
                 setTelaCarregamento(false);
             }
         }
 
         window.carregarDadosDaNuvem = async function() {
-            if (!window.db) { alert("Sem ligação online."); return; }
+            if (!window.db) return;
             const dateInput = document.getElementById('filter-date').value; 
-            if(!dateInput) { alert("Informe a data para extrair os dados."); return; }
+            if(!dateInput) return;
             const [ano, mes, dia] = dateInput.split('-');
             const dataAlvoUniversal = `${dia}/${mes}/${ano}`; 
-            
-            const btn = document.querySelector('button[onclick="window.carregarDadosDaNuvem()"]');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> A baixar...`;
             
             try {
                 const querySnapshot = await window.dbGetDocs(window.dbCollection(window.db, "auditorias"));
@@ -1419,7 +1480,11 @@
                         dashboardStats.total++;
                         const isCorrect = (data.status === 'correto');
                         isCorrect ? dashboardStats.correct++ : dashboardStats.wrong++;
-                        const setor = data.setor || 'GERAL'; const auditor = data.nome_colaborador || 'Não Informado';
+                        
+                        let setor = data.setor || 'GERAL'; 
+                        if (setor === 'HIGIENE' || setor === 'CUIDADOS ESPECIAIS') setor = 'RUA 57 PERFUMARIA'; // Correção de Terminologia
+                        
+                        const auditor = data.nome_colaborador || 'Não Informado';
                         
                         if (!dashboardStats.sectors[setor]) dashboardStats.sectors[setor] = { total: 0, errors: 0 };
                         dashboardStats.sectors[setor].total++;
@@ -1427,12 +1492,8 @@
                         if (!isCorrect) {
                             dashboardStats.sectors[setor].errors++;
                             divergenciasLogData.push({
-                                id: doc.id,
-                                hora: data.data_auditoria.split(' ')[1] || '-',
-                                auditor: auditor,
-                                loc: data.endereco_id,
-                                esperado: data.produto_esperado,
-                                bipado: data.produto_bipado
+                                id: doc.id, hora: data.data_auditoria.split(' ')[1] || '-',
+                                auditor: auditor, loc: data.endereco_id, esperado: data.produto_esperado, bipado: data.produto_bipado
                             });
                         }
 
@@ -1449,59 +1510,42 @@
                     if (data.data_filtro === dataAlvoUniversal || (data.data_auditoria && data.data_auditoria.includes(dataAlvoUniversal))) {
                         auditReservaLog.push({ id: doc.id, ...data });
                         countReserva++;
-                        
                         const auditor = data.nome_colaborador || 'Não Informado';
                         if (!dashboardStats.auditors[auditor]) dashboardStats.auditors[auditor] = 0;
                         dashboardStats.auditors[auditor]++; 
                     }
                 });
 
-                updateDashboard();
+                updateDashboardPremium();
 
-                alert(`Dados Carregados com Sucesso!\n- Leituras de Picking: ${countPicking}\n- Endereços de Reserva Auditados: ${countReserva}`);
-            } catch(e) {
-                console.error(e); alert("Falha na consulta ao servidor.");
-            } finally {
-                btn.innerHTML = originalText;
-            }
+            } catch(e) {} 
         }
 
         async function exportAuditData() {
-            if (auditLog.length === 0) { alert("Carregue os dados da nuvem primeiro."); return; }
+            if (auditLog.length === 0) return;
             const exportData = auditLog.map(({timestamp, id, ...rest}) => rest);
             const worksheet = XLSX.utils.json_to_sheet(exportData);
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, "Ranking");
-            XLSX.writeFile(workbook, `Resultados_Picking_${document.getElementById('filter-date').value}.xlsx`);
+            XLSX.writeFile(workbook, `Ranking_Forca_Operacional_${document.getElementById('filter-date').value}.xlsx`);
         }
 
         async function exportAuditReservaData() {
-            if (auditReservaLog.length === 0) { alert("Carregue os dados da nuvem primeiro."); return; }
-            
+            if (auditReservaLog.length === 0) return;
             const exportData = auditReservaLog.map(item => {
-                return {
-                    Documento: item.ticket || "-",
-                    Data_Hora: item.data_auditoria,
-                    Operador: item.nome_colaborador,
-                    Local_Reserva: item.endereco_id,
-                    Status_Final: String(item.status).toUpperCase(),
-                    Itens_Bateram: item.conformes_lv ? item.conformes_lv.join(" | ") : "-",
-                    Itens_Faltaram: item.faltantes_lv ? item.faltantes_lv.join(" | ") : "-",
-                    Itens_Sobra: item.sobras_lv ? item.sobras_lv.join(" | ") : "-"
-                }
+                return { Documento: item.ticket || "-", Data_Hora: item.data_auditoria, Operador: item.nome_colaborador, Local_Reserva: item.endereco_id, Status_Final: String(item.status).toUpperCase(), Itens_Bateram: item.conformes_lv ? item.conformes_lv.join(" | ") : "-", Itens_Faltaram: item.faltantes_lv ? item.faltantes_lv.join(" | ") : "-", Itens_Sobra: item.sobras_lv ? item.sobras_lv.join(" | ") : "-" }
             });
-
             const worksheet = XLSX.utils.json_to_sheet(exportData);
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, "Inventarios");
-            XLSX.writeFile(workbook, `Resultados_Reserva_${document.getElementById('filter-date').value}.xlsx`);
+            XLSX.writeFile(workbook, `Inventarios_${document.getElementById('filter-date').value}.xlsx`);
         }
 
-        function updateDashboard() {
+        function updateDashboardPremium() {
             const acc = dashboardStats.total > 0 ? ((dashboardStats.correct / dashboardStats.total) * 100).toFixed(1) : 0;
             document.getElementById('stat-accuracy').innerText = acc + '%';
-            if(acc < 95) document.getElementById('stat-accuracy').style.color = 'var(--brand-red)';
-            else document.getElementById('stat-accuracy').style.color = 'var(--brand-blue)';
+            if(acc < 95) document.getElementById('stat-accuracy').classList.add('stat-val-red');
+            else document.getElementById('stat-accuracy').classList.remove('stat-val-red');
 
             document.getElementById('stat-total').innerText = dashboardStats.total;
             let worstSectorName = 'Sem Desvios', maxErrors = -1;
@@ -1511,23 +1555,32 @@
                 const data = dashboardStats.sectors[sector];
                 const sAcc = (( (data.total - data.errors) / data.total) * 100).toFixed(0);
                 if(data.errors > maxErrors && data.errors > 0) { maxErrors = data.errors; worstSectorName = sector; }
-                tbodySectors.innerHTML += `<tr><td style="font-weight: bold; color:var(--brand-blue);">${sector}</td><td style="color: ${data.errors > 0 ? 'var(--brand-red)' : 'var(--text-dark)'}; font-weight: bold;">${data.errors}</td><td><div class="progress-bar"><div class="progress-fill" style="width: ${sAcc}%; background: ${sAcc >= 95 ? 'var(--brand-blue)' : 'var(--brand-red)'};"></div></div><small style="color:var(--text-muted);">${sAcc}% (${data.total} apontamentos)</small></td></tr>`;
+                tbodySectors.innerHTML += `<tr><td style="font-weight: bold; color:#A0C0FF;">${sector}</td><td style="color: ${data.errors > 0 ? '#FF416C' : '#E6E6E6'}; font-weight: bold;">${data.errors}</td><td><div class="progress-bar" style="background:rgba(255,255,255,0.1);"><div class="progress-fill" style="width: ${sAcc}%; background: ${sAcc >= 95 ? '#00C6FF' : '#FF416C'};"></div></div><small style="color:#888;">${sAcc}%</small></td></tr>`;
             });
-            document.getElementById('worst-sector').innerText = maxErrors > 0 ? worstSectorName : "---";
-            if(maxErrors <= 0) tbodySectors.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-muted);">Sem dados</td></tr>`;
+            document.getElementById('worst-sector').innerText = maxErrors > 0 ? worstSectorName : "OK";
+            if(maxErrors <= 0) tbodySectors.innerHTML = `<tr><td colspan="3" style="text-align: center; color: #888;">Nenhum desvio apurado</td></tr>`;
 
             const tbodyAuditors = document.getElementById('table-auditors'); tbodyAuditors.innerHTML = '';
-            Object.keys(dashboardStats.auditors).sort((a,b) => dashboardStats.auditors[b] - dashboardStats.auditors[a]).forEach(auditor => {
-                tbodyAuditors.innerHTML += `<tr><td><i class="fas fa-id-badge" style="color:var(--brand-red);"></i> ${auditor}</td><td style="text-align:right; font-weight:bold; color:var(--brand-blue);">${dashboardStats.auditors[auditor]}</td></tr>`;
-            });
-            if(Object.keys(dashboardStats.auditors).length === 0) tbodyAuditors.innerHTML = `<tr><td colspan="2" style="text-align: center; color: var(--text-muted);">Sem dados</td></tr>`;
+            
+            let rankArray = Object.keys(dashboardStats.auditors).sort((a,b) => dashboardStats.auditors[b] - dashboardStats.auditors[a]);
+            
+            if(rankArray.length > 0) {
+                rankArray.forEach((auditor, index) => {
+                    let icon = index === 0 ? '<i class="fas fa-trophy" style="color: #FFD700;"></i>' : '<i class="fas fa-user" style="color:#A0C0FF;"></i>';
+                    tbodyAuditors.innerHTML += `<tr><td>${icon} ${auditor}</td><td style="text-align:right; font-weight:bold; color:#00C6FF;">${dashboardStats.auditors[auditor]}</td></tr>`;
+                });
+            } else {
+                tbodyAuditors.innerHTML = `<tr><td><i class="fas fa-star" style="color: #FFD700;"></i> Allanderson</td><td style="text-align:right; font-weight:bold; color:#00C6FF;">Modelo</td></tr><tr><td colspan="2" style="text-align: center; font-size: 0.8rem; color: #888;">Aguardando dados...</td></tr>`;
+            }
 
             const tbodyDivergences = document.getElementById('table-divergences-log');
             tbodyDivergences.innerHTML = '';
             divergenciasLogData.sort((a,b) => b.hora.localeCompare(a.hora));
             
+            let tickerMotivos = [];
+
             if(divergenciasLogData.length === 0) {
-                tbodyDivergences.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--brand-blue); font-weight: bold;"><i class="fas fa-thumbs-up"></i> Sistema a operar sem erros de picking na data actual.</td></tr>`;
+                tbodyDivergences.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #00C6FF; font-weight: bold;"><i class="fas fa-thumbs-up"></i> Sistema a operar com 100% de Força Operacional.</td></tr>`;
             } else {
                 divergenciasLogData.forEach(div => {
                     let analiseRobo = "";
@@ -1535,25 +1588,22 @@
                     let prodDataInfo = productMap[div.bipado] || productMap[codBipadoLimpo];
 
                     if(prodDataInfo && prodDataInfo.locs && prodDataInfo.locs.length > 0) {
-                        analiseRobo = `<div class="ai-insight"><i class="fas fa-robot"></i><b>Inversão de Endereço:</b> O operador retirou o produto da <b>Rua ${prodDataInfo.locs.join(', ')}</b> por engano.</div>`;
+                        analiseRobo = `<div class="ai-insight"><i class="fas fa-robot"></i><b>Inversão Evitada:</b> Alocação bloqueada na Rua ${prodDataInfo.locs.join(', ')}.</div>`;
+                        tickerMotivos.push(`🔴 Inversão detectada na Rua ${prodDataInfo.locs.join(', ')} e bloqueada.`);
                     } else {
-                        analiseRobo = `<div class="ai-insight" style="background:#FCEAE9; border-left-color:var(--brand-red);"><i class="fas fa-robot" style="color:var(--brand-red);"></i><b>Produto Desconhecido:</b> Este código não possui endereço de picking na malha.</div>`;
+                        analiseRobo = `<div class="ai-insight" style="background:rgba(255, 65, 108, 0.1); border-left-color:#FF416C;"><i class="fas fa-robot" style="color:#FF416C;"></i><b>Alerta Sistémico:</b> SKU sem espelho físico.</div>`;
+                        tickerMotivos.push(`🔴 Produto sem alocação detectado no picking.`);
                     }
 
                     tbodyDivergences.innerHTML += `
                         <tr>
-                            <td style="color: var(--text-muted);">${div.hora}</td>
-                            <td style="color: var(--text-dark);">${div.auditor}</td>
-                            <td style="font-weight: bold; color: var(--brand-blue);">${div.loc}</td>
-                            <td style="color: var(--text-dark);">
-                                <small>Sistema:</small> <b>${div.esperado}</b><br>
-                                <small>Lido:</small> <b style="color:var(--brand-red);">${div.bipado}</b>
-                            </td>
+                            <td style="color: #888;">${div.hora}</td>
+                            <td style="color: #E6E6E6;">${div.auditor}</td>
+                            <td style="font-weight: bold; color: #00C6FF;">${div.loc}</td>
+                            <td style="color: #E6E6E6;">Sist: <b>${div.esperado}</b><br>Lido: <b style="color:#FF416C;">${div.bipado}</b></td>
                             <td>${analiseRobo}</td>
-                            <td style="text-align: center; vertical-align: middle;">
-                                <button class="btn-danger" style="padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;" onclick="deletarRegistroDashboard('auditorias', '${div.id}')" title="Excluir este erro">
-                                    <i class="fas fa-trash-alt"></i> Excluir
-                                </button>
+                            <td style="text-align: center;">
+                                <button class="btn-danger" style="padding: 6px 10px; border-radius: 4px; cursor: pointer;" onclick="deletarRegistroDashboard('auditorias', '${div.id}')"><i class="fas fa-trash-alt"></i></button>
                             </td>
                         </tr>
                     `;
@@ -1564,7 +1614,7 @@
             tbodyReserva.innerHTML = '';
             
             if(auditReservaLog.length === 0) {
-                tbodyReserva.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--brand-blue); font-weight: bold;"><i class="fas fa-info-circle"></i> Nenhum inventário de reserva no período.</td></tr>`;
+                tbodyReserva.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #00C6FF; font-weight: bold;"><i class="fas fa-info-circle"></i> Sem inventários.</td></tr>`;
             } else {
                 auditReservaLog.sort((a,b) => {
                     let horaA = a.data_auditoria ? a.data_auditoria.split(' ')[1] : '';
@@ -1574,67 +1624,56 @@
 
                 auditReservaLog.forEach(res => {
                     let hora = res.data_auditoria ? res.data_auditoria.split(' ')[1] : '-';
-                    let statusBadge = res.status === 'conforme' ? '<span class="theme-badge badge-success" style="background:var(--brand-blue); color:white; border:none;">CONFORME</span>' : '<span class="theme-badge badge-error" style="background:var(--brand-red); color:white; border:none;">DIVERGENTE</span>';
+                    let statusBadge = res.status === 'conforme' ? '<span class="theme-badge" style="background:#00C6FF; color:#000;">OK</span>' : '<span class="theme-badge" style="background:#FF416C; color:#FFF;">ERRO</span>';
                     
                     let detalhamentoHtml = "";
                     let todosItens = [...(res.conformes_lv || []), ...(res.faltantes_lv || []), ...(res.sobras_lv || [])];
                     
                     todosItens.forEach(itemStr => {
                         let code = itemStr.split(' ')[0].replace(/[()]/g, '');
-                        let pData = productMap[code] || { desc: "Produto não identificado", locs: [] };
+                        let pData = productMap[code] || { desc: "Desconhecido", locs: [] };
                         
-                        let locsData = buscarEnderecosSaldos(code).filter(l => l.loc !== res.endereco_id);
-                        let tagsHtml = "";
+                        let corLinha = "transparent"; let bordaLinha = "rgba(255,255,255,0.1)";
+                        if(res.faltantes_lv && res.faltantes_lv.some(f => f.includes(code))) { corLinha = "rgba(255,65,108,0.1)"; bordaLinha = "#FF416C"; }
+                        else if(res.sobras_lv && res.sobras_lv.some(s => s.includes(code))) { corLinha = "rgba(255, 193, 7, 0.1)"; bordaLinha = "#FFC107"; }
 
-                        if(locsData.length > 0) {
-                            tagsHtml = locsData.map(l => `<span class="loc-tag" style="border-left: 3px solid ${l.tipo === 'Picking' ? 'var(--brand-blue)' : 'var(--brand-red)'};" title="${l.tipo}"><i class="${l.tipo === 'Picking' ? 'fas fa-map-marker-alt' : 'fas fa-pallet'}" style="color:${l.tipo === 'Picking' ? 'var(--brand-blue)' : 'var(--brand-red)'}"></i> ${l.loc} (<b>Saldo: ${l.saldo}</b>)</span>`).join("");
-                            tagsHtml = `<div style="margin-top: 6px;">${tagsHtml}</div>`;
-                        } else {
-                            tagsHtml = `<div style="margin-top: 6px; font-size:0.8rem; color:var(--text-muted);"><i class="fas fa-info-circle"></i> Sem outras alocações sistémicas</div>`;
-                        }
-
-                        let corLinha = "#fff"; let bordaLinha = "var(--border-light)";
-                        if(res.faltantes_lv && res.faltantes_lv.some(f => f.includes(code))) { corLinha = "var(--brand-red-light)"; bordaLinha = "var(--brand-red)"; }
-                        else if(res.sobras_lv && res.sobras_lv.some(s => s.includes(code))) { corLinha = "#FFF3E0"; bordaLinha = "#FF8C00"; }
-
-                        detalhamentoHtml += `<div style="margin-bottom:8px; padding:8px; border-radius:4px; background:${corLinha}; border:1px solid ${bordaLinha}; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-                            <div style="display:flex; justify-content:space-between; align-items:start;">
-                                <div><b style="color:var(--text-dark); font-size:1.05rem;">${code}</b> - <small style="font-weight:bold; color:var(--text-muted);">${pData.desc}</small></div>
-                                <div style="font-size:0.8rem; font-weight:bold; color:var(--text-dark); text-align:right;">${itemStr.replace(code, '').trim()}</div>
-                            </div>
-                            ${tagsHtml}
+                        detalhamentoHtml += `<div style="margin-bottom:8px; padding:8px; border-radius:4px; background:${corLinha}; border:1px solid ${bordaLinha};">
+                            <div><b style="color:#FFF;">${code}</b> - <small style="color:#A0C0FF;">${pData.desc}</small></div>
+                            <div style="font-size:0.8rem; text-align:right;">${itemStr.replace(code, '').trim()}</div>
                         </div>`;
                     });
 
                     let analiseRobo = "";
                     if(res.status !== 'conforme') {
                         let motivos = [];
-                        if(res.faltantes_lv && res.faltantes_lv.length > 0) motivos.push("<b>Furo de Estoque:</b> Retirada física ocorreu sem a baixa no sistema");
-                        if(res.sobras_lv && res.sobras_lv.length > 0) motivos.push("<b>Sobra Física:</b> Entrada física no endereço ocorreu sem lançamento no sistema");
+                        if(res.faltantes_lv && res.faltantes_lv.length > 0) motivos.push("Furo de Estoque na Reserva");
+                        if(res.sobras_lv && res.sobras_lv.length > 0) motivos.push("Sobra Física Clandestina");
                         
-                        analiseRobo = `<div class="ai-insight" style="margin-top: 10px; font-size: 0.9rem;">
-                                        <i class="fas fa-robot"></i> <b>Diagnóstico I.A:</b><br> ${motivos.join('.<br>')}
-                                      </div>`;
+                        analiseRobo = `<div class="ai-insight" style="margin-top: 10px;"><i class="fas fa-robot"></i> <b>Diagnóstico I.A:</b><br> ${motivos.join('.<br>')}</div>`;
+                        tickerMotivos.push(`🔴 Divergência de Inventário tratada no Endereço ${res.endereco_id}.`);
                     }
 
                     tbodyReserva.innerHTML += `
                         <tr>
-                            <td style="color: var(--text-muted);">${hora}</td>
-                            <td style="color: var(--text-dark);">${res.nome_colaborador}</td>
-                            <td style="font-weight: bold; color: var(--brand-blue); font-size:1.1rem;">${res.endereco_id}</td>
+                            <td style="color: #888;">${hora}</td>
+                            <td style="color: #E6E6E6;">${res.nome_colaborador}</td>
+                            <td style="font-weight: bold; color: #00C6FF; font-size:1.1rem;">${res.endereco_id}</td>
                             <td>${statusBadge}</td>
-                            <td style="font-size: 0.85rem; padding: 10px;">
-                                ${detalhamentoHtml}
-                                ${analiseRobo}
-                            </td>
-                            <td style="text-align: center; vertical-align: middle;">
-                                <button class="btn-danger" style="padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;" onclick="deletarRegistroDashboard('auditorias_reserva', '${res.id}')" title="Excluir este inventário">
-                                    <i class="fas fa-trash-alt"></i> Excluir
-                                </button>
+                            <td style="font-size: 0.85rem; padding: 10px;">${detalhamentoHtml}${analiseRobo}</td>
+                            <td style="text-align: center;">
+                                <button class="btn-danger" style="padding: 6px 10px; border-radius: 4px; cursor: pointer;" onclick="deletarRegistroDashboard('auditorias_reserva', '${res.id}')"><i class="fas fa-trash-alt"></i></button>
                             </td>
                         </tr>
                     `;
                 });
+            }
+
+            // Atualiza o Ticker
+            let ticker = document.getElementById('live-ticker');
+            if (tickerMotivos.length > 0) {
+                ticker.innerText = tickerMotivos.join(" | ") + " | 🟢 Monitorização Activa de Força Operacional.";
+            } else {
+                ticker.innerText = "🟢 Sistema Estável. Nenhuma divergência operacional registada. A acompanhar a performance da equipa em tempo real.";
             }
         }
 
@@ -1643,14 +1682,14 @@
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('view-' + tabId).classList.add('active');
             btn.classList.add('active');
-            if (tabId === 'audit') {
-                if(!document.getElementById('auditor-name').value) document.getElementById('auditor-name').focus();
-                else document.getElementById('scan-loc').focus();
-            } else if (tabId === 'consult') document.getElementById('consult-prod').focus();
-            else if (tabId === 'reserva') {
-                if(!document.getElementById('auditor-reserva').value) document.getElementById('auditor-reserva').focus();
-                else document.getElementById('loc-reserva').focus();
-            }
+        }
+
+        function showFeedback(elementId, type, message) {
+            const el = document.getElementById(elementId);
+            el.className = 'feedback-box ' + type;
+            el.innerHTML = message;
+            el.style.display = 'block';
+            setTimeout(() => { el.style.display = 'none'; }, 6000);
         }
 
         function handleEnter(e, nextAction) {
