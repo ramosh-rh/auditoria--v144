@@ -21,7 +21,7 @@
 
         * { box-sizing: border-box; }
         
-        /* NOVO: Congela o corpo da página para permitir a rolagem apenas dentro do conteúdo */
+        /* Congela o corpo da página para permitir a rolagem apenas dentro do conteúdo */
         body { background-color: var(--brand-bg); color: var(--text-dark); font-family: "Segoe UI", sans-serif; margin: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
         h1, h2, h3, h4 { font-weight: normal; margin-top: 0; }
 
@@ -181,7 +181,7 @@
             <button class="tab-btn" data-target="consult" onclick="showTab('consult', this)"><i class="fas fa-search"></i> Consulta Produto</button>
             
             <button class="tab-btn" data-target="tasks" onclick="showTab('tasks', this); window.iniciarMonitoramentoTarefas();"><i class="fas fa-satellite-dish"></i> Torre de Tarefas</button>
-            <button class="tab-btn" data-target="dashboard" onclick="showTab('dashboard', this)"><i class="fas fa-chart-pie"></i> Visão Executiva</button>
+            <button class="tab-btn" data-target="dashboard" onclick="showTab('dashboard', this); setTimeout(()=>window.carregarDadosDaNuvem(), 300);"><i class="fas fa-chart-pie"></i> Visão Executiva</button>
             <button class="tab-btn" data-target="import" onclick="showTab('import', this)"><i class="fas fa-sync-alt"></i> Sincronização</button>
             <button class="tab-btn" data-target="users" onclick="showTab('users', this); carregarTabelaUsuarios();"><i class="fas fa-users-cog"></i> Gestão de Acessos</button>
         </aside>
@@ -305,17 +305,20 @@
                 </div>
 
                 <div id="view-consult" class="view">
-                    <div class="theme-card" style="max-width: 600px; margin: 0 auto; border-top: 5px solid var(--brand-blue);">
-                        <h3 class="theme-card-title" style="text-align: center;">Buscador de Alocação e Saldo</h3>
+                    <div class="theme-card" style="max-width: 800px; margin: 0 auto; border-top: 5px solid var(--brand-blue); box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
+                        <h3 class="theme-card-title" style="text-align: center; font-size: 1.5rem;"><i class="fas fa-search-location"></i> Buscador de Alocação (Apenas Picking)</h3>
                         <div class="input-group">
-                            <label>Código do Produto ou EAN</label>
+                            <label style="font-size: 1.1rem; color: var(--brand-blue); text-transform: uppercase;">Código do Produto ou EAN</label>
                             <div class="input-row">
-                                <input type="text" id="consult-prod" class="theme-input" placeholder="Digite ou bipe o código..." onkeypress="handleEnter(event, 'btn-consult')">
-                                <button class="cam-btn" onclick="openScanner('consult-prod')"><i class="fas fa-camera"></i></button>
+                                <input type="text" id="consult-prod" class="theme-input" placeholder="Digite ou bipe o código..." style="font-size: 1.3rem; padding: 15px; font-weight: bold;" onkeypress="handleEnter(event, 'btn-consult')">
+                                <button class="cam-btn" style="padding: 0 25px; font-size: 1.4rem; background: var(--brand-blue); color: white; border: none;" onclick="openScanner('consult-prod')"><i class="fas fa-camera"></i></button>
                             </div>
                         </div>
-                        <button id="btn-consult" class="btn-primary" style="width: 100%;" onclick="executeConsult()">Pesquisar Sistema</button>
-                        <div id="consult-feedback" class="feedback-box"></div>
+                        <button id="btn-consult" class="btn-primary" style="width: 100%; font-size: 1.3rem; padding: 18px; margin-bottom: 20px;" onclick="executeConsult()">
+                            <i class="fas fa-search"></i> PESQUISAR ENDEREÇO
+                        </button>
+                        
+                        <div id="consult-feedback" class="feedback-box" style="padding: 30px;"></div>
                     </div>
                 </div>
 
@@ -442,8 +445,8 @@
                         <div style="display: flex; flex-wrap: wrap; gap: 15px; align-items: center; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px;">
                             <h2 style="margin:0; font-size: 1.5rem; font-weight:bold; color: #FFF;">Torre de Controlo C-Level</h2>
                             <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
-                                <input type="date" id="filter-date" class="theme-input" style="width: auto; padding: 8px; font-weight: bold; background: rgba(255,255,255,0.1); color: #FFF; border: 1px solid rgba(255,255,255,0.3); color-scheme: dark; border-radius: 4px;">
-                                <button class="btn-primary" style="padding: 8px 15px; background: #00C6FF; color: #000;" onclick="window.carregarDadosDaNuvem()"><i class="fas fa-sync"></i> Gerar</button>
+                                <input type="date" id="filter-date" class="theme-input" style="width: auto; padding: 8px; font-weight: bold; background: rgba(255,255,255,0.1); color: #FFF; border: 1px solid rgba(255,255,255,0.3); color-scheme: dark; border-radius: 4px;" onchange="window.carregarDadosDaNuvem()">
+                                <button class="btn-primary" style="padding: 8px 15px; background: #00C6FF; color: #000;" onclick="window.carregarDadosDaNuvem()"><i class="fas fa-sync"></i> Atualizar</button>
                             </div>
                         </div>
                         
@@ -1038,6 +1041,10 @@
         let dashboardStats = { total: 0, correct: 0, wrong: 0, sectors: {}, auditors: {} };
         let divergenciasLogData = []; 
         
+        // NOVO: Separando a memória local da visão de tabela para evitar deletar dados locais offline
+        window.dashboardAuditLog = [];
+        window.dashboardReservaLog = [];
+
         let reservaDB = {}; let reservaCurrentLoc = ''; let reservaScanned = [];
         let activeTicket = null; let ticketsPendentes = {}; let auditReservaLog = []; 
 
@@ -1054,7 +1061,7 @@
         });
 
         // ==========================================
-        // FUNÇÕES ORIGINAIS DE DADOS E CORREÇÃO DO GERAR
+        // FUNÇÕES ORIGINAIS DE DADOS
         // ==========================================
 
         async function verificarAtualizacaoAutomatica() {
@@ -1457,17 +1464,53 @@
             document.getElementById('info-barcodes').innerHTML = `<i class="fas fa-check"></i> Importado (${Object.keys(barcodeDB).length})`; document.getElementById('info-barcodes').style.color = 'var(--brand-blue)';
         }
 
+        // ==========================================
+        // CONSULTA DE PRODUTO REFORMULADA (Apenas Picking, Feedback Fixo e Ampliado)
+        // ==========================================
         function executeConsult() {
             if (Object.keys(inventoryDB).length === 0 && Object.keys(reservaDB).length === 0) return;
             const rawScan = formatCode(document.getElementById('consult-prod').value); if (!rawScan) return;
-            let internalCode = barcodeDB[rawScan] ? barcodeDB[rawScan] : rawScan; let locsData = buscarEnderecosSaldos(internalCode);
+            
+            let internalCode = barcodeDB[rawScan] ? barcodeDB[rawScan] : rawScan; 
+            
+            // Filtra exclusivamente endereços marcados como 'Picking'
+            let locsData = buscarEnderecosSaldos(internalCode).filter(l => l.tipo === 'Picking');
+            
+            const fb = document.getElementById('consult-feedback');
+            
             if (locsData.length > 0) {
                 let desc = productMap[internalCode] ? productMap[internalCode].desc : (reservaScanned.find(e => e.code===internalCode)?.desc || "Produto localizado");
                 let totalSaldo = locsData.reduce((acc, curr) => acc + curr.saldo, 0);
-                let tagsHtml = locsData.map(l => `<span class="loc-tag" style="border-left: 3px solid ${l.tipo === 'Picking' ? 'var(--brand-blue)' : 'var(--brand-red)'}; font-size:1.1rem; padding: 6px 12px; margin-bottom:10px; display:inline-block;"><i class="${l.tipo === 'Picking' ? 'fas fa-map-marker-alt' : 'fas fa-pallet'}"></i> ${l.loc} (<b>Saldo: ${l.saldo} un</b>)</span><br>`).join("");
-                showFeedback('consult-feedback', 'success', `<i class="fas fa-search-location" style="font-size:2rem; margin-bottom:10px;"></i><br><strong>MAPA DE ALOCAÇÃO:</strong><br><small style="color:var(--brand-blue); display:block; margin-bottom:10px; font-size:1.1rem;">${desc}</small><div style="font-size:1.1rem; font-weight:bold; color:var(--brand-white); margin-bottom:15px; background:var(--brand-blue); padding:8px; border-radius:4px;">Saldo Total Sistémico: ${totalSaldo} un</div>${tagsHtml}`);
-            } else { showFeedback('consult-feedback', 'error', `<i class="fas fa-times-circle" style="font-size:2rem; margin-bottom:10px;"></i><br><strong>SKU NÃO LOCALIZADO</strong>`); }
-            document.getElementById('consult-prod').value = ''; document.getElementById('consult-prod').focus();
+                
+                // Cria os blocos de endereço gigantes para facilitar leitura à distância
+                let tagsHtml = locsData.map(l => `<div style="border-left: 8px solid var(--brand-blue); font-size: 2rem; padding: 20px; margin-bottom: 15px; background: #E6F0FA; border-radius: 8px; text-align: center; color: var(--brand-blue); box-shadow: 0 4px 6px rgba(0,0,0,0.05);"><i class="fas fa-map-marker-alt"></i> <b style="color: var(--text-dark);">${l.loc}</b><div style="font-size: 1.2rem; color: var(--text-muted); margin-top: 10px; text-transform: uppercase; font-weight: bold;">Saldo Físico no Local: <span style="color: var(--brand-blue);">${l.saldo} un</span></div></div>`).join("");
+                
+                fb.className = 'feedback-box success';
+                fb.innerHTML = `
+                    <div style="text-align: center;">
+                        <i class="fas fa-search-location" style="font-size: 3.5rem; margin-bottom: 15px; color: var(--brand-blue);"></i><br>
+                        <strong style="font-size: 1.4rem; color: var(--brand-blue); text-transform: uppercase;">Mapa de Alocação (Picking)</strong><br>
+                        <small style="color: var(--text-dark); display: block; margin-bottom: 20px; margin-top: 10px; font-size: 1.3rem; font-weight: bold; padding-bottom: 15px; border-bottom: 2px dashed var(--border-light);">${desc}</small>
+                        <div style="font-size: 1.3rem; font-weight: bold; color: var(--brand-white); margin-bottom: 25px; background: var(--brand-blue); padding: 12px; border-radius: 6px;">Saldo Total do Picking: ${totalSaldo} un</div>
+                        ${tagsHtml}
+                    </div>
+                `;
+                // Removemos o setTimeout para que não desapareça. Fica fixo até à próxima consulta.
+                fb.style.display = 'block';
+            } else { 
+                fb.className = 'feedback-box error';
+                fb.innerHTML = `
+                    <div style="text-align: center;">
+                        <i class="fas fa-times-circle" style="font-size: 3.5rem; margin-bottom: 15px;"></i><br>
+                        <strong style="font-size: 1.6rem;">NÃO ENCONTRADO NO PICKING</strong><br>
+                        <div style="font-size: 1.2rem; margin-top: 15px; color: var(--brand-red);">Este código (<b>${rawScan}</b>) não possui alocação registada na área de separação principal.</div>
+                    </div>
+                `; 
+                fb.style.display = 'block';
+            }
+            
+            document.getElementById('consult-prod').value = ''; 
+            document.getElementById('consult-prod').focus();
         }
 
         async function executeAudit() {
@@ -1493,105 +1536,117 @@
         }
 
         // ==============================================================
-        // VERSÃO CORRIGIDA DO GERAR DADOS (MAIS SEGURA CONTRA ERROS DE BD)
+        // LÓGICA DE DADOS EXECUTIVOS REFORMULADA COM AUTO-TIMEOUT E FALLBACK
         // ==============================================================
         window.carregarDadosDaNuvem = async function() {
             const dateInput = document.getElementById('filter-date').value; 
-            if(!dateInput) {
-                alert("Por favor, selecione uma data válida para gerar o relatório.");
-                return;
-            }
+            if(!dateInput) return;
             
-            setTelaCarregamento(true, "A Analisar Malha Logística", "A construir Torre de Controlo Executiva...", "fa-sync");
+            setTelaCarregamento(true, "A Analisar a Malha", "A construir a Torre de Controlo...", "fa-sync");
             
             try {
                 const [anoInp, mesInp, diaInp] = dateInput.split('-'); 
-                const tAno = parseInt(anoInp), tMes = parseInt(mesInp), tDia = parseInt(diaInp);
-                const padDia = String(tDia).padStart(2, '0'), padMes = String(tMes).padStart(2, '0');
-                const varsData = [`${padDia}/${padMes}/${tAno}`, `${tDia}/${tMes}/${tAno}`, `${tAno}-${padMes}-${padDia}`];
+                const padDia = diaInp; const padMes = mesInp; const tAno = parseInt(anoInp);
+                const varsData = [`${padDia}/${padMes}/${tAno}`, `${parseInt(diaInp)}/${parseInt(mesInp)}/${tAno}`, `${tAno}-${padMes}-${padDia}`];
 
                 function checkMatch(dataObj) {
-                    // Validação extra segura para a data
                     if (dataObj.timestamp && typeof dataObj.timestamp.toDate === 'function') { 
                         const d = dataObj.timestamp.toDate(); 
-                        if (d.getFullYear() === tAno && (d.getMonth() + 1) === tMes && d.getDate() === tDia) return true; 
+                        if (d.getFullYear() === tAno && (d.getMonth() + 1) === parseInt(mesInp) && d.getDate() === parseInt(diaInp)) return true; 
                     } else if (dataObj.timestamp && dataObj.timestamp.seconds) {
                         const d = new Date(dataObj.timestamp.seconds * 1000);
-                        if (d.getFullYear() === tAno && (d.getMonth() + 1) === tMes && d.getDate() === tDia) return true;
+                        if (d.getFullYear() === tAno && (d.getMonth() + 1) === parseInt(mesInp) && d.getDate() === parseInt(diaInp)) return true;
                     }
                     const strBusca = (dataObj.data_auditoria || '') + ' | ' + (dataObj.data_filtro || ''); 
                     for(let formato of varsData) { if(strBusca.includes(formato)) return true; } 
                     return false;
                 }
 
-                if (window.db) {
-                    const querySnapshot = await window.dbGetDocs(window.dbCollection(window.db, "auditorias"));
-                    auditLog = []; divergenciasLogData = []; dashboardStats = { total: 0, correct: 0, wrong: 0, sectors: {}, auditors: {} };
-                    
-                    querySnapshot.forEach((doc) => {
-                        const data = doc.data();
-                        if (checkMatch(data)) {
-                            auditLog.push(data); 
-                            dashboardStats.total++;
-                            const isCorrect = (data.status === 'correto'); 
-                            isCorrect ? dashboardStats.correct++ : dashboardStats.wrong++;
-                            
-                            let setor = data.setor ? data.setor.toUpperCase() : 'GERAL'; 
-                            if (setor === 'HIGIENE' || setor === 'CUIDADOS ESPECIAIS') { setor = 'RUA 57 PERFUMARIA'; }
-                            const auditor = data.nome_colaborador || 'Não Informado';
-                            
-                            if (!dashboardStats.sectors[setor]) dashboardStats.sectors[setor] = { total: 0, errors: 0 }; 
-                            dashboardStats.sectors[setor].total++;
-                            
-                            if (!isCorrect) { 
-                                dashboardStats.sectors[setor].errors++; 
-                                divergenciasLogData.push({ 
-                                    id: doc.id, 
-                                    hora: data.data_auditoria ? data.data_auditoria.split(' ')[1] : '-', 
-                                    auditor: auditor, 
-                                    loc: data.endereco_id, 
-                                    esperado: data.produto_esperado, 
-                                    bipado: data.produto_bipado || '' // EVITA O ERRO FATAL DE 'NULL'
-                                }); 
-                            }
-                            
-                            if (!dashboardStats.auditors[auditor]) dashboardStats.auditors[auditor] = 0; 
-                            dashboardStats.auditors[auditor]++;
-                        }
-                    });
-                    
-                    const queryReserva = await window.dbGetDocs(window.dbCollection(window.db, "auditorias_reserva")); 
-                    auditReservaLog = []; 
-                    queryReserva.forEach((doc) => {
-                        const data = doc.data(); 
-                        if (checkMatch(data)) { 
-                            auditReservaLog.push({ id: doc.id, ...data }); 
-                            const auditor = data.nome_colaborador || 'Não Informado'; 
-                            if (!dashboardStats.auditors[auditor]) dashboardStats.auditors[auditor] = 0; 
-                            dashboardStats.auditors[auditor]++; 
-                        }
-                    });
-                }
+                let arrPick = []; let arrRes = [];
                 
+                if (window.db) {
+                    try {
+                        // Limite de 6 segundos. Se a rede falhar, ele não bloqueia.
+                        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout da nuvem")), 6000));
+                        
+                        const pPick = window.dbGetDocs(window.dbCollection(window.db, "auditorias"));
+                        const snapPick = await Promise.race([pPick, timeoutPromise]);
+                        snapPick.forEach((doc) => { const d = doc.data(); if(checkMatch(d)) arrPick.push({id: doc.id, ...d}); });
+                        
+                        const pRes = window.dbGetDocs(window.dbCollection(window.db, "auditorias_reserva"));
+                        const snapRes = await Promise.race([pRes, timeoutPromise]);
+                        snapRes.forEach((doc) => { const d = doc.data(); if(checkMatch(d)) arrRes.push({id: doc.id, ...d}); });
+                        
+                    } catch(err) {
+                        console.warn("A usar dados locais devido a restrição de rede:", err);
+                        arrPick = auditLog.filter(checkMatch); arrRes = auditReservaLog.filter(checkMatch);
+                    }
+                } else {
+                    arrPick = auditLog.filter(checkMatch); arrRes = auditReservaLog.filter(checkMatch);
+                }
+
+                dashboardStats = { total: 0, correct: 0, wrong: 0, sectors: {}, auditors: {} };
+                divergenciasLogData = [];
+                
+                arrPick.forEach((data) => {
+                    dashboardStats.total++;
+                    const isCorrect = (data.status === 'correto'); 
+                    isCorrect ? dashboardStats.correct++ : dashboardStats.wrong++;
+                    
+                    let setor = data.setor ? data.setor.toUpperCase() : 'GERAL'; 
+                    if (setor === 'HIGIENE' || setor === 'CUIDADOS ESPECIAIS') { setor = 'RUA 57 PERFUMARIA'; }
+                    
+                    const auditor = data.nome_colaborador || 'Não Informado';
+                    
+                    if (!dashboardStats.sectors[setor]) dashboardStats.sectors[setor] = { total: 0, errors: 0 }; 
+                    dashboardStats.sectors[setor].total++;
+                    
+                    if (!isCorrect) { 
+                        dashboardStats.sectors[setor].errors++; 
+                        divergenciasLogData.push({ 
+                            id: data.id || ('loc-'+Math.random()), 
+                            hora: data.data_auditoria ? data.data_auditoria.split(' ')[1] : '-', 
+                            auditor: auditor, 
+                            loc: data.endereco_id, 
+                            esperado: data.produto_esperado, 
+                            bipado: data.produto_bipado || ''
+                        }); 
+                    }
+                    
+                    if (!dashboardStats.auditors[auditor]) dashboardStats.auditors[auditor] = 0; 
+                    dashboardStats.auditors[auditor]++;
+                });
+                
+                arrRes.forEach((data) => {
+                    const auditor = data.nome_colaborador || 'Não Informado'; 
+                    if (!dashboardStats.auditors[auditor]) dashboardStats.auditors[auditor] = 0; 
+                    dashboardStats.auditors[auditor]++; 
+                });
+                
+                window.dashboardAuditLog = arrPick;
+                window.dashboardReservaLog = arrRes;
+
                 updateDashboardPremium();
                 
             } catch(e) { 
-                console.error("Erro interno ao gerar o dashboard:", e);
-                alert("Ocorreu um erro ao tentar processar o relatório. Veja a consola para mais detalhes.");
+                console.error("Erro interno:", e);
+                alert("Houve uma inconsistência com a data solicitada.");
             } finally { 
                 setTelaCarregamento(false); 
             }
         }
 
         async function exportAuditData() {
-            if (auditLog.length === 0) return;
-            const exportData = auditLog.map(({timestamp, id, ...rest}) => rest);
+            const arr = window.dashboardAuditLog.length > 0 ? window.dashboardAuditLog : auditLog;
+            if (arr.length === 0) { alert("Sem dados para exportar."); return; }
+            const exportData = arr.map(({timestamp, id, ...rest}) => rest);
             const workbook = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(exportData), "Ranking"); XLSX.writeFile(workbook, `Ranking_${document.getElementById('filter-date').value}.xlsx`);
         }
 
         async function exportAuditReservaData() {
-            if (auditReservaLog.length === 0) return;
-            const exportData = auditReservaLog.map(item => { return { Documento: item.ticket || "-", Data_Hora: item.data_auditoria, Operador: item.nome_colaborador, Local_Reserva: item.endereco_id, Status_Final: String(item.status).toUpperCase(), Itens_Bateram: item.conformes_lv ? item.conformes_lv.join(" | ") : "-", Itens_Faltaram: item.faltantes_lv ? item.faltantes_lv.join(" | ") : "-", Itens_Sobra: item.sobras_lv ? item.sobras_lv.join(" | ") : "-" } });
+            const arr = window.dashboardReservaLog.length > 0 ? window.dashboardReservaLog : auditReservaLog;
+            if (arr.length === 0) { alert("Sem dados para exportar."); return; }
+            const exportData = arr.map(item => { return { Documento: item.ticket || "-", Data_Hora: item.data_auditoria, Operador: item.nome_colaborador, Local_Reserva: item.endereco_id, Status_Final: String(item.status).toUpperCase(), Itens_Bateram: item.conformes_lv ? item.conformes_lv.join(" | ") : "-", Itens_Faltaram: item.faltantes_lv ? item.faltantes_lv.join(" | ") : "-", Itens_Sobra: item.sobras_lv ? item.sobras_lv.join(" | ") : "-" } });
             const workbook = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(exportData), "Inventarios"); XLSX.writeFile(workbook, `Inventarios_${document.getElementById('filter-date').value}.xlsx`);
         }
 
@@ -1616,7 +1671,6 @@
             if(divergenciasLogData.length === 0) { tbodyDivergences.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #00C6FF; font-weight: bold;"><i class="fas fa-thumbs-up"></i> Sistema a operar com 100% de Força Operacional.</td></tr>`; } else {
                 divergenciasLogData.forEach(div => {
                     let analiseRobo = ""; 
-                    // VALIDAÇÃO DE SEGURANÇA: Previne o erro do .replace is not a function
                     let safeBipado = div.bipado || '';
                     let codBipadoLimpo = safeBipado.replace(/^V0+/, ''); 
                     let prodDataInfo = productMap[safeBipado] || productMap[codBipadoLimpo];
@@ -1627,9 +1681,9 @@
             }
 
             const tbodyReserva = document.getElementById('table-reserva-log'); tbodyReserva.innerHTML = '';
-            if(auditReservaLog.length === 0) { tbodyReserva.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #00C6FF; font-weight: bold;"><i class="fas fa-info-circle"></i> Nenhum inventário de reserva no período.</td></tr>`; } else {
-                auditReservaLog.sort((a,b) => { let horaA = a.data_auditoria ? a.data_auditoria.split(' ')[1] : ''; let horaB = b.data_auditoria ? b.data_auditoria.split(' ')[1] : ''; return horaB.localeCompare(horaA); });
-                auditReservaLog.forEach(res => {
+            if(window.dashboardReservaLog.length === 0) { tbodyReserva.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #00C6FF; font-weight: bold;"><i class="fas fa-info-circle"></i> Nenhum inventário de reserva no período.</td></tr>`; } else {
+                window.dashboardReservaLog.sort((a,b) => { let horaA = a.data_auditoria ? a.data_auditoria.split(' ')[1] : ''; let horaB = b.data_auditoria ? b.data_auditoria.split(' ')[1] : ''; return horaB.localeCompare(horaA); });
+                window.dashboardReservaLog.forEach(res => {
                     let hora = res.data_auditoria ? res.data_auditoria.split(' ')[1] : '-'; let statusBadge = res.status === 'conforme' ? '<span class="theme-badge" style="background:#00C6FF; color:#000;">OK</span>' : '<span class="theme-badge" style="background:#FF416C; color:#FFF;">ERRO</span>';
                     let detalhamentoHtml = ""; let todosItens = [...(res.conformes_lv || []), ...(res.faltantes_lv || []), ...(res.sobras_lv || [])];
                     todosItens.forEach(itemStr => {
@@ -1662,7 +1716,14 @@
             document.getElementById('view-' + tabId).classList.add('active'); btn.classList.add('active');
         }
 
-        function showFeedback(elementId, type, message) { const el = document.getElementById(elementId); el.className = 'feedback-box ' + type; el.innerHTML = message; el.style.display = 'block'; setTimeout(() => { el.style.display = 'none'; }, 6000); }
+        // Continua a ser usado para a aba "Auditar" que beneficia do desaparecimento rápido
+        function showFeedback(elementId, type, message) { 
+            const el = document.getElementById(elementId); 
+            el.className = 'feedback-box ' + type; 
+            el.innerHTML = message; 
+            el.style.display = 'block'; 
+            setTimeout(() => { el.style.display = 'none'; }, 6000); 
+        }
 
         function handleEnter(e, nextAction) { if (e.key === 'Enter') { if (nextAction === 'run-audit') executeAudit(); else if (nextAction === 'btn-consult') executeConsult(); else if (nextAction === 'btn-init-reserva') iniciarReserva(); else if (nextAction === 'btn-bipar-reserva') biparReserva(); else document.getElementById(nextAction).focus(); } }
     </script>
