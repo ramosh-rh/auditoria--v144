@@ -601,6 +601,93 @@
 
                 <!-- ======================================================== -->
                 <!-- ABA: APURAÇÃO DA COMPRA -->
+                <!-- MODAL: DETALHE DO ROMANEIO -->
+                <div id="modal-romaneio" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:9999;overflow-y:auto;" onclick="if(event.target===this)fecharModalRomaneio()">
+                    <div style="background:var(--brand-bg);border-radius:12px;max-width:800px;margin:40px auto;padding:0;box-shadow:0 20px 60px rgba(0,0,0,0.5);overflow:hidden;">
+                        <div style="background:linear-gradient(135deg,var(--brand-blue),#0056b3);padding:20px 24px;display:flex;justify-content:space-between;align-items:center;">
+                            <div>
+                                <div style="font-size:0.75rem;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:1px;">Detalhamento do Romaneio</div>
+                                <div id="modal-rom-titulo" style="font-size:1.4rem;font-weight:900;color:#fff;"></div>
+                                <div id="modal-rom-operador" style="font-size:0.85rem;color:rgba(255,255,255,0.85);margin-top:2px;"></div>
+                            </div>
+                            <button onclick="fecharModalRomaneio()" style="background:rgba(255,255,255,0.15);border:none;color:#fff;width:36px;height:36px;border-radius:50%;font-size:1.2rem;cursor:pointer;">✕</button>
+                        </div>
+                        <!-- KPIs do romaneio -->
+                        <div id="modal-rom-kpis" style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-bottom:1px solid var(--border-light);"></div>
+                        <!-- Barra de progresso -->
+                        <div style="padding:16px 24px;border-bottom:1px solid var(--border-light);">
+                            <div style="display:flex;justify-content:space-between;font-size:0.8rem;font-weight:bold;margin-bottom:6px;">
+                                <span>Progresso do Atendimento</span>
+                                <span id="modal-rom-pct-label">—</span>
+                            </div>
+                            <div style="background:#e9ecef;border-radius:20px;height:16px;overflow:hidden;">
+                                <div id="modal-rom-barra" style="height:100%;border-radius:20px;transition:width 0.8s;background:#28a745;"></div>
+                            </div>
+                        </div>
+                        <!-- Tabela de produtos -->
+                        <div style="padding:16px 24px 8px;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+                                <span style="font-weight:bold;font-size:0.9rem;"><i class="fas fa-boxes" style="color:var(--brand-blue);"></i> Produtos do Romaneio</span>
+                                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                                    <button onclick="exportarRomaneioDetalhado()" style="background:#28a745;color:#fff;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:0.8rem;font-weight:bold;"><i class="fas fa-file-excel"></i> Exportar</button>
+                                    <button onclick="gerarRelatorioBusca()" style="background:var(--brand-blue);color:#fff;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:0.8rem;font-weight:bold;"><i class="fas fa-search"></i> Relatório de Busca</button>
+                                </div>
+                            </div>
+                            <div style="display:flex;gap:8px;margin-bottom:10px;">
+                                <span id="chip-atendidos" style="background:#d4edda;color:#155724;padding:4px 12px;border-radius:20px;font-size:0.8rem;font-weight:bold;"></span>
+                                <span id="chip-pendentes" style="background:#f8d7da;color:#721c24;padding:4px 12px;border-radius:20px;font-size:0.8rem;font-weight:bold;"></span>
+                                <span id="chip-divergencia" style="background:#fff3cd;color:#856404;padding:4px 12px;border-radius:20px;font-size:0.8rem;font-weight:bold;display:none;"></span>
+                            </div>
+                            <div style="overflow-x:auto;max-height:340px;overflow-y:auto;">
+                                <table id="modal-rom-tabela" style="width:100%;">
+                                    <thead style="position:sticky;top:0;background:var(--brand-bg);z-index:1;">
+                                        <tr>
+                                            <th>Cód. Produto</th>
+                                            <th>Descrição</th>
+                                            <th>Endereço</th>
+                                            <th>Qtd Pedida</th>
+                                            <th>Cx Pedidas</th>
+                                            <th>Qtd Atendida</th>
+                                            <th>Cx Atendidas</th>
+                                            <th>Saldo Pendente</th>
+                                            <th>% Item</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="modal-rom-tbody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- Ações do robô -->
+                        <div id="modal-acoes-robo" style="margin:16px 24px 24px;border-radius:8px;overflow:hidden;"></div>
+                    </div>
+                </div>
+
+                <!-- MODAL: RELATÓRIO DE BUSCA DO PRODUTO -->
+                <div id="modal-busca-produto" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.75);z-index:10000;overflow-y:auto;" onclick="if(event.target===this)document.getElementById('modal-busca-produto').style.display='none'">
+                    <div style="background:var(--brand-bg);border-radius:12px;max-width:750px;margin:40px auto;padding:0;box-shadow:0 20px 60px rgba(0,0,0,0.5);overflow:hidden;">
+                        <div style="background:linear-gradient(135deg,#6f42c1,#4a1f8c);padding:20px 24px;display:flex;justify-content:space-between;align-items:center;">
+                            <div>
+                                <div style="font-size:0.75rem;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:1px;">Relatório de Busca</div>
+                                <div id="busca-prod-titulo" style="font-size:1.2rem;font-weight:900;color:#fff;"></div>
+                            </div>
+                            <button onclick="document.getElementById('modal-busca-produto').style.display='none'" style="background:rgba(255,255,255,0.15);border:none;color:#fff;width:36px;height:36px;border-radius:50%;font-size:1.2rem;cursor:pointer;">✕</button>
+                        </div>
+                        <div style="padding:20px 24px;">
+                            <div id="busca-prod-kpis" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;"></div>
+                            <div style="font-weight:bold;font-size:0.85rem;margin-bottom:8px;color:var(--text-muted);"><i class="fas fa-map-marker-alt"></i> Em quais romaneios este produto aparece:</div>
+                            <div style="overflow-x:auto;">
+                                <table id="busca-prod-tabela">
+                                    <thead><tr><th>Romaneio</th><th>Operador</th><th>Descrição</th><th>Endereço</th><th>Qtd Pedida</th><th>Qtd Atendida</th><th>Saldo</th><th>% Item</th><th>Status</th></tr></thead>
+                                    <tbody id="busca-prod-tbody"></tbody>
+                                </table>
+                            </div>
+                            <div style="margin-top:16px;text-align:right;">
+                                <button onclick="exportarRelatorioBusca()" style="background:#28a745;color:#fff;border:none;padding:8px 18px;border-radius:6px;cursor:pointer;font-weight:bold;"><i class="fas fa-file-excel"></i> Exportar Relatório de Busca</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!-- ======================================================== -->
                 <div id="view-apuracao" class="view">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
@@ -760,16 +847,15 @@
                                     <tr>
                                         <th>Romaneio</th>
                                         <th>Operador</th>
-                                        <th>Produto</th>
-                                        <th>Descrição</th>
-                                        <th>Hora Atendimento</th>
-                                        <th>Qtd Solicitada</th>
-                                        <th>Cx Pedidas</th>
+                                        <th>Horário Início</th>
+                                        <th>Tempo Parado</th>
+                                        <th>Prod. Atendidos</th>
+                                        <th>Prod. Pendentes</th>
                                         <th>Qtd Atendida</th>
                                         <th>Cx Atendidas</th>
+                                        <th>Qtd Pedida</th>
                                         <th>Saldo Pendente</th>
                                         <th>% Atendimento</th>
-                                        <th>Tempo</th>
                                         <th>Status</th>
                                     </tr>
                                 </thead>
@@ -802,10 +888,16 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="theme-card">
-                            <div class="theme-card-title" style="color:var(--brand-red);"><i class="fas fa-user-times"></i> Operadores Abaixo da Meta (99%)</div>
+                        <div class="theme-card" style="margin-bottom:16px;">
+                            <div class="theme-card-title" style="color:var(--brand-red);"><i class="fas fa-user-times"></i> ⚠️ Ponto de Atenção — Operadores com Baixa Acuracidade</div>
                             <div id="lista-baixa-performance" style="overflow-x:auto;">
                                 <p style="color:var(--text-muted);text-align:center;">Sem dados carregados.</p>
+                            </div>
+                        </div>
+                        <div class="theme-card">
+                            <div class="theme-card-title" style="color:#6f42c1;"><i class="fas fa-robot"></i> Sugestões do Robô de Gestão</div>
+                            <div id="lista-sugestoes-robo" style="padding:8px 0;">
+                                <p style="color:var(--text-muted);text-align:center;">Processe os dados para gerar sugestões automáticas.</p>
                             </div>
                         </div>
                     </div>
@@ -2030,6 +2122,31 @@
             return diff + ' min';
         }
 
+        // ---- CALCULAR TEMPO DECORRIDO DESDE O INÍCIO (para alerta de romaneio parado) ----
+        function calcTempoDecorrido(horaInicio) {
+            if (!horaInicio) return null;
+            const toMin = v => {
+                if (v instanceof Date) return v.getHours()*60 + v.getMinutes();
+                if (typeof v === 'number') return Math.round(v * 1440) % 1440;
+                return 0;
+            };
+            const agora = new Date();
+            const minAgora = agora.getHours()*60 + agora.getMinutes();
+            const minInicio = toMin(horaInicio);
+            const diff = minAgora - minInicio;
+            if (diff < 0 || isNaN(diff)) return null;
+            return diff;
+        }
+
+        // ---- FORMATAR TEMPO DECORRIDO COM ALERTA ----
+        function formatTempoDecorrido(minutos) {
+            if (minutos === null) return '—';
+            if (minutos > 20) {
+                return `<span style="color:#dc3545;font-weight:bold;"><i class="fas fa-exclamation-circle"></i> ${minutos} min</span>`;
+            }
+            return `<span style="color:#28a745;">${minutos} min</span>`;
+        }
+
         // ---- BADGE DE PERFORMANCE ----
         function badgePerf(pct) {
             if (pct >= 99) return `<span class="theme-badge" style="background:#d4edda;color:#155724;">✅ ${pct.toFixed(1)}%</span>`;
@@ -2078,6 +2195,7 @@
             dadosDeposito.forEach(row => {
                 const keys = Object.keys(row);
                 const rom  = String(row['Romaneio']   || row[keys[2]] || '').trim();
+                const end  = String(row['Endereço'] || row['Endereco'] || row[keys[3]] || '').trim();
                 const prod = String(row['Produto']    || row[keys[4]] || '').trim();
                 const desc = String(row['Descri\u00e7\u00e3o']  || row[keys[5]] || '').trim();
                 if (!rom || rom === 'Romaneio') return;
@@ -2109,7 +2227,7 @@
                 mapaRomaneios[rom].saldoPendente += sp;
                 if (conf === 'S') mapaRomaneios[rom].conferido = 'S';
                 mapaRomaneios[rom].itens.push({
-                    produto: prod, descricao: desc, hora: null,
+                    produto: prod, descricao: desc, endereco: end, hora: null,
                     qtdPedida: qp, qtdPedidaCX: qpCX,
                     qtdAtendida: qa, qtdAtendidaCX: qaCX,
                     saldo: sp, conferido: conf
@@ -2270,34 +2388,48 @@
             }).join('');
         }
 
-        // ---- TABELA POR ROMANEIO ----
+        // ---- TABELA POR ROMANEIO (uma linha por romaneio, clicável) ----
         function renderTabelaRomaneio() {
             const tbody = document.getElementById('tbody-romaneio');
-            const rows = [];
-            dadosFiltrados.forEach(d => {
-                d.itens.forEach(item => {
-                    rows.push({ ...item, operador: d.operador, romaneio: d.romaneio, statusRom: d.status });
-                });
-            });
 
-            if (!rows.length) { tbody.innerHTML = '<tr><td colspan="13" style="text-align:center;color:var(--text-muted);padding:20px;">Nenhum resultado.</td></tr>'; return; }
+            if (!dadosFiltrados.length) { tbody.innerHTML = '<tr><td colspan="12" style="text-align:center;color:var(--text-muted);padding:20px;">Nenhum resultado.</td></tr>'; return; }
 
-            tbody.innerHTML = rows.map(r => {
-                const pct = r.qtdPedida > 0 ? (r.qtdAtendida / r.qtdPedida) * 100 : 0;
-                return `<tr>
-                    <td><b>${r.romaneio}</b></td>
-                    <td>${r.operador}</td>
-                    <td style="color:var(--brand-blue);font-weight:bold;">${r.produto}</td>
-                    <td style="font-size:0.82rem;">${r.descricao || '—'}</td>
-                    <td>${formatHora(r.hora)}</td>
-                    <td style="text-align:center;">${r.qtdPedida.toLocaleString('pt-BR')}</td>
-                    <td style="text-align:center;color:#6f42c1;">${(r.qtdPedidaCX||0).toLocaleString('pt-BR')} cx</td>
-                    <td style="text-align:center;color:#FF8C00;font-weight:bold;">${r.qtdAtendida.toLocaleString('pt-BR')}</td>
-                    <td style="text-align:center;color:#17a2b8;font-weight:bold;">${(r.qtdAtendidaCX||0).toLocaleString('pt-BR')} cx</td>
-                    <td style="text-align:center;color:${r.saldo>0?'var(--brand-red)':'#28a745'};font-weight:bold;">${r.saldo.toLocaleString('pt-BR')}</td>
-                    <td>${badgePerf(pct)}</td>
-                    <td>—</td>
-                    <td>${badgeStatus(r.statusRom)}</td>
+            tbody.innerHTML = dadosFiltrados.map(d => {
+                const totalProd = d.itens.length;
+                const prodAtend = d.itens.filter(i => i.qtdAtendida >= i.qtdPedida && i.qtdPedida > 0).length;
+                const prodPend  = d.itens.filter(i => i.saldo > 0).length;
+                const prodDiv   = d.itens.filter(i => i.qtdAtendida > 0 && i.saldo > 0).length;
+                
+                // Calcular tempo decorrido apenas se houver operador e hora de início
+                let tempoDecorridoHTML = '—';
+                let alertaClass = '';
+                if (d.operador !== 'Não identificado' && d.horaMin) {
+                    const minutos = calcTempoDecorrido(d.horaMin);
+                    tempoDecorridoHTML = formatTempoDecorrido(minutos);
+                    if (minutos !== null && minutos > 20) {
+                        alertaClass = 'style="background-color:#ffe6e6;border-left:4px solid #dc3545;"';
+                    }
+                }
+                
+                return `<tr ${alertaClass} style="cursor:pointer;" onclick="abrirModalRomaneio('${d.romaneio}')" title="Clique para ver produtos">
+                    <td><b style="color:var(--brand-blue);">${d.romaneio}</b></td>
+                    <td>${d.operador !== 'Não identificado' ? d.operador : '<span style="color:var(--text-muted);font-style:italic;">Não identificado</span>'}</td>
+                    <td style="text-align:center;">${d.horaMin ? formatHora(d.horaMin) : '—'}</td>
+                    <td style="text-align:center;">${tempoDecorridoHTML}</td>
+                    <td style="text-align:center;">
+                        <span style="color:#28a745;font-weight:bold;">${prodAtend}✓</span>
+                        <span style="color:#999;"> / </span>
+                        <span style="font-weight:bold;">${totalProd}</span>
+                    </td>
+                    <td style="text-align:center;">
+                        ${prodPend > 0 ? `<span style="color:var(--brand-red);font-weight:bold;">${prodPend} <i class="fas fa-clock"></i></span>` : '<span style="color:#28a745;">—</span>'}
+                    </td>
+                    <td style="text-align:center;color:#FF8C00;font-weight:bold;">${d.qtdAtendida.toLocaleString('pt-BR')}</td>
+                    <td style="text-align:center;color:#17a2b8;">${(d.qtdAtendidaCX||0).toLocaleString('pt-BR')} cx</td>
+                    <td style="text-align:center;">${d.qtdPedida.toLocaleString('pt-BR')}</td>
+                    <td style="text-align:center;color:${d.saldoPendente>0?'var(--brand-red)':'#28a745'};font-weight:bold;">${d.saldoPendente.toLocaleString('pt-BR')}</td>
+                    <td>${badgePerf(d.pct)}</td>
+                    <td>${badgeStatus(d.status)}</td>
                 </tr>`;
             }).join('');
         }
@@ -2313,18 +2445,24 @@
             const prodPendentes = [];
             dadosCruzados.forEach(d => {
                 d.itens.filter(i => i.saldo > 0).forEach(i => {
-                    prodPendentes.push({ produto: i.produto, descricao: i.descricao, romaneio: d.romaneio, operador: d.operador, saldo: i.saldo });
+                    prodPendentes.push({ produto: i.produto, descricao: i.descricao, endereco: i.endereco, romaneio: d.romaneio, operador: d.operador, saldo: i.saldo });
                 });
             });
             const elProd = document.getElementById('lista-produtos-pendentes');
             if (!prodPendentes.length) { elProd.innerHTML = '<p style="color:#28a745;text-align:center;padding:15px;"><i class="fas fa-check-circle"></i> Nenhum produto pendente!</p>'; }
             else {
                 elProd.innerHTML = prodPendentes.slice(0, 50).map(p =>
-                    `<div style="padding:8px;border-bottom:1px solid var(--border-light);display:flex;justify-content:space-between;align-items:center;">
-                        <div><b style="color:var(--brand-blue)">${p.produto}</b><br><span style="font-size:0.78rem;color:var(--text-muted)">${p.descricao || p.romaneio} — ${p.operador}</span></div>
-                        <span class="theme-badge" style="background:#f8d7da;color:#721c24;white-space:nowrap;">Saldo: ${p.saldo}</span>
+                    `<div style="padding:9px 8px;border-bottom:1px solid var(--border-light);cursor:pointer;" onclick="abrirBuscaProduto('${p.produto}')">
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+                            <div style="flex:1;min-width:0;">
+                                <div><b style="color:var(--brand-blue)">${p.produto}</b> <span style="font-size:0.78rem;color:var(--text-muted);">— ${p.operador}</span></div>
+                                <div style="font-size:0.78rem;color:#555;margin-top:2px;">${p.descricao || '—'}</div>
+                                ${p.endereco ? `<div style="font-size:0.75rem;color:#6f42c1;font-weight:bold;margin-top:2px;"><i class="fas fa-map-marker-alt"></i> ${p.endereco}</div>` : ''}
+                            </div>
+                            <span class="theme-badge" style="background:#f8d7da;color:#721c24;white-space:nowrap;flex-shrink:0;">Saldo: ${p.saldo}</span>
+                        </div>
                     </div>`
-                ).join('') + (prodPendentes.length > 50 ? `<p style="text-align:center;color:var(--text-muted);font-size:0.8rem;padding:10px;">+${prodPendentes.length - 50} produtos...</p>` : '');
+                ).join('') + (prodPendentes.length > 50 ? `<p style="text-align:center;color:var(--text-muted);font-size:0.8rem;padding:10px;">+${prodPendentes.length - 50} produtos... <button onclick="exportarTodosPendentes()" style="background:var(--brand-blue);color:#fff;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:0.75rem;">Ver todos no Excel</button></p>` : '');
             }
 
             // Romaneios com divergência
@@ -2332,12 +2470,17 @@
             const elDiv = document.getElementById('lista-divergencias');
             if (!divs.length) { elDiv.innerHTML = '<p style="color:#28a745;text-align:center;padding:15px;"><i class="fas fa-check-circle"></i> Nenhuma divergência!</p>'; }
             else {
-                elDiv.innerHTML = divs.map(d =>
-                    `<div style="padding:8px;border-bottom:1px solid var(--border-light);display:flex;justify-content:space-between;">
-                        <div><b>${d.romaneio}</b><br><span style="font-size:0.78rem;color:var(--text-muted)">${d.operador}</span></div>
-                        ${badgePerf(d.pct)}
-                    </div>`
-                ).join('');
+                elDiv.innerHTML = divs.map(d => {
+                    const prodPend = d.itens.filter(i => i.saldo > 0).length;
+                    return `<div style="padding:8px;border-bottom:1px solid var(--border-light);display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="abrirModalRomaneio('${d.romaneio}')">
+                        <div><b>${d.romaneio}</b><br>
+                        <span style="font-size:0.78rem;color:var(--text-muted)">${d.operador}</span></div>
+                        <div style="text-align:right;">
+                            ${badgePerf(d.pct)}
+                            <div style="font-size:0.72rem;color:var(--brand-red);margin-top:2px;">${prodPend} prod. pendente(s)</div>
+                        </div>
+                    </div>`;
+                }).join('');
             }
 
             // Romaneios finalizados
@@ -2346,38 +2489,375 @@
             if (!fins.length) { elFin.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:15px;">Nenhum romaneio 100% ainda.</p>'; }
             else {
                 elFin.innerHTML = fins.map(d =>
-                    `<div style="padding:8px;border-bottom:1px solid var(--border-light);display:flex;justify-content:space-between;">
+                    `<div style="padding:8px;border-bottom:1px solid var(--border-light);display:flex;justify-content:space-between;cursor:pointer;" onclick="abrirModalRomaneio('${d.romaneio}')">
                         <div><b>${d.romaneio}</b><br><span style="font-size:0.78rem;color:var(--text-muted)">${d.operador}</span></div>
                         <span class="theme-badge" style="background:#d4edda;color:#155724;">✅ 100%</span>
                     </div>`
                 ).join('');
             }
 
-            // Operadores baixa performance
+            // Operadores — acuracidade detalhada
+            renderAcuracidade();
+            // Sugestões do robô
+            renderSugestoesRobo();
+        }
+
+        // ---- ACURACIDADE POR OPERADOR ----
+        function renderAcuracidade() {
             const mapaOp = {};
             dadosCruzados.forEach(d => {
-                if (!mapaOp[d.operador]) mapaOp[d.operador] = { qtdPedida: 0, qtdAtendida: 0 };
-                mapaOp[d.operador].qtdPedida   += d.qtdPedida;
-                mapaOp[d.operador].qtdAtendida += d.qtdAtendida;
+                if (!mapaOp[d.operador]) mapaOp[d.operador] = {
+                    qtdPedida: 0, qtdAtendida: 0, romaneios: new Set(),
+                    romsFinalizados: 0, romsDivergencia: 0, romsPendentes: 0,
+                    prodTotal: 0, prodAtend: 0, prodPend: 0
+                };
+                const o = mapaOp[d.operador];
+                o.qtdPedida   += d.qtdPedida;
+                o.qtdAtendida += d.qtdAtendida;
+                o.romaneios.add(d.romaneio);
+                if (d.status === 'finalizado')  o.romsFinalizados++;
+                if (d.status === 'divergencia') o.romsDivergencia++;
+                if (d.status === 'pendente')    o.romsPendentes++;
+                o.prodTotal += d.itens.length;
+                o.prodAtend += d.itens.filter(i => i.qtdAtendida >= i.qtdPedida && i.qtdPedida > 0).length;
+                o.prodPend  += d.itens.filter(i => i.saldo > 0).length;
             });
-            const baixaPerf = Object.entries(mapaOp).map(([op, v]) => {
-                return { op, pct: v.qtdPedida > 0 ? v.qtdAtendida/v.qtdPedida*100 : 0, ...v };
-            }).filter(x => x.pct < 99).sort((a,b) => a.pct - b.pct);
 
+            const lista = Object.entries(mapaOp).map(([op, v]) => ({
+                op, ...v,
+                pct: v.qtdPedida > 0 ? v.qtdAtendida / v.qtdPedida * 100 : 0,
+                acuracidade: v.prodTotal > 0 ? v.prodAtend / v.prodTotal * 100 : 0
+            })).sort((a, b) => a.pct - b.pct);
+
+            const abaixo = lista.filter(x => x.pct < 99);
             const elBaixa = document.getElementById('lista-baixa-performance');
-            if (!baixaPerf.length) { elBaixa.innerHTML = '<p style="color:#28a745;text-align:center;padding:20px;"><i class="fas fa-trophy"></i> Todos os operadores atingiram a meta! 🎉</p>'; }
-            else {
-                elBaixa.innerHTML = `<table><thead><tr><th>Operador</th><th>Qtd Pedida</th><th>Qtd Atendida</th><th>Saldo</th><th>% Atendimento</th><th>Situação</th></tr></thead><tbody>` +
-                    baixaPerf.map(x => `<tr>
-                        <td><b>${x.op}</b></td>
-                        <td>${x.qtdPedida.toLocaleString('pt-BR')}</td>
-                        <td>${x.qtdAtendida.toLocaleString('pt-BR')}</td>
-                        <td style="color:var(--brand-red);font-weight:bold;">${(x.qtdPedida - x.qtdAtendida).toLocaleString('pt-BR')}</td>
-                        <td>${badgePerf(x.pct)}</td>
-                        <td><span class="theme-badge" style="background:#f8d7da;color:#721c24;">⚠️ Ação Necessária</span></td>
-                    </tr>`).join('') + '</tbody></table>';
+
+            if (!abaixo.length) {
+                elBaixa.innerHTML = '<p style="color:#28a745;text-align:center;padding:20px;"><i class="fas fa-trophy"></i> Todos os operadores atingiram a meta! 🎉</p>';
+            } else {
+                elBaixa.innerHTML = `
+                <table>
+                    <thead><tr>
+                        <th>Operador</th>
+                        <th>Romaneios</th>
+                        <th>Finalizados</th>
+                        <th>Divergência</th>
+                        <th>Pendentes</th>
+                        <th>Prod. Atend.</th>
+                        <th>Prod. Pend.</th>
+                        <th>% Qtd</th>
+                        <th>Acuracidade</th>
+                        <th>Alerta</th>
+                    </tr></thead>
+                    <tbody>
+                    ${abaixo.map(x => {
+                        const nivel = x.pct < 50 ? 'crítico' : x.pct < 70 ? 'grave' : x.pct < 90 ? 'atenção' : 'leve';
+                        const cor   = x.pct < 50 ? '#dc3545' : x.pct < 70 ? '#fd7e14' : x.pct < 90 ? '#ffc107' : '#6c757d';
+                        const icone = x.pct < 50 ? '🚨' : x.pct < 70 ? '🔴' : x.pct < 90 ? '⚠️' : '🟡';
+                        const acurCor = x.acuracidade >= 99 ? '#28a745' : x.acuracidade >= 80 ? '#FF8C00' : '#dc3545';
+                        return `<tr>
+                            <td><b>${x.op}</b></td>
+                            <td style="text-align:center;">${x.romaneios.size}</td>
+                            <td style="text-align:center;color:#28a745;font-weight:bold;">${x.romsFinalizados}</td>
+                            <td style="text-align:center;color:#FF8C00;font-weight:bold;">${x.romsDivergencia}</td>
+                            <td style="text-align:center;color:var(--brand-red);font-weight:bold;">${x.romsPendentes}</td>
+                            <td style="text-align:center;color:#28a745;">${x.prodAtend}</td>
+                            <td style="text-align:center;color:var(--brand-red);font-weight:bold;">${x.prodPend}</td>
+                            <td>${badgePerf(x.pct)}</td>
+                            <td style="font-weight:bold;color:${acurCor};">${x.acuracidade.toFixed(1)}%</td>
+                            <td><span style="background:${cor}22;color:${cor};padding:3px 8px;border-radius:12px;font-size:0.75rem;font-weight:bold;">${icone} ${nivel.toUpperCase()}</span></td>
+                        </tr>`;
+                    }).join('')}
+                    </tbody>
+                </table>`;
             }
         }
+
+        // ---- SUGESTÕES DO ROBÔ ----
+        function renderSugestoesRobo() {
+            const sugestoes = [];
+            const mapaOp = {};
+            dadosCruzados.forEach(d => {
+                if (!mapaOp[d.operador]) mapaOp[d.operador] = { qtdPedida: 0, qtdAtendida: 0, romsDiverg: 0, romsPend: 0 };
+                mapaOp[d.operador].qtdPedida   += d.qtdPedida;
+                mapaOp[d.operador].qtdAtendida += d.qtdAtendida;
+                if (d.status === 'divergencia') mapaOp[d.operador].romsDiverg++;
+                if (d.status === 'pendente')    mapaOp[d.operador].romsPend++;
+            });
+
+            const pctGeral = dadosCruzados.reduce((s, d) => s + d.qtdPedida, 0);
+            const atendGeral = dadosCruzados.reduce((s, d) => s + d.qtdAtendida, 0);
+            const pctG = pctGeral > 0 ? atendGeral / pctGeral * 100 : 0;
+
+            // 1. Performance geral abaixo da meta
+            if (pctG < 99) {
+                sugestoes.push({ tipo: 'critico', icone: '🎯', titulo: 'Meta global não atingida',
+                    desc: `O índice geral está em <b>${pctG.toFixed(1)}%</b>, abaixo da meta de 99%. Recomenda-se redistribuir os romaneios pendentes entre os operadores disponíveis e priorizar os de maior volume.` });
+            }
+
+            // 2. Operadores críticos
+            Object.entries(mapaOp).forEach(([op, v]) => {
+                const pct = v.qtdPedida > 0 ? v.qtdAtendida / v.qtdPedida * 100 : 0;
+                if (pct < 50 && op !== 'Não identificado') {
+                    sugestoes.push({ tipo: 'critico', icone: '🚨', titulo: `Operador crítico: ${op}`,
+                        desc: `Atendimento de <b>${pct.toFixed(1)}%</b>. Verificar imediatamente se houve parada operacional, falta de material, equipamento com defeito ou necessidade de suporte.` });
+                } else if (pct < 80 && op !== 'Não identificado') {
+                    sugestoes.push({ tipo: 'atencao', icone: '🔴', titulo: `Baixa performance: ${op}`,
+                        desc: `Atendimento de <b>${pct.toFixed(1)}%</b>. Verificar gargalos no processo: endereçamento incorreto, ruptura de estoque ou volume excessivo por turno.` });
+                }
+            });
+
+            // 3. Romaneios sem operador
+            const semOp = dadosCruzados.filter(d => d.operador === 'Não identificado').length;
+            if (semOp > 0) {
+                sugestoes.push({ tipo: 'atencao', icone: '👤', titulo: `${semOp} romaneio(s) sem operador vinculado`,
+                    desc: `Esses romaneios existem no depósito mas não foram encontrados no arquivo de usuário. Importe o arquivo de análise por usuário atualizado ou verifique se o romaneio foi atribuído corretamente no sistema.` });
+            }
+
+            // 4. Muitos romaneios em divergência por operador
+            Object.entries(mapaOp).forEach(([op, v]) => {
+                if (v.romsDiverg >= 3 && op !== 'Não identificado') {
+                    sugestoes.push({ tipo: 'atencao', icone: '⚠️', titulo: `Divergências recorrentes: ${op}`,
+                        desc: `<b>${v.romsDiverg} romaneios</b> com divergência. Pode indicar problema na leitura dos produtos, divergência de endereço ou necessidade de treinamento operacional.` });
+                }
+            });
+
+            // 5. Produtos com alta recorrência de pendência
+            const contaProd = {};
+            dadosCruzados.forEach(d => {
+                d.itens.filter(i => i.saldo > 0).forEach(i => {
+                    contaProd[i.produto] = (contaProd[i.produto] || 0) + 1;
+                });
+            });
+            const topPend = Object.entries(contaProd).sort((a,b) => b[1]-a[1]).slice(0, 3);
+            if (topPend.length) {
+                const lista = topPend.map(([p, n]) => `<b>${p}</b> (${n}x)`).join(', ');
+                sugestoes.push({ tipo: 'info', icone: '📦', titulo: 'Produtos com maior incidência de pendência',
+                    desc: `Os produtos mais recorrentes nas pendências são: ${lista}. Verificar disponibilidade no estoque, localização no depósito e se há divergência de saldo físico.` });
+            }
+
+            // 6. Romaneios em aberto (Conf=N)
+            const emAberto = dadosCruzados.filter(d => d.status === 'pendente').length;
+            if (emAberto > 0) {
+                sugestoes.push({ tipo: 'info', icone: '🕐', titulo: `${emAberto} romaneio(s) ainda não conferido(s)`,
+                    desc: `Esses romaneios constam como Conferido=N no sistema. Verificar se o atendimento ainda está em andamento ou se a conferência não foi registrada corretamente.` });
+            }
+
+            // 7. Sugestão positiva
+            const finalizados = dadosCruzados.filter(d => d.status === 'finalizado').length;
+            if (finalizados > 0 && pctG >= 99) {
+                sugestoes.push({ tipo: 'ok', icone: '🏆', titulo: 'Meta atingida!',
+                    desc: `Parabéns! <b>${finalizados} romaneio(s)</b> finalizados com 100% de atendimento. Operação dentro da meta de 99%.` });
+            }
+
+            const cores = { critico: '#dc3545', atencao: '#FF8C00', info: '#17a2b8', ok: '#28a745' };
+            const bgs   = { critico: '#fff5f5', atencao: '#fff8f0', info: '#f0f9ff', ok: '#f0fff4' };
+            const el = document.getElementById('lista-sugestoes-robo');
+            if (!sugestoes.length) {
+                el.innerHTML = '<p style="color:#28a745;text-align:center;padding:20px;"><i class="fas fa-robot"></i> Nenhuma ação necessária no momento.</p>';
+            } else {
+                el.innerHTML = sugestoes.map((s, i) => `
+                    <div style="border-left:4px solid ${cores[s.tipo]};background:${bgs[s.tipo]};padding:12px 16px;border-radius:0 8px 8px 0;margin-bottom:10px;">
+                        <div style="font-weight:bold;color:${cores[s.tipo]};margin-bottom:4px;">${s.icone} ${s.titulo}</div>
+                        <div style="font-size:0.85rem;color:#444;line-height:1.5;">${s.desc}</div>
+                    </div>`).join('');
+            }
+        }
+
+        // ---- MODAL ROMANEIO ----
+        let _romaneioAtivo = null;
+
+        window.abrirModalRomaneio = function(romaneio) {
+            const d = dadosCruzados.find(x => x.romaneio === romaneio);
+            if (!d) return;
+            _romaneioAtivo = d;
+
+            document.getElementById('modal-rom-titulo').textContent = 'Romaneio ' + romaneio;
+            document.getElementById('modal-rom-operador').textContent = '👤 ' + d.operador + (d.conferido === 'S' ? '  ✅ Conferido' : '  ⏳ Em aberto');
+
+            // KPIs
+            const prodAtend = d.itens.filter(i => i.qtdAtendida >= i.qtdPedida && i.qtdPedida > 0).length;
+            const prodPend  = d.itens.filter(i => i.saldo > 0).length;
+            const kpis = [
+                { label: 'Total Produtos', val: d.itens.length, cor: '#17a2b8' },
+                { label: '✅ Atendidos', val: prodAtend, cor: '#28a745' },
+                { label: '⏳ Pendentes', val: prodPend, cor: '#dc3545' },
+                { label: '% Atendimento', val: d.pct.toFixed(1) + '%', cor: d.pct >= 99 ? '#28a745' : d.pct >= 70 ? '#FF8C00' : '#dc3545' }
+            ];
+            document.getElementById('modal-rom-kpis').innerHTML = kpis.map(k =>
+                `<div style="text-align:center;padding:14px 8px;border-right:1px solid var(--border-light);">
+                    <div style="font-size:0.7rem;color:var(--text-muted);font-weight:bold;text-transform:uppercase;">${k.label}</div>
+                    <div style="font-size:1.6rem;font-weight:900;color:${k.cor};">${k.val}</div>
+                </div>`
+            ).join('');
+
+            // Progress bar
+            const pct = Math.min(d.pct, 100);
+            document.getElementById('modal-rom-pct-label').textContent = d.pct.toFixed(1) + '%';
+            document.getElementById('modal-rom-barra').style.width = pct + '%';
+            document.getElementById('modal-rom-barra').style.background = pct >= 99 ? '#28a745' : pct >= 70 ? '#FF8C00' : '#dc3545';
+
+            // Chips
+            document.getElementById('chip-atendidos').textContent = `✅ ${prodAtend} produto(s) atendido(s)`;
+            document.getElementById('chip-pendentes').textContent = `⏳ ${prodPend} produto(s) pendente(s)`;
+            const divEl = document.getElementById('chip-divergencia');
+            const prodDiv = d.itens.filter(i => i.qtdAtendida > 0 && i.saldo > 0).length;
+            if (prodDiv > 0) { divEl.textContent = `⚠️ ${prodDiv} com divergência`; divEl.style.display = 'inline'; }
+            else { divEl.style.display = 'none'; }
+
+            // Tabela de produtos — pendentes primeiro
+            const itensOrdenados = [...d.itens].sort((a, b) => b.saldo - a.saldo);
+            document.getElementById('modal-rom-tbody').innerHTML = itensOrdenados.map(i => {
+                const pctItem = i.qtdPedida > 0 ? (i.qtdAtendida / i.qtdPedida) * 100 : 0;
+                const statusItem = i.saldo === 0 ? '✅' : i.qtdAtendida > 0 ? '⚠️' : '🔴';
+                const rowBg = i.saldo > 0 ? (i.qtdAtendida > 0 ? 'background:rgba(255,140,0,0.06);' : 'background:rgba(220,53,69,0.05);') : '';
+                return `<tr style="${rowBg}cursor:pointer;" onclick="abrirBuscaProduto('${i.produto}')" title="Ver em todos os romaneios">
+                    <td><b style="color:var(--brand-blue);">${i.produto}</b></td>
+                    <td style="font-size:0.8rem;">${i.descricao || '—'}</td>
+                    <td style="font-size:0.8rem;color:#6f42c1;font-weight:bold;">${i.endereco || '—'}</td>
+                    <td style="text-align:center;">${i.qtdPedida.toLocaleString('pt-BR')}</td>
+                    <td style="text-align:center;color:#6f42c1;">${(i.qtdPedidaCX||0).toLocaleString('pt-BR')} cx</td>
+                    <td style="text-align:center;color:#FF8C00;font-weight:bold;">${i.qtdAtendida.toLocaleString('pt-BR')}</td>
+                    <td style="text-align:center;color:#17a2b8;">${(i.qtdAtendidaCX||0).toLocaleString('pt-BR')} cx</td>
+                    <td style="text-align:center;font-weight:bold;color:${i.saldo>0?'var(--brand-red)':'#28a745'};">${i.saldo.toLocaleString('pt-BR')}</td>
+                    <td>${badgePerf(pctItem)}</td>
+                    <td style="font-size:1.1rem;text-align:center;">${statusItem}</td>
+                </tr>`;
+            }).join('');
+
+            // Ações do robô no modal
+            const acoes = [];
+            if (d.pct < 99 && d.conferido === 'S') {
+                acoes.push({ cor: '#FF8C00', txt: `⚠️ Romaneio conferido com ${d.pct.toFixed(1)}% de atendimento. Verificar se os itens pendentes foram cancelados ou se há divergência de estoque.` });
+            }
+            if (prodPend > 0 && d.conferido !== 'S') {
+                acoes.push({ cor: '#17a2b8', txt: `🕐 ${prodPend} produto(s) pendente(s). Romaneio ainda em aberto — aguardar conclusão do atendimento ou escalar para supervisão.` });
+            }
+            if (d.operador === 'Não identificado') {
+                acoes.push({ cor: '#6f42c1', txt: `👤 Operador não identificado neste romaneio. Verifique se o arquivo de usuário contém este romaneio ou se foi atribuído corretamente.` });
+            }
+
+            const acoesEl = document.getElementById('modal-acoes-robo');
+            acoesEl.innerHTML = acoes.length
+                ? '<div style="font-weight:bold;font-size:0.8rem;color:#6f42c1;margin-bottom:8px;"><i class="fas fa-robot"></i> Ações sugeridas para este romaneio:</div>' +
+                  acoes.map(a => `<div style="border-left:4px solid ${a.cor};background:${a.cor}11;padding:10px 14px;border-radius:0 6px 6px 0;margin-bottom:8px;font-size:0.83rem;color:#444;">${a.txt}</div>`).join('')
+                : '';
+
+            document.getElementById('modal-romaneio').style.display = 'block';
+        };
+
+        window.fecharModalRomaneio = function() {
+            document.getElementById('modal-romaneio').style.display = 'none';
+        };
+
+        // ---- EXPORTAR DETALHE DO ROMANEIO ----
+        window.exportarRomaneioDetalhado = function() {
+            if (!_romaneioAtivo) return;
+            const d = _romaneioAtivo;
+            const wb = XLSX.utils.book_new();
+            const rows = [['Romaneio','Operador','Cód. Produto','Descrição','Endereço','Qtd Pedida','Cx Pedidas','Qtd Atendida','Cx Atendidas','Saldo Pendente','% Item','Status']];
+            d.itens.forEach(i => {
+                const pct = i.qtdPedida > 0 ? (i.qtdAtendida/i.qtdPedida*100).toFixed(1)+'%' : '0%';
+                const st  = i.saldo === 0 ? 'Atendido' : i.qtdAtendida > 0 ? 'Divergência' : 'Pendente';
+                rows.push([d.romaneio, d.operador, i.produto, i.descricao, i.endereco||'', i.qtdPedida, i.qtdPedidaCX||0, i.qtdAtendida, i.qtdAtendidaCX||0, i.saldo, pct, st]);
+            });
+            XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(rows), 'Romaneio ' + d.romaneio);
+            XLSX.writeFile(wb, `Romaneio_${d.romaneio}_${d.operador.split(' ')[0]}.xlsx`);
+        };
+
+        // ---- RELATÓRIO DE BUSCA DO PRODUTO ----
+        let _produtoBuscaAtivo = null;
+
+        window.gerarRelatorioBusca = function() {
+            if (!_romaneioAtivo) return;
+            // Pegar o primeiro produto pendente como padrão, ou abrir para todos
+            const pendentes = _romaneioAtivo.itens.filter(i => i.saldo > 0);
+            if (pendentes.length) abrirBuscaProduto(pendentes[0].produto);
+        };
+
+        window.abrirBuscaProduto = function(codigoProd) {
+            _produtoBuscaAtivo = codigoProd;
+            document.getElementById('busca-prod-titulo').textContent = '🔍 Produto: ' + codigoProd;
+
+            // Buscar em todos os romaneios
+            const ocorrencias = [];
+            let totalPedido = 0, totalAtendido = 0, totalSaldo = 0;
+
+            dadosCruzados.forEach(d => {
+                d.itens.filter(i => i.produto === codigoProd).forEach(i => {
+                    totalPedido   += i.qtdPedida;
+                    totalAtendido += i.qtdAtendida;
+                    totalSaldo    += i.saldo;
+                    ocorrencias.push({ romaneio: d.romaneio, operador: d.operador, ...i, statusRom: d.status });
+                });
+            });
+
+            // Pegar descrição e endereço do primeiro item
+            const descProd = ocorrencias.length ? (ocorrencias[0].descricao || '—') : '—';
+            const pctTotal = totalPedido > 0 ? (totalAtendido / totalPedido * 100) : 0;
+
+            document.getElementById('busca-prod-titulo').innerHTML =
+                `🔍 <b>${codigoProd}</b><br><span style="font-size:0.85rem;font-weight:normal;opacity:0.85;">${descProd}</span>`;
+
+            // KPIs
+            document.getElementById('busca-prod-kpis').innerHTML = [
+                { label: 'Romaneios', val: ocorrencias.length, cor: '#17a2b8' },
+                { label: 'Total Atendido', val: totalAtendido.toLocaleString('pt-BR'), cor: '#FF8C00' },
+                { label: 'Total Pendente', val: totalSaldo.toLocaleString('pt-BR'), cor: '#dc3545' }
+            ].map(k => `<div style="background:var(--brand-bg);border:1px solid var(--border-light);border-radius:8px;padding:12px;text-align:center;">
+                <div style="font-size:0.7rem;color:var(--text-muted);font-weight:bold;text-transform:uppercase;">${k.label}</div>
+                <div style="font-size:1.6rem;font-weight:900;color:${k.cor};">${k.val}</div>
+            </div>`).join('');
+
+            // Tabela — pendentes primeiro
+            const ocordsOrdenadas = [...ocorrencias].sort((a, b) => b.saldo - a.saldo);
+            document.getElementById('busca-prod-tbody').innerHTML = ocordsOrdenadas.map(o => {
+                const pct = o.qtdPedida > 0 ? (o.qtdAtendida / o.qtdPedida * 100) : 0;
+                const endStyle = o.saldo > 0 && o.endereco ? `color:#6f42c1;font-weight:bold;` : `color:var(--text-muted);`;
+                return `<tr>
+                    <td><b style="color:var(--brand-blue);cursor:pointer;" onclick="document.getElementById('modal-busca-produto').style.display='none';abrirModalRomaneio('${o.romaneio}')">${o.romaneio}</b></td>
+                    <td>${o.operador}</td>
+                    <td style="font-size:0.8rem;">${o.descricao || '—'}</td>
+                    <td style="${endStyle}font-size:0.82rem;">${o.endereco || '—'}</td>
+                    <td style="text-align:center;">${o.qtdPedida.toLocaleString('pt-BR')}</td>
+                    <td style="text-align:center;color:#FF8C00;font-weight:bold;">${o.qtdAtendida.toLocaleString('pt-BR')}</td>
+                    <td style="text-align:center;color:${o.saldo>0?'var(--brand-red)':'#28a745'};font-weight:bold;">${o.saldo.toLocaleString('pt-BR')}</td>
+                    <td>${badgePerf(pct)}</td>
+                    <td>${badgeStatus(o.statusRom)}</td>
+                </tr>`;
+            }).join('');
+
+            document.getElementById('modal-busca-produto').style.display = 'block';
+        };
+
+        window.exportarRelatorioBusca = function() {
+            if (!_produtoBuscaAtivo) return;
+            const cod = _produtoBuscaAtivo;
+            const wb = XLSX.utils.book_new();
+            const rows = [['Produto','Descrição','Endereço','Romaneio','Operador','Qtd Pedida','Qtd Atendida','Saldo Pendente','% Atendimento','Status']];
+            dadosCruzados.forEach(d => {
+                d.itens.filter(i => i.produto === cod).forEach(i => {
+                    const pct = i.qtdPedida > 0 ? (i.qtdAtendida/i.qtdPedida*100).toFixed(1)+'%' : '0%';
+                    const st  = i.saldo === 0 ? 'Atendido' : i.qtdAtendida > 0 ? 'Divergência' : 'Pendente';
+                    rows.push([cod, i.descricao||'', i.endereco||'', d.romaneio, d.operador, i.qtdPedida, i.qtdAtendida, i.saldo, pct, st]);
+                });
+            });
+            XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(rows), 'Busca_' + cod);
+            XLSX.writeFile(wb, `Busca_Produto_${cod}.xlsx`);
+        };
+
+        window.exportarTodosPendentes = function() {
+            const wb = XLSX.utils.book_new();
+            const rows = [['Produto','Descrição','Endereço','Romaneio','Operador','Qtd Pedida','Qtd Atendida','Saldo Pendente','% Item']];
+            dadosCruzados.forEach(d => {
+                d.itens.filter(i => i.saldo > 0).forEach(i => {
+                    const pct = i.qtdPedida > 0 ? (i.qtdAtendida/i.qtdPedida*100).toFixed(1)+'%' : '0%';
+                    rows.push([i.produto, i.descricao||'', i.endereco||'', d.romaneio, d.operador, i.qtdPedida, i.qtdAtendida, i.saldo, pct]);
+                });
+            });
+            XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(rows), 'Todos Pendentes');
+            XLSX.writeFile(wb, 'Produtos_Pendentes_Completo.xlsx');
+        };
 
         // ---- GRÁFICOS SVG ----
         function renderGraficos() {
@@ -2543,11 +3023,11 @@
             const wb = XLSX.utils.book_new();
 
             // Aba 1: Por Romaneio
-            const rows1 = [['Romaneio','Operador','Produto','Descrição','Hora','Qtd Solicitada','Cx Pedidas','Qtd Atendida','Cx Atendidas','Saldo Pendente','% Atendimento','Status']];
+            const rows1 = [['Romaneio','Operador','Produto','Descrição','Endereço','Hora','Qtd Solicitada','Cx Pedidas','Qtd Atendida','Cx Atendidas','Saldo Pendente','% Atendimento','Status']];
             dadosCruzados.forEach(d => {
                 d.itens.forEach(i => {
                     const pct = i.qtdPedida > 0 ? (i.qtdAtendida/i.qtdPedida*100).toFixed(1)+'%' : '0%';
-                    rows1.push([d.romaneio, d.operador, i.produto, i.descricao, formatHora(i.hora), i.qtdPedida, i.qtdPedidaCX||0, i.qtdAtendida, i.qtdAtendidaCX||0, i.saldo, pct, d.status]);
+                    rows1.push([d.romaneio, d.operador, i.produto, i.descricao||'', i.endereco||'', formatHora(i.hora), i.qtdPedida, i.qtdPedidaCX||0, i.qtdAtendida, i.qtdAtendidaCX||0, i.saldo, pct, d.status]);
                 });
             });
             XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(rows1), 'Por Romaneio');
