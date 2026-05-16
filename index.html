@@ -765,6 +765,7 @@
                         <div style="margin-top:15px;text-align:center;">
                             <button class="btn-primary" onclick="apuracao_processar()"><i class="fas fa-cogs"></i> Processar e Cruzar Dados</button>
                         </div>
+                        <div id="apuracao-ultima-import" style="display:none;margin-top:10px;text-align:center;font-size:0.8rem;color:var(--text-muted);"></div>
                         <div id="apuracao-feedback" class="feedback-box"></div>
                     </div>
 
@@ -847,8 +848,9 @@
                                     <tr>
                                         <th>Romaneio</th>
                                         <th>Operador</th>
-                                        <th>Horário Início</th>
-                                        <th>Tempo Parado</th>
+                                        <th>Início</th>
+                                        <th>Fim</th>
+                                        <th>Duração</th>
                                         <th>Prod. Atendidos</th>
                                         <th>Prod. Pendentes</th>
                                         <th>Qtd Atendida</th>
@@ -2096,9 +2098,11 @@
         // ---- NORMALIZAR CHAVE ----
         function normKey(val) { return String(val || '').trim().toLowerCase(); }
 
-        // ---- FORMATAR HORA (número Excel → HH:MM) ----
+        // ---- FORMATAR HORA (datetime.time string do XLSX → HH:MM) ----
         function formatHora(val) {
             if (!val && val !== 0) return '—';
+            // XLSX lê datetime.time como string "HH:MM:SS" quando cells_dates=true
+            if (typeof val === 'string' && val.match(/^\d{1,2}:\d{2}/)) return val.slice(0,5);
             if (val instanceof Date) return val.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
             if (typeof val === 'number') {
                 const totalMin = Math.round(val * 1440);
@@ -2106,45 +2110,46 @@
                 const m = totalMin % 60;
                 return String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0');
             }
-            return String(val);
+            return String(val).slice(0,5);
         }
 
-        // ---- CALCULAR DIFERENÇA DE TEMPO ----
-        function calcTempo(horaInicio, horaFim) {
-            if (!horaInicio || !horaFim) return '—';
-            const toMin = v => {
-                if (v instanceof Date) return v.getHours()*60 + v.getMinutes();
-                if (typeof v === 'number') return Math.round(v * 1440) % 1440;
-                return 0;
-            };
-            const diff = toMin(horaFim) - toMin(horaInicio);
-            if (diff < 0 || isNaN(diff)) return '—';
-            return diff + ' min';
-        }
-
-        // ---- CALCULAR TEMPO DECORRIDO DESDE O INÍCIO (para alerta de romaneio parado) ----
-        function calcTempoDecorrido(horaInicio) {
-            if (!horaInicio) return null;
-            const toMin = v => {
-                if (v instanceof Date) return v.getHours()*60 + v.getMinutes();
-                if (typeof v === 'number') return Math.round(v * 1440) % 1440;
-                return 0;
-            };
-            const agora = new Date();
-            const minAgora = agora.getHours()*60 + agora.getMinutes();
-            const minInicio = toMin(horaInicio);
-            const diff = minAgora - minInicio;
-            if (diff < 0 || isNaN(diff)) return null;
-            return diff;
-        }
-
-        // ---- FORMATAR TEMPO DECORRIDO COM ALERTA ----
-        function formatTempoDecorrido(minutos) {
-            if (minutos === null) return '—';
-            if (minutos > 20) {
-                return `<span style="color:#dc3545;font-weight:bold;"><i class="fas fa-exclamation-circle"></i> ${minutos} min</span>`;
+        // ---- CONVERTER QUALQUER FORMATO DE HORA → MINUTOS DESDE MEIA-NOITE ----
+        function horaToMin(val) {
+            if (!val) return null;
+            if (typeof val === 'string') {
+                // "HH:MM:SS" ou "HH:MM"
+                const p = val.split(':');
+                if (p.length >= 2) return parseInt(p[0])*60 + parseInt(p[1]);
+                return null;
             }
-            return `<span style="color:#28a745;">${minutos} min</span>`;
+            if (val instanceof Date) return val.getHours()*60 + val.getMinutes();
+            if (typeof val === 'number') return Math.round(val * 1440) % 1440;
+            return null;
+        }
+
+        // ---- CALCULAR DURAÇÃO ENTRE DUAS HORAS (minutos) ----
+        function calcTempo(horaInicio, horaFim) {
+            if (!horaInicio || !horaFim) return null;
+            const a = horaToMin(horaInicio), b = horaToMin(horaFim);
+            if (a === null || b === null) return null;
+            const diff = b - a;
+            return diff < 0 ? null : diff; // retorna número de minutos (não string)
+        }
+
+        function formatTempo(mins) {
+            if (mins === null || mins === undefined) return '—';
+            if (mins < 60) return mins + ' min';
+            return Math.floor(mins/60) + 'h ' + (mins%60) + 'min';
+        }
+
+        // ---- BADGE TEMPO DECORRIDO (alerta >20min com operador) ----
+        function badgeTempo(mins, temOperador) {
+            if (mins === null || mins === undefined) return '<span style="color:var(--text-muted);font-size:0.8rem;">—</span>';
+            const txt = formatTempo(mins);
+            if (!temOperador) return `<span style="color:var(--text-muted);font-size:0.82rem;">⏸ ${txt}</span>`;
+            if (mins > 60) return `<span style="background:#f8d7da;color:#721c24;padding:3px 8px;border-radius:12px;font-size:0.8rem;font-weight:bold;">🚨 ${txt}</span>`;
+            if (mins > 20) return `<span style="background:#fff3cd;color:#856404;padding:3px 8px;border-radius:12px;font-size:0.8rem;font-weight:bold;">⚠️ ${txt}</span>`;
+            return `<span style="background:#d4edda;color:#155724;padding:3px 8px;border-radius:12px;font-size:0.8rem;">✅ ${txt}</span>`;
         }
 
         // ---- BADGE DE PERFORMANCE ----
@@ -2237,24 +2242,26 @@
             // Injetar horas do arquivo usuario
             Object.entries(horasPorRom).forEach(([rom, horas]) => {
                 if (!mapaRomaneios[rom]) return;
-                const toMin = v => {
-                    if (v instanceof Date) return v.getHours()*60 + v.getMinutes();
-                    if (typeof v === 'number') return Math.round(v * 1440) % 1440;
-                    return 0;
-                };
-                const mins = horas.map(toMin).filter(m => m > 0);
+                const mins = horas.map(horaToMin).filter(m => m !== null);
                 if (!mins.length) return;
-                mapaRomaneios[rom].horaMin = horas[horas.map(toMin).indexOf(Math.min(...mins))];
-                mapaRomaneios[rom].horaMax = horas[horas.map(toMin).indexOf(Math.max(...mins))];
+                const iMin = mins.indexOf(Math.min(...mins));
+                const iMax = mins.indexOf(Math.max(...mins));
+                mapaRomaneios[rom].horaMin    = formatHora(horas[iMin]);
+                mapaRomaneios[rom].horaMax    = formatHora(horas[iMax]);
+                mapaRomaneios[rom].horaMinMin = Math.min(...mins);
+                mapaRomaneios[rom].horaMaxMin = Math.max(...mins);
             });
 
-            // PASSO 3: Calcular % e status — Conferido=S e pct>=99 → finalizado; S e pct<99 → diverg\u00eancia; N → pendente
+            // PASSO 3: Calcular % e status
             dadosCruzados = Object.values(mapaRomaneios).map(e => {
                 const pct = e.qtdPedida > 0 ? (e.qtdAtendida / e.qtdPedida) * 100 : 0;
                 let status = 'pendente';
                 if (e.conferido === 'S' && pct >= 99) status = 'finalizado';
                 else if (e.conferido === 'S' && pct < 99) status = 'divergencia';
-                return { ...e, pct, status, tempo: calcTempo(e.horaMin, e.horaMax) };
+                const temOperador = e.operador !== "Não identificado";
+                const duracao = (e.horaMinMin != null && e.horaMaxMin != null)
+                    ? e.horaMaxMin - e.horaMinMin : null;
+                return { ...e, pct, status, duracao, temOperador };
             });
 
             dadosFiltrados = [...dadosCruzados];
@@ -2263,6 +2270,13 @@
             renderTabelas();
             renderPendencias();
             renderGraficos();
+
+
+            // Salvar última importação no storage
+            try {
+                const savePayload = { ts: new Date().toISOString(), dadosCruzados };
+                if (window.storage) window.storage.set('apuracao_ultima_importacao', JSON.stringify(savePayload)).catch(()=>{});
+            } catch(e) {}
 
             const comOp = dadosCruzados.filter(d => d.operador !== 'N\u00e3o identificado').length;
             showFeedbackApuracao('success',
@@ -2392,40 +2406,33 @@
         function renderTabelaRomaneio() {
             const tbody = document.getElementById('tbody-romaneio');
 
-            if (!dadosFiltrados.length) { tbody.innerHTML = '<tr><td colspan="12" style="text-align:center;color:var(--text-muted);padding:20px;">Nenhum resultado.</td></tr>'; return; }
+            if (!dadosFiltrados.length) { tbody.innerHTML = '<tr><td colspan="13" style="text-align:center;color:var(--text-muted);padding:20px;">Nenhum resultado.</td></tr>'; return; }
 
             tbody.innerHTML = dadosFiltrados.map(d => {
                 const totalProd = d.itens.length;
                 const prodAtend = d.itens.filter(i => i.qtdAtendida >= i.qtdPedida && i.qtdPedida > 0).length;
                 const prodPend  = d.itens.filter(i => i.saldo > 0).length;
-                const prodDiv   = d.itens.filter(i => i.qtdAtendida > 0 && i.saldo > 0).length;
-                
-                // Calcular tempo decorrido apenas se houver operador e hora de início
-                let tempoDecorridoHTML = '—';
-                let alertaClass = '';
-                if (d.operador !== 'Não identificado' && d.horaMin) {
-                    const minutos = calcTempoDecorrido(d.horaMin);
-                    tempoDecorridoHTML = formatTempoDecorrido(minutos);
-                    if (minutos !== null && minutos > 20) {
-                        alertaClass = 'style="background-color:#ffe6e6;border-left:4px solid #dc3545;"';
-                    }
-                }
-                
-                return `<tr ${alertaClass} style="cursor:pointer;" onclick="abrirModalRomaneio('${d.romaneio}')" title="Clique para ver produtos">
+                const horaIni   = d.horaMin || '—';
+                const horaFim   = d.horaMax || '—';
+                const temOp     = d.temOperador;
+                const rowBg     = (!temOp) ? '' :
+                                  (d.duracao > 60) ? 'background:rgba(220,53,69,0.04);' :
+                                  (d.duracao > 20) ? 'background:rgba(255,193,7,0.04);' : '';
+                return `<tr style="cursor:pointer;${rowBg}" onclick="abrirModalRomaneio('${d.romaneio}')" title="Clique para ver produtos">
                     <td><b style="color:var(--brand-blue);">${d.romaneio}</b></td>
-                    <td>${d.operador !== 'Não identificado' ? d.operador : '<span style="color:var(--text-muted);font-style:italic;">Não identificado</span>'}</td>
-                    <td style="text-align:center;">${d.horaMin ? formatHora(d.horaMin) : '—'}</td>
-                    <td style="text-align:center;">${tempoDecorridoHTML}</td>
+                    <td>${temOp ? d.operador : '<span style="color:var(--text-muted);font-style:italic;">Não atribuído</span>'}</td>
+                    <td style="text-align:center;font-weight:bold;color:#555;">${horaIni}</td>
+                    <td style="text-align:center;font-weight:bold;color:#555;">${horaFim}</td>
+                    <td style="text-align:center;">${badgeTempo(d.duracao, temOp)}</td>
                     <td style="text-align:center;">
                         <span style="color:#28a745;font-weight:bold;">${prodAtend}✓</span>
-                        <span style="color:#999;"> / </span>
-                        <span style="font-weight:bold;">${totalProd}</span>
+                        <span style="color:#999;"> / ${totalProd}</span>
                     </td>
                     <td style="text-align:center;">
-                        ${prodPend > 0 ? `<span style="color:var(--brand-red);font-weight:bold;">${prodPend} <i class="fas fa-clock"></i></span>` : '<span style="color:#28a745;">—</span>'}
+                        ${prodPend > 0 ? `<span style="color:var(--brand-red);font-weight:bold;">${prodPend} ⏳</span>` : '<span style="color:#28a745;">—</span>'}
                     </td>
                     <td style="text-align:center;color:#FF8C00;font-weight:bold;">${d.qtdAtendida.toLocaleString('pt-BR')}</td>
-                    <td style="text-align:center;color:#17a2b8;">${(d.qtdAtendidaCX||0).toLocaleString('pt-BR')} cx</td>
+                    <td style="text-align:center;color:#17a2b8;">${(d.qtdAtendidaCX||0)} cx</td>
                     <td style="text-align:center;">${d.qtdPedida.toLocaleString('pt-BR')}</td>
                     <td style="text-align:center;color:${d.saldoPendente>0?'var(--brand-red)':'#28a745'};font-weight:bold;">${d.saldoPendente.toLocaleString('pt-BR')}</td>
                     <td>${badgePerf(d.pct)}</td>
@@ -2622,7 +2629,27 @@
                 }
             });
 
-            // 5. Produtos com alta recorrência de pendência
+            // 5b. Romaneios com tempo crítico (>60min com operador)
+            const criticos = dadosCruzados.filter(d => d.temOperador && d.duracao !== null && d.duracao > 60 && d.status !== 'finalizado');
+            if (criticos.length > 0) {
+                const lista = criticos.slice(0,5).map(d => `<b>${d.romaneio}</b> (${formatTempo(d.duracao)})`).join(', ');
+                sugestoes.unshift({ tipo: 'critico', icone: '🚨', titulo: `${criticos.length} romaneio(s) com tempo crítico (>60 min)`,
+                    desc: `Os seguintes romaneios estão em execução há mais de 60 minutos: ${lista}. Verificar imediatamente o status do operador e iniciar busca ativa dos produtos pendentes.` });
+            }
+
+            // 5c. Romaneios com tempo de alerta (>20min com operador)
+            const alertas = dadosCruzados.filter(d => d.temOperador && d.duracao !== null && d.duracao > 20 && d.duracao <= 60 && d.status !== 'finalizado');
+            if (alertas.length > 0) {
+                sugestoes.unshift({ tipo: 'atencao', icone: '⚠️', titulo: `${alertas.length} romaneio(s) acima de 20 min — sinal de busca`,
+                    desc: `${alertas.length} romaneio(s) superaram 20 minutos de execução. Recomenda-se acionar busca ativa para os produtos pendentes desses romaneios.` });
+            }
+
+            // 5d. Romaneios sem operador (pendentes de atribuição)
+            const semOpPend = dadosCruzados.filter(d => !d.temOperador && d.status === 'pendente');
+            if (semOpPend.length > 0) {
+                sugestoes.push({ tipo: 'info', icone: '👥', titulo: `${semOpPend.length} romaneio(s) aguardando atribuição de operador`,
+                    desc: `Esses romaneios constam no depósito mas nenhum colaborador iniciou o atendimento (sem hora de início). Verificar disponibilidade da equipe e distribuir os romaneios pendentes.` });
+            }
             const contaProd = {};
             dadosCruzados.forEach(d => {
                 d.itens.filter(i => i.saldo > 0).forEach(i => {
@@ -2691,6 +2718,38 @@
                 </div>`
             ).join('');
 
+            // Linha de tempo abaixo dos KPIs
+            const temOp = d.temOperador;
+            const horaIniStr = d.horaMin || '—';
+            const horaFimStr = d.horaMax || '—';
+            const duracaoStr = formatTempo(d.duracao);
+            let alertaTempo = '';
+            if (temOp && d.duracao !== null) {
+                if (d.duracao > 60) alertaTempo = `<span style="background:#f8d7da;color:#721c24;padding:3px 10px;border-radius:12px;font-size:0.8rem;font-weight:bold;margin-left:8px;">🚨 Tempo crítico</span>`;
+                else if (d.duracao > 20) alertaTempo = `<span style="background:#fff3cd;color:#856404;padding:3px 10px;border-radius:12px;font-size:0.8rem;font-weight:bold;margin-left:8px;">⚠️ Atenção: acima de 20 min</span>`;
+                else alertaTempo = `<span style="background:#d4edda;color:#155724;padding:3px 10px;border-radius:12px;font-size:0.8rem;margin-left:8px;">✅ Dentro do prazo</span>`;
+            } else if (!temOp) {
+                alertaTempo = `<span style="background:#e9ecef;color:#555;padding:3px 10px;border-radius:12px;font-size:0.8rem;margin-left:8px;">⏸ Sem operador atribuído</span>`;
+            }
+            // Inserir linha de tempo antes da barra de progresso
+            const tempoInfoHtml = `<div style="padding:12px 24px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:rgba(0,0,0,0.02);">
+                <div style="display:flex;align-items:center;gap:6px;font-size:0.85rem;">
+                    <i class="fas fa-clock" style="color:var(--brand-blue);"></i>
+                    <span style="color:var(--text-muted);">Início:</span> <b>${horaIniStr}</b>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;font-size:0.85rem;">
+                    <i class="fas fa-flag-checkered" style="color:#28a745;"></i>
+                    <span style="color:var(--text-muted);">Fim:</span> <b>${horaFimStr}</b>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;font-size:0.85rem;">
+                    <i class="fas fa-stopwatch" style="color:#FF8C00;"></i>
+                    <span style="color:var(--text-muted);">Duração:</span> <b>${duracaoStr}</b>
+                </div>
+                ${alertaTempo}
+            </div>`;
+            // Inject after kpis row
+            document.getElementById('modal-rom-kpis').insertAdjacentHTML('afterend', tempoInfoHtml);
+
             // Progress bar
             const pct = Math.min(d.pct, 100);
             document.getElementById('modal-rom-pct-label').textContent = d.pct.toFixed(1) + '%';
@@ -2727,14 +2786,19 @@
 
             // Ações do robô no modal
             const acoes = [];
+            if (temOp && d.duracao !== null && d.duracao > 60 && d.status !== 'finalizado') {
+                acoes.push({ cor: '#dc3545', txt: `🚨 Romaneio em execução há <b>${formatTempo(d.duracao)}</b>. Tempo muito acima do limite de 20 min. Verificar imediatamente: operador parado, dificuldade de localização ou produto não encontrado no endereço.` });
+            } else if (temOp && d.duracao !== null && d.duracao > 20 && d.status !== 'finalizado') {
+                acoes.push({ cor: '#FF8C00', txt: `⚠️ Romaneio com <b>${formatTempo(d.duracao)}</b> de duração. Acima do limite de alerta (20 min). Recomenda-se iniciar busca ativa dos produtos pendentes.` });
+            }
             if (d.pct < 99 && d.conferido === 'S') {
                 acoes.push({ cor: '#FF8C00', txt: `⚠️ Romaneio conferido com ${d.pct.toFixed(1)}% de atendimento. Verificar se os itens pendentes foram cancelados ou se há divergência de estoque.` });
             }
             if (prodPend > 0 && d.conferido !== 'S') {
                 acoes.push({ cor: '#17a2b8', txt: `🕐 ${prodPend} produto(s) pendente(s). Romaneio ainda em aberto — aguardar conclusão do atendimento ou escalar para supervisão.` });
             }
-            if (d.operador === 'Não identificado') {
-                acoes.push({ cor: '#6f42c1', txt: `👤 Operador não identificado neste romaneio. Verifique se o arquivo de usuário contém este romaneio ou se foi atribuído corretamente.` });
+            if (!temOp) {
+                acoes.push({ cor: '#6f42c1', txt: `👤 Sem operador atribuído. Romaneio pendente de colaborador pegar — não há hora de início registrada. Verificar disponibilidade da equipe.` });
             }
 
             const acoesEl = document.getElementById('modal-acoes-robo');
@@ -2858,6 +2922,51 @@
             XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(rows), 'Todos Pendentes');
             XLSX.writeFile(wb, 'Produtos_Pendentes_Completo.xlsx');
         };
+
+        // ---- PERSISTÊNCIA: SALVAR/CARREGAR ÚLTIMA IMPORTAÇÃO ----
+        async function apuracao_carregarUltimaImportacao() {
+            try {
+                if (!window.storage) return;
+                const result = await window.storage.get('apuracao_ultima_importacao');
+                if (!result || !result.value) return;
+                const payload = JSON.parse(result.value);
+                if (!payload.dadosCruzados || !payload.dadosCruzados.length) return;
+
+                dadosCruzados = payload.dadosCruzados;
+                dadosFiltrados = [...dadosCruzados];
+
+                const tsStr = new Date(payload.ts).toLocaleString('pt-BR');
+                const elTs = document.getElementById('apuracao-ultima-import');
+                if (elTs) {
+                    elTs.innerHTML = `<i class="fas fa-history" style="color:#28a745;"></i> Última importação: <b>${tsStr}</b> — ${dadosCruzados.length} romaneios carregados automaticamente`;
+                    elTs.style.display = 'block';
+                }
+
+                popularFiltroOperador();
+                atualizarKPIs();
+                renderTabelas();
+                renderPendencias();
+                renderGraficos();
+            } catch(e) { /* storage indisponível, ignorar */ }
+        }
+
+        // Auto-carregar quando a aba de apuração for aberta
+        const _origShowTab = window.showTab;
+        if (typeof _origShowTab === 'function') {
+            window.showTab = function(tabId, btn) {
+                _origShowTab(tabId, btn);
+                if (tabId === 'apuracao' && !dadosCruzados.length) {
+                    apuracao_carregarUltimaImportacao();
+                }
+            };
+        }
+        // Tentar carregar imediatamente se a aba já estiver ativa
+        setTimeout(() => {
+            const view = document.getElementById('view-apuracao');
+            if (view && view.classList.contains('active') && !dadosCruzados.length) {
+                apuracao_carregarUltimaImportacao();
+            }
+        }, 1200);
 
         // ---- GRÁFICOS SVG ----
         function renderGraficos() {
@@ -3002,6 +3111,10 @@
             if (!confirm('Tem a certeza que quer limpar todos os dados importados?')) return;
             dadosUsuario = dadosDeposito = null;
             dadosCruzados = dadosFiltrados = [];
+            // Limpar storage
+            try { if (window.storage) window.storage.delete('apuracao_ultima_importacao').catch(()=>{}); } catch(e) {}
+            const elTs = document.getElementById('apuracao-ultima-import');
+            if (elTs) elTs.style.display = 'none';
             document.getElementById('lbl-file-usuario').textContent = 'Clique ou arraste o arquivo aqui';
             document.getElementById('lbl-file-deposito').textContent = 'Clique ou arraste o arquivo aqui';
             document.getElementById('drop-usuario').style.borderColor = 'var(--brand-blue)';
