@@ -417,15 +417,19 @@
                         </div>
                     </div>
 
-                    <!-- PASSO 2: ANÁLISE DE DIVERGÊNCIAS -->
+                    <!-- PASSO 2: ANÁLISE DE DIVERGÊNCIAS (1ª CONTAGEM) -->
                     <div id="al-step-divergencias" style="display:none;">
                         <div class="theme-card" style="max-width: 900px; margin: 0 auto; border-top: 5px solid var(--brand-red);">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                                 <div>
-                                    <h3 class="theme-card-title" style="margin-bottom: 5px;"><i class="fas fa-balance-scale"></i> Análise de Divergências</h3>
+                                    <h3 class="theme-card-title" style="margin-bottom: 5px;"><i class="fas fa-balance-scale"></i> 1ª Contagem — Conferência Inicial</h3>
                                     <div style="font-size: 0.9rem; color: var(--text-muted);">Localizador: <b id="al-div-loc" style="color: var(--brand-blue);"></b> | Auditor: <b id="al-div-auditor"></b></div>
                                 </div>
                                 <button class="btn-primary btn-secondary" onclick="window.alVoltar('divergencias')" style="padding: 6px 14px; font-size: 0.85rem;"><i class="fas fa-arrow-left"></i> Voltar ao Lançamento</button>
+                            </div>
+
+                            <div style="background: #fff3cd; border-left: 5px solid #FF8C00; padding: 12px 15px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9rem;">
+                                <i class="fas fa-info-circle" style="color: #856404;"></i> <b style="color: #856404;">Próximo passo:</b> Após revisar os dados abaixo, clique em <b>"Iniciar 2ª Conferência"</b> para uma segunda contagem independente do mesmo localizador.
                             </div>
 
                             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px;">
@@ -449,7 +453,7 @@
                                         <tr>
                                             <th>Produto</th>
                                             <th>Descrição</th>
-                                            <th>Qtd. Sistema</th>
+                                            <th>Qtd. Sistema (Loc.)</th>
                                             <th>Qtd. Contada</th>
                                             <th>Divergência</th>
                                             <th>Status</th>
@@ -461,14 +465,126 @@
                                 </table>
                             </div>
 
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <button class="btn-primary btn-secondary" style="flex: 1;" onclick="window.alVoltar('divergencias')">
+                                    <i class="fas fa-arrow-left"></i> Corrigir Lançamento
+                                </button>
+                                <button class="btn-primary" style="flex: 2; background: #FF8C00; padding: 15px; font-size: 1.05rem;" onclick="window.alIniciarSegundaConferencia()">
+                                    <i class="fas fa-redo"></i> Iniciar 2ª Conferência (Contra-prova)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PASSO 2B: SEGUNDA CONFERÊNCIA -->
+                    <div id="al-step-segunda" style="display:none;">
+                        <div class="theme-card" style="max-width: 750px; margin: 0 auto; border-top: 5px solid #FF8C00;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                                <h3 class="theme-card-title" style="margin-bottom: 0; color: #FF8C00;"><i class="fas fa-redo"></i> 2ª Conferência — Contra-prova</h3>
+                                <div style="font-size: 0.9rem; padding: 5px 12px; background: #fff3cd; border-radius: 4px; color: #856404; font-weight: bold;">
+                                    Loc: <span id="al-segunda-loc" style="color: var(--brand-blue);"></span>
+                                </div>
+                            </div>
+
+                            <div style="background: var(--brand-bg); border-radius: 6px; padding: 12px 15px; border: 1px solid #FF8C00; margin-bottom: 20px; font-size: 0.88rem; color: var(--text-muted);">
+                                <i class="fas fa-eye-slash" style="color: #FF8C00;"></i> Esta contagem é <b>independente e às cegas</b>. Conte os produtos sem ver o resultado da 1ª conferência.
+                            </div>
+
+                            <div style="border: 1px solid var(--border-light); border-radius: 6px; overflow: hidden; margin-bottom: 15px;">
+                                <div style="background: #FF8C00; color: white; padding: 10px 15px; font-weight: bold; font-size: 0.9rem;">
+                                    <i class="fas fa-boxes"></i> Itens da 2ª Contagem
+                                </div>
+                                <div id="al-segunda-lista" style="padding: 10px; min-height: 80px; background: var(--brand-bg);">
+                                    <p style="color: var(--text-muted); text-align: center; margin: 15px 0; font-size: 0.9rem;">Nenhum item adicionado. Use o formulário abaixo.</p>
+                                </div>
+                            </div>
+
+                            <div style="background: var(--brand-bg); border-radius: 6px; padding: 15px; border: 1px solid var(--border-light); margin-bottom: 15px;">
+                                <div style="font-weight: bold; color: #FF8C00; margin-bottom: 12px; font-size: 0.95rem;"><i class="fas fa-plus-circle"></i> Adicionar Item</div>
+                                <div style="display: grid; grid-template-columns: 2fr 2fr 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                                    <div>
+                                        <label style="font-size: 0.8rem; font-weight: bold; color: var(--text-muted); display: block; margin-bottom: 4px;">Código do Produto</label>
+                                        <input type="text" id="al2-item-cod" class="theme-input" placeholder="Ex: 12345" style="font-weight: bold;">
+                                    </div>
+                                    <div>
+                                        <label style="font-size: 0.8rem; font-weight: bold; color: var(--text-muted); display: block; margin-bottom: 4px;">Descrição</label>
+                                        <input type="text" id="al2-item-desc" class="theme-input" placeholder="Nome do produto">
+                                    </div>
+                                    <div>
+                                        <label style="font-size: 0.8rem; font-weight: bold; color: var(--text-muted); display: block; margin-bottom: 4px;">Qtd. Caixas</label>
+                                        <input type="number" id="al2-item-caixas" class="theme-input" value="1" min="0" style="text-align: center; font-weight: bold;">
+                                    </div>
+                                    <div>
+                                        <label style="font-size: 0.8rem; font-weight: bold; color: var(--text-muted); display: block; margin-bottom: 4px;">Un./Caixa</label>
+                                        <input type="number" id="al2-item-unid" class="theme-input" value="1" min="1" style="text-align: center; font-weight: bold;">
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 10px;">
+                                    <label style="font-size: 0.8rem; font-weight: bold; color: var(--text-muted); display: block; margin-bottom: 4px;">Observações</label>
+                                    <input type="text" id="al2-item-obs" class="theme-input" placeholder="Observações (opcional)">
+                                </div>
+                                <div style="margin-bottom: 10px;">
+                                    <label style="font-size: 0.8rem; font-weight: bold; color: var(--brand-red); display: block; margin-bottom: 4px;"><i class="fas fa-exclamation-triangle"></i> Caixa indevida neste endereço</label>
+                                    <input type="text" id="al2-item-errado" class="theme-input" placeholder="Código ou descrição do item indevido (opcional)">
+                                </div>
+                                <button class="btn-primary" style="width: 100%; background: #FF8C00;" onclick="window.al2AdicionarItem()">
+                                    <i class="fas fa-plus"></i> Adicionar Item à 2ª Contagem
+                                </button>
+                            </div>
+
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <button class="btn-primary btn-secondary" style="flex: 1;" onclick="window.alVoltar('segunda')">
+                                    <i class="fas fa-arrow-left"></i> Voltar à 1ª Contagem
+                                </button>
+                                <button class="btn-primary" style="flex: 2; background: var(--brand-blue); padding: 15px; font-size: 1.05rem;" onclick="window.alConcluirSegundaConferencia()">
+                                    <i class="fas fa-check-double"></i> Concluir 2ª Conferência e Ver Comparativo
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PASSO 3: COMPARATIVO 1ª x 2ª + AJUSTE FINAL -->
+                    <div id="al-step-comparativo" style="display:none;">
+                        <div class="theme-card" style="max-width: 950px; margin: 0 auto; border-top: 5px solid var(--brand-blue);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                                <div>
+                                    <h3 class="theme-card-title" style="margin-bottom: 5px;"><i class="fas fa-columns"></i> Comparativo 1ª x 2ª Conferência</h3>
+                                    <div style="font-size: 0.9rem; color: var(--text-muted);">Localizador: <b id="al-comp-loc" style="color: var(--brand-blue);"></b></div>
+                                </div>
+                                <button class="btn-primary btn-secondary" onclick="window.alVoltar('comparativo')" style="padding: 6px 14px; font-size: 0.85rem;"><i class="fas fa-arrow-left"></i> Voltar à 2ª Contagem</button>
+                            </div>
+
+                            <!-- KPIs de acuracidade -->
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 20px;" id="al-comp-kpis"></div>
+
+                            <!-- Tabela comparativa -->
+                            <div style="overflow-x: auto; margin-bottom: 20px; border: 1px solid var(--border-light); border-radius: 6px;">
+                                <table id="al-comp-tabela" style="margin-top: 0;">
+                                    <thead>
+                                        <tr>
+                                            <th>Produto</th>
+                                            <th>Descrição</th>
+                                            <th style="text-align:center;">Qtd. Sistema (Loc.)</th>
+                                            <th style="text-align:center;">1ª Contagem</th>
+                                            <th style="text-align:center;">2ª Contagem</th>
+                                            <th style="text-align:center;">Acordo?</th>
+                                            <th>Indevido 1ª</th>
+                                            <th>Indevido 2ª</th>
+                                            <th>Quantidade Final</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="al-comp-tbody"></tbody>
+                                </table>
+                            </div>
+
                             <div style="background: var(--brand-bg); padding: 15px; border-radius: 6px; border: 1px solid var(--border-light); margin-bottom: 20px;">
-                                <label style="font-weight: bold; color: var(--brand-red); display: block; margin-bottom: 8px;"><i class="fas fa-exclamation-circle"></i> Justificativa para divergências (obrigatória se houver divergências)</label>
-                                <textarea id="al-div-justificativa" class="theme-input" rows="3" placeholder="Descreva a justificativa para as divergências encontradas..."></textarea>
+                                <label style="font-weight: bold; color: var(--brand-red); display: block; margin-bottom: 8px;"><i class="fas fa-exclamation-circle"></i> Justificativa (obrigatória se houver divergências)</label>
+                                <textarea id="al-comp-justificativa" class="theme-input" rows="3" placeholder="Descreva a justificativa para as divergências encontradas..."></textarea>
                             </div>
 
                             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                                 <button class="btn-primary btn-secondary" style="flex: 1;" onclick="window.alImprimirRelatorioFinal()">
-                                    <i class="fas fa-print"></i> Imprimir Relatório
+                                    <i class="fas fa-print"></i> Imprimir Relatório PDF
                                 </button>
                                 <button class="btn-primary" style="flex: 2; background: var(--brand-blue); padding: 15px; font-size: 1.05rem;" onclick="window.alFinalizarAuditoria()">
                                     <i class="fas fa-cloud-upload-alt"></i> Confirmar e Finalizar Auditoria
@@ -3561,10 +3677,12 @@
         // ==========================================
         let _alItens = [];
         let _alDadosLancamento = null;
+        let _al2Itens = [];
+        let _alComparativo = null;
 
         // Mostrar step e ocultar os outros
         function alShowStep(stepId) {
-            ['al-step-menu','al-step-lancamento','al-step-divergencias','al-step-historico'].forEach(id => {
+            ['al-step-menu','al-step-lancamento','al-step-divergencias','al-step-segunda','al-step-comparativo','al-step-historico'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.style.display = 'none';
             });
@@ -3574,6 +3692,8 @@
 
         window.alIrParaLancamento = function() {
             _alItens = [];
+            _al2Itens = [];
+            _alComparativo = null;
             document.getElementById('al-lancamento-loc').value = '';
             document.getElementById('al-lancamento-auditor').value = (currentUser && currentUser.nome_completo) ? currentUser.nome_completo : '';
             document.getElementById('al-item-cod').value = '';
@@ -3589,6 +3709,8 @@
         window.alVoltar = function(from) {
             if (from === 'lancamento') alShowStep('al-step-menu');
             else if (from === 'divergencias') alShowStep('al-step-lancamento');
+            else if (from === 'segunda') alShowStep('al-step-divergencias');
+            else if (from === 'comparativo') alShowStep('al-step-segunda');
             else if (from === 'historico') alShowStep('al-step-menu');
         };
 
@@ -3665,11 +3787,9 @@
 
             _alDadosLancamento = { loc, auditor, itens: [..._alItens] };
 
-            // Calcular divergências: aqui não temos dados do sistema (Auditoria Livre)
-            // mostramos o que foi contado e marcamos "indevido" se houver
-            const conformes = _alItens.filter(it => !it.errado).length;
+            // Calcular divergências usando quantidade do LOCALIZADOR no sistema
+            const conformes = _alItens.filter(it => !it.errado && it.caixas > 0).length;
             const comIndevido = _alItens.filter(it => it.errado && it.errado.length > 0).length;
-            // Divergência = item com qtd 0 (não encontrado no endereço) ou com item indevido
             const divergencias = _alItens.filter(it => it.caixas === 0 || (it.errado && it.errado.length > 0)).length;
 
             document.getElementById('al-div-loc').textContent = loc;
@@ -3680,49 +3800,282 @@
 
             const tbody = document.getElementById('al-div-tbody');
             tbody.innerHTML = _alItens.map(it => {
+                // Buscar quantidade do LOCALIZADOR (não saldo global)
+                const qtdSistema = alGetQtdLocalizador(loc, it.cod);
                 const temDiv = it.caixas === 0;
                 const temIndev = it.errado && it.errado.length > 0;
                 const statusColor = (!temDiv && !temIndev) ? '#28a745' : '#dc3545';
                 const statusTxt = (!temDiv && !temIndev) ? '✅ Conforme' : temDiv ? '🔴 Ausente' : '⚠️ Divergência';
+                const divQtd = (qtdSistema !== null) ? (it.qtdTotal - qtdSistema) : null;
+                const divStr = (qtdSistema !== null) ? `<span style="color:${divQtd === 0 ? '#28a745' : '#dc3545'};font-weight:bold;">${divQtd > 0 ? '+' : ''}${divQtd}</span>` : '—';
                 return `<tr style="${(temDiv || temIndev) ? 'background:rgba(220,53,69,0.05);' : ''}">
                     <td><b style="color:var(--brand-blue);">${it.cod}</b></td>
                     <td style="font-size:0.82rem;">${it.desc || '—'}</td>
-                    <td style="text-align:center;color:var(--text-muted);">—</td>
+                    <td style="text-align:center;color:var(--text-muted);font-weight:bold;">${qtdSistema !== null ? qtdSistema : '—'}</td>
                     <td style="text-align:center;font-weight:bold;color:#FF8C00;">${it.qtdTotal}</td>
-                    <td style="text-align:center;font-weight:bold;color:${temDiv ? 'var(--brand-red)' : '#28a745'};">${temDiv ? '⚠️ 0 encontrado' : '—'}</td>
+                    <td style="text-align:center;">${divStr}</td>
                     <td style="font-weight:bold;color:${statusColor};">${statusTxt}</td>
                     <td style="font-size:0.82rem;color:var(--brand-red);">${it.errado || '—'}</td>
                     <td style="font-size:0.82rem;color:var(--text-muted);">${it.obs || '—'}</td>
                 </tr>`;
             }).join('');
 
-            document.getElementById('al-div-justificativa').value = '';
             alShowStep('al-step-divergencias');
         };
 
-        window.alImprimirRelatorioFinal = function() {
+        // Helper: busca quantidade do LOCALIZADOR específico no sistema (não saldo global)
+        function alGetQtdLocalizador(loc, cod) {
+            if (!loc || !cod) return null;
+            const locUpper = loc.toUpperCase();
+            const codUpper = cod.toUpperCase();
+            // Verifica picking (inventoryDB)
+            if (typeof inventoryDB !== 'undefined' && inventoryDB[locUpper]) {
+                const it = inventoryDB[locUpper];
+                if (it.prod && String(it.prod).toUpperCase() === codUpper) return (it.saldo !== undefined && it.saldo !== null) ? it.saldo : null;
+            }
+            // Verifica reserva (reservaDB)
+            if (typeof reservaDB !== 'undefined' && reservaDB[locUpper] && Array.isArray(reservaDB[locUpper])) {
+                const found = reservaDB[locUpper].find(i => (i.prod && String(i.prod).toUpperCase() === codUpper) || (i.lv && String(i.lv).toUpperCase() === codUpper));
+                if (found) return (found.expectedQtd !== undefined && found.expectedQtd !== null) ? found.expectedQtd : null;
+            }
+            return null;
+        }
+
+        // Iniciar 2ª conferência — formulário em branco
+        window.alIniciarSegundaConferencia = function() {
             if (!_alDadosLancamento) return;
-            const { loc, auditor, itens } = _alDadosLancamento;
-            const justificativa = document.getElementById('al-div-justificativa').value.trim();
+            _al2Itens = [];
+            document.getElementById('al-segunda-loc').textContent = _alDadosLancamento.loc;
+            document.getElementById('al2-item-cod').value = '';
+            document.getElementById('al2-item-desc').value = '';
+            document.getElementById('al2-item-caixas').value = '1';
+            document.getElementById('al2-item-unid').value = '1';
+            document.getElementById('al2-item-obs').value = '';
+            document.getElementById('al2-item-errado').value = '';
+            document.getElementById('al-segunda-lista').innerHTML = '<p style="color: var(--text-muted); text-align: center; margin: 15px 0; font-size: 0.9rem;">Nenhum item adicionado.</p>';
+            alShowStep('al-step-segunda');
+        };
+
+        window.al2AdicionarItem = function() {
+            const cod = document.getElementById('al2-item-cod').value.trim();
+            const desc = document.getElementById('al2-item-desc').value.trim();
+            const caixas = parseFloat(document.getElementById('al2-item-caixas').value) || 0;
+            const unid = parseFloat(document.getElementById('al2-item-unid').value) || 1;
+            const obs = document.getElementById('al2-item-obs').value.trim();
+            const errado = document.getElementById('al2-item-errado').value.trim();
+            if (!cod) { alert("Informe o código do produto."); return; }
+            const qtdTotal = caixas * unid;
+            _al2Itens.push({ cod, desc, caixas, unid, qtdTotal, obs, errado });
+            document.getElementById('al2-item-cod').value = '';
+            document.getElementById('al2-item-desc').value = '';
+            document.getElementById('al2-item-caixas').value = '1';
+            document.getElementById('al2-item-obs').value = '';
+            document.getElementById('al2-item-errado').value = '';
+            document.getElementById('al2-item-cod').focus();
+            al2RenderItens();
+        };
+
+        function al2RenderItens() {
+            const lista = document.getElementById('al-segunda-lista');
+            if (_al2Itens.length === 0) {
+                lista.innerHTML = '<p style="color: var(--text-muted); text-align: center; margin: 15px 0; font-size: 0.9rem;">Nenhum item adicionado.</p>';
+                return;
+            }
+            lista.innerHTML = `
+                <table style="margin-top:0;">
+                    <thead><tr>
+                        <th>#</th><th>Código</th><th>Descrição</th>
+                        <th style="text-align:center;">Caixas</th><th style="text-align:center;">Un/Cx</th>
+                        <th style="text-align:center;">Qtd Total</th><th>Indevido</th><th>Obs</th><th></th>
+                    </tr></thead>
+                    <tbody>${_al2Itens.map((it, i) => `<tr>
+                        <td style="color:var(--text-muted);font-size:0.8rem;">${i+1}</td>
+                        <td><b style="color:#FF8C00;">${it.cod}</b></td>
+                        <td style="font-size:0.85rem;">${it.desc || '—'}</td>
+                        <td style="text-align:center;font-weight:bold;">${it.caixas}</td>
+                        <td style="text-align:center;color:var(--text-muted);">${it.unid}</td>
+                        <td style="text-align:center;font-weight:bold;color:#FF8C00;">${it.qtdTotal}</td>
+                        <td style="font-size:0.8rem;color:var(--brand-red);">${it.errado || '—'}</td>
+                        <td style="font-size:0.8rem;color:var(--text-muted);">${it.obs || '—'}</td>
+                        <td><button onclick="window.al2RemoverItem(${i})" style="background:none;border:none;cursor:pointer;color:var(--brand-red);font-size:1.1rem;">&#x2716;</button></td>
+                    </tr>`).join('')}</tbody>
+                </table>`;
+        }
+
+        window.al2RemoverItem = function(idx) { _al2Itens.splice(idx, 1); al2RenderItens(); };
+
+        // Concluir 2ª conferência — montar comparativo
+        window.alConcluirSegundaConferencia = function() {
+            if (!_alDadosLancamento) return;
+            if (_al2Itens.length === 0) { alert("Adicione pelo menos um item na 2ª contagem."); return; }
+
+            const loc = _alDadosLancamento.loc;
+            document.getElementById('al-comp-loc').textContent = loc;
+
+            // Unir todos os códigos das duas contagens
+            const todos = new Set([..._alDadosLancamento.itens.map(i => i.cod), ..._al2Itens.map(i => i.cod)]);
+            let acordos = 0, desacordos = 0;
+            const linhas = [];
+
+            todos.forEach(cod => {
+                const it1 = _alDadosLancamento.itens.find(i => i.cod === cod);
+                const it2 = _al2Itens.find(i => i.cod === cod);
+                const qtd1 = it1 ? it1.qtdTotal : 0;
+                const qtd2 = it2 ? it2.qtdTotal : 0;
+                const desc = (it1 && it1.desc) || (it2 && it2.desc) || '—';
+                const errado1 = it1 ? (it1.errado || '') : '';
+                const errado2 = it2 ? (it2.errado || '') : '';
+                const acordo = (qtd1 === qtd2);
+                const qtdSistema = alGetQtdLocalizador(loc, cod);
+                // Quantidade final = média arredondada se acordo, ou marca como "Revisar"
+                const qtdFinal = acordo ? qtd1 : null;
+                if (acordo) acordos++; else desacordos++;
+                linhas.push({ cod, desc, qtdSistema, qtd1, qtd2, acordo, errado1, errado2, qtdFinal });
+            });
+
+            const totalItens = todos.size;
+            const pctAcerto = totalItens > 0 ? ((acordos / totalItens) * 100).toFixed(1) : 0;
+
+            // KPIs
+            document.getElementById('al-comp-kpis').innerHTML = `
+                <div style="background:#d4edda;border-left:5px solid #28a745;padding:15px;border-radius:6px;text-align:center;">
+                    <div style="font-size:0.75rem;font-weight:bold;color:#155724;text-transform:uppercase;">% de Acerto</div>
+                    <div style="font-size:2.5rem;font-weight:900;color:#155724;">${pctAcerto}%</div>
+                </div>
+                <div style="background:#d4edda;border-left:5px solid #28a745;padding:15px;border-radius:6px;text-align:center;">
+                    <div style="font-size:0.75rem;font-weight:bold;color:#155724;text-transform:uppercase;">Em Acordo</div>
+                    <div style="font-size:2.5rem;font-weight:900;color:#155724;">${acordos}</div>
+                </div>
+                <div style="background:#f8d7da;border-left:5px solid var(--brand-red);padding:15px;border-radius:6px;text-align:center;">
+                    <div style="font-size:0.75rem;font-weight:bold;color:#721c24;text-transform:uppercase;">Divergentes</div>
+                    <div style="font-size:2.5rem;font-weight:900;color:#721c24;">${desacordos}</div>
+                </div>
+                <div style="background:#fff3cd;border-left:5px solid #FF8C00;padding:15px;border-radius:6px;text-align:center;">
+                    <div style="font-size:0.75rem;font-weight:bold;color:#856404;text-transform:uppercase;">Indevidos (1ª+2ª)</div>
+                    <div style="font-size:2.5rem;font-weight:900;color:#856404;">${linhas.filter(l => l.errado1 || l.errado2).length}</div>
+                </div>`;
+
+            // Tabela comparativa
+            const tbody = document.getElementById('al-comp-tbody');
+            tbody.innerHTML = linhas.map(l => {
+                const acStr = l.acordo ? '<span style="color:#28a745;font-weight:bold;">✅ Sim</span>' : '<span style="color:#dc3545;font-weight:bold;">⚠️ Não</span>';
+                const qtdFinalStr = l.acordo
+                    ? `<input type="number" value="${l.qtd1}" style="width:70px;text-align:center;border:1px solid #ccc;border-radius:4px;padding:4px;" onchange="alUpdateQtdFinal('${l.cod}', this.value)">`
+                    : `<input type="number" placeholder="Definir" style="width:70px;text-align:center;border:2px solid #dc3545;border-radius:4px;padding:4px;font-weight:bold;" onchange="alUpdateQtdFinal('${l.cod}', this.value)">`;
+                return `<tr style="${!l.acordo ? 'background:rgba(220,53,69,0.05);' : ''}">
+                    <td><b style="color:var(--brand-blue);">${l.cod}</b></td>
+                    <td style="font-size:0.82rem;">${l.desc}</td>
+                    <td style="text-align:center;color:var(--text-muted);font-weight:bold;">${l.qtdSistema !== null ? l.qtdSistema : '—'}</td>
+                    <td style="text-align:center;font-weight:bold;">${l.qtd1}</td>
+                    <td style="text-align:center;font-weight:bold;">${l.qtd2}</td>
+                    <td style="text-align:center;">${acStr}</td>
+                    <td style="font-size:0.8rem;color:var(--brand-red);">${l.errado1 || '—'}</td>
+                    <td style="font-size:0.8rem;color:var(--brand-red);">${l.errado2 || '—'}</td>
+                    <td style="text-align:center;">${qtdFinalStr}</td>
+                </tr>`;
+            }).join('');
+
+            // Guardar linhas comparativas para uso posterior
+            _alComparativo = { loc, linhas, acordos, desacordos, pctAcerto, totalItens };
+            document.getElementById('al-comp-justificativa').value = '';
+            alShowStep('al-step-comparativo');
+        };
+
+        // Atualizar quantidade final do comparativo dinamicamente
+        window.alUpdateQtdFinal = function(cod, val) {
+            if (!_alComparativo) return;
+            const found = _alComparativo.linhas.find(l => l.cod === cod);
+            if (found) found.qtdFinal = parseFloat(val) || 0;
+        };
+
+        window.alImprimirRelatorioFinal = function() {
+            // Usa comparativo se disponível, senão usa _alDadosLancamento
+            const dadosComp = _alComparativo;
+            const dadosLanc = _alDadosLancamento;
+            if (!dadosLanc) return;
+
+            const loc = dadosLanc.loc;
+            const auditor = dadosLanc.auditor;
+            const justificativa = dadosComp
+                ? document.getElementById('al-comp-justificativa').value.trim()
+                : (document.getElementById('al-div-justificativa') ? document.getElementById('al-div-justificativa').value.trim() : '');
             const dataHora = new Date().toLocaleString('pt-BR');
 
-            const conformes = itens.filter(it => !it.errado && it.caixas > 0).length;
-            const divergencias = itens.filter(it => it.caixas === 0 || (it.errado && it.errado.length > 0)).length;
-            const comIndevido = itens.filter(it => it.errado && it.errado.length > 0).length;
+            let pctAcerto = '—', acordos = '—', desacordos = '—';
+            let linhasTabela = '';
+            let indevidos = [];
+
+            if (dadosComp) {
+                pctAcerto = dadosComp.pctAcerto + '%';
+                acordos = dadosComp.acordos;
+                desacordos = dadosComp.desacordos;
+                indevidos = dadosComp.linhas.filter(l => l.errado1 || l.errado2);
+
+                linhasTabela = dadosComp.linhas.map(l => {
+                    const qtdSist = l.qtdSistema !== null ? l.qtdSistema : '—';
+                    const acStr = l.acordo ? '✅ Acordo' : '⚠️ Divergência';
+                    const rowBg = !l.acordo ? 'background:#fff0f0;' : '';
+                    const qtdFinalDisp = l.qtdFinal !== null && l.qtdFinal !== undefined ? l.qtdFinal : '❓ Pendente';
+                    return `<tr style="${rowBg}">
+                        <td><b>${l.cod}</b></td><td>${l.desc}</td>
+                        <td style="text-align:center;">${qtdSist}</td>
+                        <td style="text-align:center;font-weight:bold;">${l.qtd1}</td>
+                        <td style="text-align:center;font-weight:bold;">${l.qtd2}</td>
+                        <td style="font-weight:bold;color:${l.acordo ? '#28a745' : '#dc3545'};">${acStr}</td>
+                        <td style="text-align:center;font-weight:bold;color:#0033A0;">${qtdFinalDisp}</td>
+                        <td style="color:#dc3545;font-size:0.82rem;">${l.errado1 || '—'} / ${l.errado2 || '—'}</td>
+                    </tr>`;
+                }).join('');
+            } else {
+                // Fallback: só 1ª contagem
+                const itens = dadosLanc.itens;
+                const conformes = itens.filter(it => !it.errado && it.caixas > 0).length;
+                const divergencias = itens.filter(it => it.caixas === 0 || (it.errado && it.errado.length > 0)).length;
+                pctAcerto = itens.length > 0 ? ((conformes / itens.length) * 100).toFixed(1) + '%' : '—';
+                acordos = conformes; desacordos = divergencias;
+                indevidos = itens.filter(it => it.errado && it.errado.length > 0);
+                linhasTabela = itens.map(it => {
+                    const qtdSist = alGetQtdLocalizador(loc, it.cod);
+                    const temDiv = it.caixas === 0; const temIndev = it.errado && it.errado.length > 0;
+                    const st = (!temDiv && !temIndev) ? '✅ Conforme' : temDiv ? '🔴 Ausente' : '⚠️ Divergência';
+                    return `<tr style="${(temDiv || temIndev) ? 'background:#fff0f0;' : ''}">
+                        <td><b>${it.cod}</b></td><td>${it.desc||'—'}</td>
+                        <td style="text-align:center;">${qtdSist !== null ? qtdSist : '—'}</td>
+                        <td style="text-align:center;font-weight:bold;">${it.qtdTotal}</td>
+                        <td style="text-align:center;color:#888;">—</td>
+                        <td style="font-weight:bold;">${st}</td>
+                        <td style="text-align:center;font-weight:bold;">${it.qtdTotal}</td>
+                        <td style="color:#dc3545;">${it.errado||'—'} / —</td>
+                    </tr>`;
+                }).join('');
+            }
+
+            // Montar caixas fora do endereço
+            const indevidosHtml = indevidos.length > 0
+                ? `<div style="background:#fff3cd;border:1px solid #FF8C00;padding:10px 15px;border-radius:6px;margin-top:15px;font-size:0.85rem;">
+                    <b>📦 Caixas encontradas fora do endereço correto (indevidas):</b><br>
+                    <ul style="margin:8px 0 0 0;padding-left:20px;">
+                    ${indevidos.map(l => `<li><b>${l.cod}</b> — Indevido 1ª: ${l.errado1||'—'} | Indevido 2ª: ${(l.errado2 !== undefined ? l.errado2 : '—') || '—'}</li>`).join('')}
+                    </ul></div>`
+                : `<div style="background:#d4edda;border:1px solid #28a745;padding:8px 15px;border-radius:6px;margin-top:15px;font-size:0.85rem;color:#155724;"><i>✅ Nenhuma caixa indevida identificada neste localizador.</i></div>`;
 
             const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
             <title>Relatório Auditoria Livre - ${loc}</title>
             <style>
                 body { font-family: Arial, sans-serif; margin: 20px; color: #333; }
                 h1 { color: #0033A0; border-bottom: 3px solid #0033A0; padding-bottom: 8px; margin-bottom: 5px; }
-                .meta { display: flex; gap: 30px; flex-wrap: wrap; margin: 15px 0; font-size: 0.9rem; }
+                .meta { display: flex; gap: 20px; flex-wrap: wrap; margin: 15px 0; font-size: 0.9rem; }
                 .meta-item { border: 1px solid #ccc; padding: 8px 15px; border-radius: 6px; min-width: 130px; }
                 .meta-item label { display: block; font-size: 0.75rem; color: #666; font-weight: bold; text-transform: uppercase; }
-                .kpis { display: flex; gap: 20px; flex-wrap: wrap; margin: 15px 0; }
-                .kpi { padding: 12px 20px; border-radius: 6px; text-align: center; min-width: 120px; }
-                .kpi-label { font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
-                .kpi-val { font-size: 2rem; font-weight: 900; }
-                table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+                .kpis { display: flex; gap: 15px; flex-wrap: wrap; margin: 15px 0; }
+                .kpi { padding: 12px 20px; border-radius: 6px; text-align: center; min-width: 110px; border: 1px solid #ddd; }
+                .kpi-label { font-size: 0.7rem; font-weight: bold; text-transform: uppercase; margin-bottom: 4px; }
+                .kpi-val { font-size: 1.8rem; font-weight: 900; }
+                .kpi-acerto { background: #d4edda; color: #155724; border-color: #28a745; }
+                .kpi-acordo { background: #d4edda; color: #155724; }
+                .kpi-div { background: #f8d7da; color: #721c24; }
+                .kpi-indev { background: #fff3cd; color: #856404; }
+                table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 10px; }
                 th { background: #0033A0; color: white; padding: 7px 10px; text-align: left; }
                 td { padding: 7px 10px; border-bottom: 1px solid #ddd; }
                 tr:nth-child(even) { background: #f8f8f8; }
@@ -3732,35 +4085,27 @@
                 .sign-box span { display: block; border-bottom: 1px solid #333; height: 30px; margin-bottom: 5px; }
                 @media print { body { margin: 0; } }
             </style></head><body>
-            <h1>&#x1F4CB; Relatório de Auditoria Livre</h1>
+            <h1>&#x1F4CB; Relatório de Auditoria Livre — ${dadosComp ? '1ª + 2ª Conferência' : '1ª Conferência'}</h1>
             <div class="meta">
                 <div class="meta-item"><label>Localizador</label><b style="font-size:1rem;">${loc}</b></div>
                 <div class="meta-item"><label>Auditor</label>${auditor}</div>
                 <div class="meta-item"><label>Data / Hora</label>${dataHora}</div>
             </div>
             <div class="kpis">
-                <div class="kpi" style="background:#d4edda;color:#155724;"><div class="kpi-label">Conformes</div><div class="kpi-val">${conformes}</div></div>
-                <div class="kpi" style="background:#f8d7da;color:#721c24;"><div class="kpi-label">Divergências</div><div class="kpi-val">${divergencias}</div></div>
-                <div class="kpi" style="background:#fff3cd;color:#856404;"><div class="kpi-label">Indevidos</div><div class="kpi-val">${comIndevido}</div></div>
-                <div class="kpi" style="background:#e9ecef;color:#333;"><div class="kpi-label">Total Itens</div><div class="kpi-val">${itens.length}</div></div>
+                <div class="kpi kpi-acerto"><div class="kpi-label">% Acerto</div><div class="kpi-val">${pctAcerto}</div></div>
+                <div class="kpi kpi-acordo"><div class="kpi-label">Em Acordo</div><div class="kpi-val">${acordos}</div></div>
+                <div class="kpi kpi-div"><div class="kpi-label">Divergentes</div><div class="kpi-val">${desacordos}</div></div>
+                <div class="kpi kpi-indev"><div class="kpi-label">Indevidos</div><div class="kpi-val">${indevidos.length}</div></div>
             </div>
             <table>
-                <thead><tr><th>Cód.</th><th>Descrição</th><th>Cx Contadas</th><th>Un/Cx</th><th>Qtd Total</th><th>Item Indevido</th><th>Status</th><th>Observações</th></tr></thead>
-                <tbody>${itens.map(it => {
-                    const temDiv = it.caixas === 0;
-                    const temIndev = it.errado && it.errado.length > 0;
-                    const st = (!temDiv && !temIndev) ? '✅ Conforme' : temDiv ? '🔴 Ausente' : '⚠️ Divergência';
-                    return `<tr style="${(temDiv || temIndev) ? 'background:#fff0f0;' : ''}">
-                        <td><b>${it.cod}</b></td><td>${it.desc||'—'}</td>
-                        <td style="text-align:center;font-weight:bold;">${it.caixas}</td>
-                        <td style="text-align:center;">${it.unid}</td>
-                        <td style="text-align:center;font-weight:bold;">${it.qtdTotal}</td>
-                        <td style="color:#dc3545;">${it.errado||'—'}</td>
-                        <td style="font-weight:bold;">${st}</td>
-                        <td style="color:#666;">${it.obs||'—'}</td>
-                    </tr>`;
-                }).join('')}</tbody>
+                <thead><tr>
+                    <th>Cód.</th><th>Descrição</th><th>Qtd. Sistema (Loc.)</th>
+                    <th>1ª Contagem</th><th>2ª Contagem</th>
+                    <th>Acordo</th><th>Qtd. Final</th><th>Indevido (1ª / 2ª)</th>
+                </tr></thead>
+                <tbody>${linhasTabela}</tbody>
             </table>
+            ${indevidosHtml}
             ${justificativa ? `<div class="just-box"><b>&#x26A0; Justificativa:</b> ${justificativa}</div>` : ''}
             <div class="footer">
                 <div class="sign-box"><span></span>Auditor: ${auditor}</div>
@@ -3779,23 +4124,41 @@
 
         window.alFinalizarAuditoria = function() {
             if (!_alDadosLancamento) return;
-            const justificativa = document.getElementById('al-div-justificativa').value.trim();
-            const divergencias = _alDadosLancamento.itens.filter(it => it.caixas === 0 || (it.errado && it.errado.length > 0)).length;
-            if (divergencias > 0 && !justificativa) {
+            const dadosComp = _alComparativo;
+            const justificativa = dadosComp
+                ? document.getElementById('al-comp-justificativa').value.trim()
+                : '';
+
+            const itens1 = _alDadosLancamento.itens;
+            const divergencias1 = itens1.filter(it => it.caixas === 0 || (it.errado && it.errado.length > 0)).length;
+
+            if (divergencias1 > 0 && !justificativa) {
                 alert("Há divergências registadas. Por favor, preencha a justificativa antes de finalizar.");
-                document.getElementById('al-div-justificativa').focus();
+                const justEl = document.getElementById('al-comp-justificativa');
+                if (justEl) justEl.focus();
                 return;
             }
+
+            // Montar registro final
+            const linhasFinal = dadosComp ? dadosComp.linhas : itens1.map(it => ({
+                cod: it.cod, desc: it.desc, qtdSistema: alGetQtdLocalizador(_alDadosLancamento.loc, it.cod),
+                qtd1: it.qtdTotal, qtd2: null, acordo: true, qtdFinal: it.qtdTotal, errado1: it.errado, errado2: ''
+            }));
+            const indevidos = linhasFinal.filter(l => l.errado1 || l.errado2).map(l => ({ cod: l.cod, errado1: l.errado1 || '', errado2: l.errado2 || '' }));
 
             const registro = {
                 localizador: _alDadosLancamento.loc,
                 auditor: _alDadosLancamento.auditor,
-                itens: _alDadosLancamento.itens,
+                itens: itens1,
+                itens2: _al2Itens || [],
+                comparativo: linhasFinal,
+                indevidos: indevidos,
                 justificativa: justificativa || '',
-                totalItens: _alDadosLancamento.itens.length,
-                conformes: _alDadosLancamento.itens.filter(it => !it.errado && it.caixas > 0).length,
-                divergencias: divergencias,
-                comIndevido: _alDadosLancamento.itens.filter(it => it.errado && it.errado.length > 0).length,
+                totalItens: linhasFinal.length,
+                conformes: linhasFinal.filter(l => l.acordo && !l.errado1 && !l.errado2).length,
+                divergencias: dadosComp ? dadosComp.desacordos : divergencias1,
+                comIndevido: indevidos.length,
+                pctAcerto: dadosComp ? parseFloat(dadosComp.pctAcerto) : 0,
                 dataHora: new Date().toISOString(),
                 criadoEm: obterDataUniversal(),
                 timestamp: window.dbServerTimestamp ? window.dbServerTimestamp() : null
@@ -3805,8 +4168,7 @@
                 window.dbAddDoc(window.dbCollection(window.db, "auditorias_livre"), registro)
                     .then(() => {
                         alert("✅ Auditoria finalizada e salva com sucesso!");
-                        _alDadosLancamento = null;
-                        _alItens = [];
+                        _alDadosLancamento = null; _alItens = []; _al2Itens = []; _alComparativo = null;
                         alShowStep('al-step-menu');
                     })
                     .catch(e => {
@@ -3815,8 +4177,7 @@
                     });
             } else {
                 alert("✅ Auditoria concluída (modo offline — sem conexão com o servidor).");
-                _alDadosLancamento = null;
-                _alItens = [];
+                _alDadosLancamento = null; _alItens = []; _al2Itens = []; _alComparativo = null;
                 alShowStep('al-step-menu');
             }
         };
